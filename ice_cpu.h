@@ -29,7 +29,7 @@ Works on:
 15. PS5 (_PS5)
 16. IRIX
 17. HP-UX
-18. Gameboy
+18. GBA
 19. NDS
 
 [2] IMPLEMENTATION:
@@ -672,7 +672,7 @@ ICE_CPU_API char* ICE_CPU_CALLCONV ice_cpu_name(void) {
 
 #elif defined(ICE_CPU_GBA)
 ///////////////////////////////////////////////////////////////////////////////////////////
-// ICE_CPU_GBA IMPLEMENTATION    (Nintendo Gameboy)
+// ICE_CPU_GBA IMPLEMENTATION    (Nintendo Game Boy Advance)
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 // Returns count of CPU cores device has as unsigned integer.
@@ -687,7 +687,7 @@ ICE_CPU_API char* ICE_CPU_CALLCONV ice_cpu_name(void) {
 
 #elif defined(ICE_CPU_NDS)
 ///////////////////////////////////////////////////////////////////////////////////////////
-// ICE_CPU_NDS IMPLEMENTATION    (Nintendo NDS)
+// ICE_CPU_NDS IMPLEMENTATION    (Nintendo DS)
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Returns count of CPU cores device has as unsigned integer.
 ICE_CPU_API unsigned int ICE_CPU_CALLCONV ice_cpu_cores_count(void) {
