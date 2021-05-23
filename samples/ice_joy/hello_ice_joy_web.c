@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 void update(void) {
     if (ice_joy_connected(0) == ICE_JOY_TRUE) {
         if (ice_joy_update(0) == ICE_JOY_TRUE) {
-            if (ice_joy_button_pressed(0, ICE_JOY_BUTTON_START) == ICE_JOY_TRUE) {
+            if (ice_joy_button_pressed(0, ICE_JOY_START) == ICE_JOY_TRUE) {
                 printf("START PRESSED! YAY!\n");
             }
         } else {

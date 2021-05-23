@@ -210,7 +210,7 @@ THE SOFTWARE.
 #if defined(ICE_JOY_PLATFORM_AUTODETECTED)
 #  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
 #    define ICE_JOY_MICROSOFT
-#  if defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android)
+#  elif defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android)
 #    define ICE_JOY_ANDROID
 #  elif defined(__APPLE__) || defined(__MACH__) || defined(__DARWIN__) || defined(__darwin__) || defined(__DARWIN) || defined(_DARWIN)
 #    define ICE_JOY_APPLE
@@ -4291,23 +4291,23 @@ ICE_JOY_API ice_joy_vec2 ICE_JOY_CALLCONV ice_joy_analog_movement(ice_joy_player
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_hat_pressed(ice_joy_player index, ice_joy_hat hat) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         if (hat == ICE_JOY_HAT_CENTERED) {
-            return (!(ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_UP) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_DOWN) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_LEFT) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_RIGHT) == ICE_JOY_TRUE)) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+            return (!(ice_joy_button_down(index, ICE_JOY_UP) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_DOWN) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_LEFT) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_RIGHT) == ICE_JOY_TRUE)) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
         } else if (hat == ICE_JOY_HAT_UP) {
-            return ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_UP);
+            return ice_joy_button_down(index, ICE_JOY_UP);
         } else if (hat == ICE_JOY_HAT_DOWN) {
-            return ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_DOWN);
+            return ice_joy_button_down(index, ICE_JOY_DOWN);
         } else if (hat == ICE_JOY_HAT_LEFT) {
-            return ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_LEFT);
+            return ice_joy_button_down(index, ICE_JOY_LEFT);
         } else if (hat == ICE_JOY_HAT_RIGHT) {
-            return ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_RIGHT);
+            return ice_joy_button_down(index, ICE_JOY_RIGHT);
         } else if (hat == ICE_JOY_HAT_UP_LEFT) {
-            return (ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_UP) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_LEFT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+            return (ice_joy_button_down(index, ICE_JOY_UP) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_LEFT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
         } else if (hat == ICE_JOY_HAT_UP_RIGHT) {
-            return (ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_UP) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_RIGHT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+            return (ice_joy_button_down(index, ICE_JOY_UP) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_RIGHT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
         } else if (hat == ICE_JOY_HAT_DOWN_LEFT) {
-            return (ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_DOWN) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_LEFT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+            return (ice_joy_button_down(index, ICE_JOY_DOWN) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_LEFT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
         } else if (hat == ICE_JOY_HAT_DOWN_RIGHT) {
-            return (ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_DOWN) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_BUTTON_DPAD_RIGHT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+            return (ice_joy_button_down(index, ICE_JOY_DOWN) == ICE_JOY_TRUE && ice_joy_button_down(index, ICE_JOY_RIGHT) == ICE_JOY_TRUE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
         }
     
         return ICE_JOY_FALSE;
