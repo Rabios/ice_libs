@@ -35,13 +35,70 @@ ice_libs is collection of Single-Header C libraries, Designed to introduce stuff
 | [ice_str.h](https://github.com/Rabios/ice_libs/raw/master/ice_str.h)                  | Cross-Platform Single-Header for working with strings            | Anywhere                                                                                                                                                | C             | 614           |
 | [ice_arr.h](https://github.com/Rabios/ice_libs/raw/master/ice_arr.h)                  | Cross-Platform Single-Header for working with numeric arrays     | Anywhere                                                                                                                                                | C             | 773           |
 | [ice_battery.h](https://github.com/Rabios/ice_libs/raw/master/ice_battery.h)          | Cross-Platform Single-Header for getting battery info            | Microsoft platforms, Unix, Unix-like, Web, Nintendo Switch, PSP, PSVita                                                                                 | C             | 996           |
-| [ice_cpu.h](https://github.com/Rabios/ice_libs/raw/master/ice_cpu.h)                  | Cross-Platform Single-Header for getting basic CPU info          | Microsoft platforms, Unix, Unix-like, Web, Nintendo Switch, PSP, PSVita, PS1, PS2, PS3, PS4, PS5, NDS, 3DS, HP-UX, IRIX, GameCube, Wii (And WiiU)       | C             | 719           |
+| [ice_cpu.h](https://github.com/Rabios/ice_libs/raw/master/ice_cpu.h)                  | Cross-Platform Single-Header for getting basic CPU info          | Microsoft platforms, Unix, Unix-like, Web, Nintendo Switch, PSP, PSVita, PS1, PS2, PS3, PS4, PS5, NDS, 3DS, HP-UX, IRIX, GameCube, Wii, WiiU, GBA   | C             | 719           |
 
 > More libs incoming, Get prepared for!
 
 > NOTE: Unix and Unix-like platforms means Linux, iOS, OSX, Haiku, BeOS, and Android.
 
 > For docs of ice_libs see [here!](https://github.com/Rabios/ice_libs/blob/master/docs/README.md)
+
+### License
+
+All libraries in ice_libs are "Dual-Licensed" (MIT and Public Domain), Choose the one you prefer!
+
+```
+------------------------------------------------------------------------
+LICENSE A - PUBLIC DOMAIN LICENSE
+------------------------------------------------------------------------
+This is free and unencumbered software released into the public domain.
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <http://unlicense.org/>
+```
+
+```
+------------------------------------------------------------------------
+LICENSE B - MIT LICENSE
+------------------------------------------------------------------------
+Copyright (c) 2021 - 2022 Rabia Alhaffar
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```
 
 ### Special Thanks
 
