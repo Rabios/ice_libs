@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 14/April/2021
 // ice_al.h
 // Single-Header Cross-Platform C OpenAL loader!
-// Updated: 23/April/2021
+// Updated: 23/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_al.h (FULL OVERVIEW)
@@ -16,6 +16,8 @@ Works anywhere OpenAL works!
 Windows             -> LoadLibrary, FreeLibrary, GetProcAddress
 Haiku/BeOS          -> load_add_on, unload_add_on, get_image_symbol
 Elsewhere           -> dlopen, dlsym, dlclose
+
+DEV NOTE: Android also has 3rd support, Check out this: https://github.com/AerialX/openal-soft-android
 
 [3] USAGE:
 Define ICE_AL_IMPL then include ice_al.h in your C/C++ code!
@@ -473,16 +475,16 @@ ice_al_bool ice_al_close(void);
 ice_al_bool ice_al_init(void);
 
 #if defined(_WIN32) || defined(WIN32)
-const char * oal_libname = "OpenAL32.dll";
+const char* oal_libname = "OpenAL32.dll";
 
 #elif defined(_WIN64) || defined(WIN64)
-const char * oal_libname = "OpenAL32.dll";
+const char* oal_libname = "OpenAL32.dll";
 
 #elif defined(__APPLE__) || defined(__MACH__) || defined(__DARWIN__) || defined(__darwin__) || defined(__DARWIN) || defined(_DARWIN)
-const char * oal_libname = "libAL.dylib";
+const char* oal_libname = "libopenal.dylib";
 
 #else
-const char * oal_libname = "libAL.so";
+const char* oal_libname = "libopenal.so";
 
 #endif
 

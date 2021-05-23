@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 11/April/2021
 // ice_clipboard.h
 // Single-Header Cross-Platform Clipboard library written in C!
-// Updated: 25/April/2021
+// Updated: 23/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_clipboard.h (FULL OVERVIEW)
@@ -169,7 +169,7 @@ THE SOFTWARE.
 #    endif
 #  elif (defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU)) || (defined(__BeOS) || defined(__BEOS__) || defined(_BEOS))
 #    define ICE_CLIPBOARD_BEOS
-#  elif defined(__linux__) || defined(__LINUX__) || defined(LINUX) || defined(__LINUX) || defined(__linux) || defined(linux) || defined(BSD) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__DragonFly__) && !(defined(__ANDROID__) || defined(ANDROID) || defined(__ANDROID) || defined(__android))
+#  elif defined(__linux__) || defined(__LINUX__) || defined(LINUX) || defined(__LINUX) || defined(__linux) || defined(linux) || defined(BSD) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__DragonFly__) && !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 #    define ICE_CLIPBOARD_LINUX
 #  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
 #    if defined(WINAPI_FAMILY_SYSTEM) || defined(WINAPI_PARTITION_APP)

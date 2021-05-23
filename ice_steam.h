@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 4/April/2021
 // ice_steam.h
 // Single-Header Cross-Platform C library for working with Steamworks API!
-// Updated: 23/April/2021
+// Updated: 23/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_steam.h (FULL OVERVIEW)
@@ -3975,7 +3975,9 @@ const char * steamworks_libname = "steam_api64.dll";
 const char * steamworks_libname = "libsteam_api.dylib";
 
 #else
+#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 const char * steamworks_libname = "libsteam_api.so";
+#endif
 
 #endif
 
@@ -3996,8 +3998,12 @@ const char * steamworks_libname = "libsteam_api.so";
 #  include <image.h>
 #  define ICE_STEAM_PLATFORM_BEOS
 #else
-#  include <dlfcn.h>
-#  define ICE_STEAM_PLATFORM_UNIX
+#  if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
+#    include <dlfcn.h>
+#    define ICE_STEAM_PLATFORM_UNIX
+#  else
+#    error "Steamworks SDK does not support Android yet! :("
+#  endif
 #endif
 
 void* ice_steam_load(void) {
@@ -4008,8 +4014,9 @@ return (HMODULE)LoadLibraryA(steamworks_libname);
 return (image_id)load_add_on(steamworks_libname);
 
 #elif defined(ICE_STEAM_PLATFORM_UNIX)
+#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 return dlopen(steamworks_libname, RTLD_LAZY | RTLD_GLOBAL);
-
+#endif
 #endif
 }
 
@@ -4025,8 +4032,9 @@ if (get_image_symbol((image_id)steam_lib, name, B_SYMBOL_TYPE_ANY, &addr) == B_O
 }
 
 #elif defined(ICE_STEAM_PLATFORM_UNIX)
+#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 return dlsym(steam_lib, name);
-
+#endif
 #endif
 }
 
@@ -4038,8 +4046,9 @@ return (FreeLibrary((HMODULE)steam_lib) == TRUE) ? ICE_STEAM_TRUE : ICE_STEAM_FA
 return (unload_add_on((image_id)steam_lib) == B_OK) ? ICE_STEAM_TRUE : ICE_STEAM_FALSE;
 
 #elif defined(ICE_STEAM_PLATFORM_UNIX)
+#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 return (dlclose(steam_lib) == 0) ? ICE_STEAM_TRUE : ICE_STEAM_FALSE;
-
+#endif
 #else
 return ICE_STEAM_FALSE;
 
