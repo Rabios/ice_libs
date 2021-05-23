@@ -4,47 +4,58 @@
 
 ```c
 typedef enum {
-    ICE_JOY_TRUE    = 0,
-    ICE_JOY_FALSE   = -1,
+    ICE_JOY_TRUE  = 0,
+    ICE_JOY_FALSE = -1,
 } ice_joy_bool;
 
+// Analog to get X and Y axis from
 typedef enum {
     ICE_JOY_MOVE_ANALOG,
     ICE_JOY_CAMERA_ANALOG,
 } ice_joy_analog;
 
+// Joysticks
 typedef enum {
-    ICE_JOY_NONE,
-    ICE_JOY_A,
-    ICE_JOY_B,
-    ICE_JOY_X,
-    ICE_JOY_Y,
-    ICE_JOY_CROSS,
-    ICE_JOY_CIRCLE,
-    ICE_JOY_SQUARE,
-    ICE_JOY_TRIANGLE,
-    ICE_JOY_LB,
-    ICE_JOY_RB,
-    ICE_JOY_LT,
-    ICE_JOY_RT,
-    ICE_JOY_L1,
-    ICE_JOY_R1,
-    ICE_JOY_L2,
-    ICE_JOY_R2,
-    ICE_JOY_L3,
-    ICE_JOY_R3,
-    ICE_JOY_OPTIONS,
-    ICE_JOY_START,
-    ICE_JOY_BACK,
-    ICE_JOY_VIEW,
-    ICE_JOY_MENU,
-    ICE_JOY_SELECT,
-    ICE_JOY_UP,
-    ICE_JOY_DOWN,
-    ICE_JOY_LEFT,
-    ICE_JOY_RIGHT,
+    ICE_JOY_PLAYER1,
+    ICE_JOY_PLAYER2,
+    ICE_JOY_PLAYER3,
+    ICE_JOY_PLAYER4,
+} ice_joy_player;
+
+// Joystick buttons
+typedef enum {
+    ICE_JOY_NONE        = -1,
+    ICE_JOY_A           = 0,
+    ICE_JOY_B           = 1,
+    ICE_JOY_X           = 2,
+    ICE_JOY_Y           = 3,
+    ICE_JOY_CROSS       = 0,
+    ICE_JOY_CIRCLE      = 1,
+    ICE_JOY_SQUARE      = 2,
+    ICE_JOY_TRIANGLE    = 3,
+    ICE_JOY_LB          = 4,
+    ICE_JOY_RB          = 5,
+    ICE_JOY_LT          = 6,
+    ICE_JOY_RT          = 7,
+    ICE_JOY_L1          = 4,
+    ICE_JOY_R1          = 5,
+    ICE_JOY_L2          = 6,
+    ICE_JOY_R2          = 7,
+    ICE_JOY_OPTIONS     = 9,
+    ICE_JOY_START       = 9,
+    ICE_JOY_L3          = 10,
+    ICE_JOY_R3          = 11,
+    ICE_JOY_BACK        = 8,
+    ICE_JOY_VIEW        = 8,
+    ICE_JOY_MENU        = 9,
+    ICE_JOY_SELECT      = 8,
+    ICE_JOY_UP          = 12,
+    ICE_JOY_DOWN        = 13,
+    ICE_JOY_LEFT        = 14,
+    ICE_JOY_RIGHT       = 15,
 } ice_joy_button;
 
+// Joystick hats
 typedef enum {
     ICE_JOY_HAT_CENTERED,
     ICE_JOY_HAT_UP,
@@ -61,6 +72,7 @@ typedef enum {
 ### Structs
 
 ```c
+// Used by X and Y axis of Analog (Thumbstick)
 typedef struct ice_joy_vec2 {
     float x;
     float y;
@@ -72,37 +84,6 @@ typedef struct ice_joy_vec2 {
 ```c
 // Typedefs
 typedef char* ice_joy_str;
-
-// Buttons
-#define ICE_JOY_BUTTON_NONE
-#define ICE_JOY_BUTTON_A
-#define ICE_JOY_BUTTON_B
-#define ICE_JOY_BUTTON_X
-#define ICE_JOY_BUTTON_Y
-#define ICE_JOY_BUTTON_CROSS
-#define ICE_JOY_BUTTON_SQUARE
-#define ICE_JOY_BUTTON_CIRCLE
-#define ICE_JOY_BUTTON_TRIANGLE
-#define ICE_JOY_BUTTON_LB
-#define ICE_JOY_BUTTON_RB
-#define ICE_JOY_BUTTON_LT
-#define ICE_JOY_BUTTON_RT
-#define ICE_JOY_BUTTON_L1
-#define ICE_JOY_BUTTON_R1
-#define ICE_JOY_BUTTON_L2
-#define ICE_JOY_BUTTON_R2
-#define ICE_JOY_BUTTON_L3
-#define ICE_JOY_BUTTON_R3
-#define ICE_JOY_BUTTON_START
-#define ICE_JOY_BUTTON_BACK
-#define ICE_JOY_BUTTON_VIEW
-#define ICE_JOY_BUTTON_MENU
-#define ICE_JOY_BUTTON_SELECT
-#define ICE_JOY_BUTTON_OPTIONS
-#define ICE_JOY_BUTTON_DPAD_UP
-#define ICE_JOY_BUTTON_DPAD_DOWN
-#define ICE_JOY_BUTTON_DPAD_LEFT
-#define ICE_JOY_BUTTON_DPAD_RIGHT
 
 // Allow to use ice_joy functions as extern ones...
 #define ICE_JOY_EXTERN 
@@ -122,10 +103,34 @@ typedef char* ice_joy_str;
 // NOTE FOR MICROSOFT WINDOWS: Platform backend defined depending on project type!
 #define ICE_JOY_PLATFORM_AUTODETECTED
 
+// Platform definitions
+#define ICE_JOY_MICROSOFT       // Microsoft Platforms (Except Xbox Original 2004)
+#define ICE_JOY_APPLE           // Apple Platforms
+#define ICE_JOY_ANDROID         // Android
+#define ICE_JOY_LINUX           // Linux and Unix-Like (Except BSD)
+#define ICE_JOY_WEB             // Emscripten
+#define ICE_JOY_SWITCH          // Nintendo Switch
+#define ICE_JOY_WII             // Nintendo Wii, Nintendo WiiU
+#define ICE_JOY_GAMECUBE        // Nintendo GameCube
+#define ICE_JOY_3DS             // Nintendo 3DS
+#define ICE_JOY_NDS             // Nintendo DS
+#define ICE_JOY_PSP             // Sony PlayStation Portable
+#define ICE_JOY_PSVITA          // Sony PlayStation Vita
+#define ICE_JOY_PS1             // Sony PlayStation 1
+#define ICE_JOY_PS2             // Sony PlayStation 2
+#define ICE_JOY_PS3             // Sony PlayStation 3
+#define ICE_JOY_PS4             // Sony PlayStation 4
+#define ICE_JOY_BEOS            // BeOS and Haiku
+
 // In case you want to build DLL on Microsoft Windows!
 // Keep in mind you should set backend (But it's defined by default if not...)
 #define ICE_JOY_DLLEXPORT
 #define ICE_JOY_DLLIMPORT
+
+// Android helpers
+#define ICE_JOY_ANDROID_CUSTOM_INPUT_EVENT_HANDLERS                     // Allows ice_joy to call custom events via 2 definitions above
+#define ANDROID_CMD_HANDLE_FUNC     android_cmd_handling_func_name      // Once loop, ice_joy will call android_cmd_handling_func_name inside command event function
+#define ANDROID_INPUT_HANDLE_FUNC   android_input_handling_func_name    // Once loop, ice_joy will call android_input_handling_func_name inside input events function
 ```
 
 ### Functions
@@ -149,6 +154,6 @@ ice_joy_bool ice_joy_button_released(int ice_joy_index, int button);            
 
 // Analogs and Hats (Hats might be removed if not compatible...)
 ice_joy_vec2 ice_joy_analog_movement(int ice_joy_index, ice_joy_analog analog);    // Returns 2D vector position containing movement of analog from Joystick at index ice_joy_index.
-ice_joy_bool ice_joy_hat_pressed(int ice_joy_index, int hat);                     // Returns float which is movement of hat from Joystick at index ice_joy_index.
+ice_joy_bool ice_joy_hat_pressed(int ice_joy_index, int hat);                      // Returns ICE_JOY_TRUE if Hat is pressed or ICE_JOY_FALSE if not.
 ```
 
