@@ -6,23 +6,23 @@
 </div>
 <br>
 
-<!-- Collection of cross-platform single-header C libraries for doing a lot of stuff! (Still WIP) -->
-
 ### Brief
 
 ice_libs is collection of Single-Header C libraries, Designed to introduce stuff that sokol and some single-header libs didn't offered, In addition to more stuff offered by these libs.
 
+Since months, I (Rabia) was working on something called "fegame", Universal game framework that uses [rxi](https://github.com/rxi)'s [fe](https://github.com/rxi/fe) as scripting language that can run on all platforms as possible...
+However things didn't came with success and stuck with a lot of things so i decided to make `ice_libs` which you see right now, But in same time this born as standalone project away of "fegame" which stopped to work on this amazing thing! :)
+
 ### Goals
 
-1. Portability: Supports ANSI C and onwards!
-2. Cross-Platform: Runs on a lot of platform, Including Game Consoles.
-3. Customizable: You can build shared libs of any ice library by the way you want.
+1. Portability: ice libraries always trying to use ANSI C when possible, Except if in need to use C++ (Haiku, BeOS, UWP) or Objective-C (Apple).
+2. Cross-Platform: One of goals ice libraries provide is to be implemented on every platform if possible, Including Game Consoles.
+3. Customizable: ice libraries offers ability to use call conventions, Custom memory allocators, And a lot of things that makes it possible to use and build the libraries on every platform supported by ice libraries.
 4. Platform-Detectable: ice libraries can detect platform that program runs on, So you are not forced to define implementation platform and backend used.
-5. Controllable: Offers custom memory allocators, Custom calling conventions, And more...
-6. Bindings-Friendly: Designed to make bindings much easier!
-7. Easy to code.
-8. Optimizable.
-9. Easy to license: ice libraries allows you to choose between 2 licenses: Public Domain and MIT!
+5. Bindings-Friendly: Designed to make bindings much easier!
+6. Easy to code.
+7. Optimizable.
+8. Easy to license: ice libraries allows you to choose between 2 licenses: Public Domain and MIT!
 
 ### Libraries
 
@@ -109,7 +109,9 @@ THE SOFTWARE.
 
 ### Special Thanks
 
-1. [Eduardo Bart](https://github.com/edubart), [André L. Alvares](https://github.com/Andre-LA), and [Nicolas Sauzede](https://github.com/nsauzede) for encouraging me to work on this!
+1. [r-lyeh](https://github.com/r-lyeh), [Eduardo Bart](https://github.com/edubart), [André L. Alvares](https://github.com/Andre-LA), and [Nicolas Sauzede](https://github.com/nsauzede) for encouraging me to work on this!
 2. [Together C and C++ Discord Server](https://discord.gg/99A4kq4a) community, They are very amazing and helped me when got stuck.
-3. [Sean Barrett](https://github.com/nothings), [Andre Weissflog](https://github.com/floooh), and [Micha Mettke](https://github.com/vurtun) as i got inspiration from their libs to work on my own!
-4. Everyone including you!
+3. [Sean Barrett](https://github.com/nothings), [Dominik Madarász](https://github.com/zaklaus), [Andre Weissflog](https://github.com/floooh), and [Micha Mettke](https://github.com/vurtun) as i got inspiration from their libs to work on my own!
+4. [younlok](https://github.com/younlok) for logos.
+5. Also it worth mentioning [Amir Rajan](https://github.com/amirrajan) and [Ramon Santamaria](https://github.com/raysan5) for their help!
+6. Everyone including you!
