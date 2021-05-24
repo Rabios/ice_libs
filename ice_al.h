@@ -17,7 +17,7 @@ Windows             -> LoadLibrary, FreeLibrary, GetProcAddress
 Haiku/BeOS          -> load_add_on, unload_add_on, get_image_symbol
 Elsewhere           -> dlopen, dlsym, dlclose
 
-DEV NOTE: Android also has 3rd support, Check out this: https://github.com/AerialX/openal-soft-android
+DEV NOTE: Android also has 3rd party support out of box, Check out this: https://github.com/AerialX/openal-soft-android
 
 [3] USAGE:
 Define ICE_AL_IMPL then include ice_al.h in your C/C++ code!
