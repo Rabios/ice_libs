@@ -4,7 +4,7 @@
   <img src="img/icon1.png" width="256", height="256"><br><br>
   <p>Collection of Cross-Platform Single-Header C libraries for doing a lot of stuff! (Still WIP)</p>
 </div>
-<!--<br>-->
+<br>
 
 <!-- Collection of cross-platform single-header C libraries for doing a lot of stuff! (Still WIP) -->
 
