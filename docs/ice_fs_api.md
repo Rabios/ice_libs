@@ -12,11 +12,12 @@ typedef enum {
 ### Definitions
 
 ```c
-// Implements ice_ram source code, Works same as #pragma once
+// Implements ice_fs source code, Works same as #pragma once
 #define ICE_FS_IMPL
 
-// Allow to use ice_ram functions as extern ones...
-#define ICE_FS_EXTERN
+#define ICE_FS_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_FS_STATIC  // Makes functions of the library static with static keyword
+#define ICE_FS_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_FS_CALLCONV_VECTORCALL

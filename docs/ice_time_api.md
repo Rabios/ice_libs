@@ -43,8 +43,9 @@ typedef enum {
 // Implements ice_time source code, Works same as #pragma once
 #define ICE_TIME_IMPL
 
-// Allow to use ice_time functions as extern ones...
-#define ICE_TIME_EXTERN 
+#define ICE_TIME_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_TIME_STATIC  // Makes functions of the library static with static keyword
+#define ICE_TIME_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_TIME_CALLCONV_VECTORCALL

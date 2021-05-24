@@ -85,8 +85,9 @@ typedef struct ice_joy_vec2 {
 // Typedefs
 typedef char* ice_joy_str;
 
-// Allow to use ice_joy functions as extern ones...
-#define ICE_JOY_EXTERN 
+#define ICE_JOY_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_JOY_STATIC  // Makes functions of the library static with static keyword
+#define ICE_JOY_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_JOY_CALLCONV_VECTORCALL
@@ -100,7 +101,6 @@ typedef char* ice_joy_str;
 
 // If no platform defined, This definition will define itself
 // This definition sets platform depending on platform-specified C compiler definitions
-// NOTE FOR MICROSOFT WINDOWS: Platform backend defined depending on project type!
 #define ICE_JOY_PLATFORM_AUTODETECTED
 
 // Platform definitions

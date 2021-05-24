@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 14/April/2021
 // ice_battery.h
 // Single-Header Cross-Platform C library to get battery level and status...
-// Updated: 25/April/2021
+// Updated: 25/May/2021
 
 // Special thanks goes to Christopher Mitchell at https://cemetech.net for this code, Which Linux implementation built on top of.
 // https://www.cemetech.net/forum/viewtopic.php?t=3638
@@ -165,7 +165,7 @@ THE SOFTWARE.
 #    define ICE_BATTERY_BEOS
 #  elif defined(__linux__) || defined(__LINUX__) || defined(LINUX) || defined(__LINUX) || defined(__linux) || defined(linux) && !(defined(__ANDROID__) || defined(ANDROID) || defined(__ANDROID) || defined(__android))
 #    define ICE_BATTERY_LINUX
-#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #    if defined(WINAPI_FAMILY_SYSTEM) || defined(WINAPI_PARTITION_APP)
 #      define ICE_BATTERY_UWP
 #    else
@@ -181,31 +181,41 @@ THE SOFTWARE.
 #endif
 
 // Allow to use them as extern functions if desired!
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_BATTERY_EXTERN) && defined(ICE_BATTERY_STATIC))
+#  define ICE_BATTERY_EXTERN
+#endif
+
 #if defined(ICE_BATTERY_EXTERN)
-#  define ICE_BATTERY_EXTERNDEF extern
-#else
-#  define ICE_BATTERY_EXTERNDEF
+#  define ICE_BATTERY_APIDEF extern
+#elif defined(ICE_BATTERY_STATIC)
+#  define ICE_BATTERY_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_BATTERY_INLINE to enable inline functionality.
+#if defined(ICE_BATTERY_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_BATTERY_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_BATTERY_INLINEDEF inline
+#  endif
+#else
 #  define ICE_BATTERY_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_BATTERY_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_BATTERY_DLLEXPORT or ICE_BATTERY_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_BATTERY_MICROSOFT)
 #  if defined(ICE_BATTERY_DLLEXPORT)
-#    define ICE_BATTERY_API ICE_BATTERY_EXTERNDEF __declspec(dllexport) ICE_BATTERY_INLINEDEF
+#    define ICE_BATTERY_API __declspec(dllexport) ICE_BATTERY_INLINEDEF
 #  elif defined(ICE_BATTERY_DLLIMPORT)
-#    define ICE_BATTERY_API ICE_BATTERY_EXTERNDEF __declspec(dllimport) ICE_BATTERY_INLINEDEF
+#    define ICE_BATTERY_API __declspec(dllimport) ICE_BATTERY_INLINEDEF
 #  else
-#    define ICE_BATTERY_API ICE_BATTERY_EXTERNDEF static ICE_BATTERY_INLINEDEF
+#    define ICE_BATTERY_API ICE_BATTERY_APIDEF ICE_BATTERY_INLINEDEF
 #  endif
 #else
-#  define ICE_BATTERY_API ICE_BATTERY_EXTERNDEF static ICE_BATTERY_INLINEDEF
+#  define ICE_BATTERY_API ICE_BATTERY_APIDEF ICE_BATTERY_INLINEDEF
 #endif
 
 #ifdef ICE_BATTERY_UWP

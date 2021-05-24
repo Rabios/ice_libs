@@ -20,8 +20,9 @@ typedef void* ice_ffi_handle;
 // Implements ice_ffi source code, Works same as #pragma once
 #define ICE_FFI_IMPL
 
-// Allow to use ice_ffi functions as extern ones...
-#define ICE_FFI_EXTERN 
+#define ICE_FFI_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_FFI_STATIC  // Makes functions of the library static with static keyword
+#define ICE_FFI_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_FFI_CALLCONV_VECTORCALL

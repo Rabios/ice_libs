@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 11/April/2021
 // ice_clipboard.h
 // Single-Header Cross-Platform Clipboard library written in C!
-// Updated: 23/May/2021
+// Updated: 25/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_clipboard.h (FULL OVERVIEW)
@@ -171,7 +171,7 @@ THE SOFTWARE.
 #    define ICE_CLIPBOARD_BEOS
 #  elif defined(__linux__) || defined(__LINUX__) || defined(LINUX) || defined(__LINUX) || defined(__linux) || defined(linux) || defined(BSD) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__DragonFly__) && !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 #    define ICE_CLIPBOARD_LINUX
-#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #    if defined(WINAPI_FAMILY_SYSTEM) || defined(WINAPI_PARTITION_APP)
 #      define ICE_CLIPBOARD_UWP
 #    else
@@ -183,31 +183,41 @@ THE SOFTWARE.
 #endif
 
 // Allow to use them as extern functions if desired!
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_CLIPBOARD_EXTERN) && defined(ICE_CLIPBOARD_STATIC))
+#  define ICE_CLIPBOARD_EXTERN
+#endif
+
 #if defined(ICE_CLIPBOARD_EXTERN)
-#  define ICE_CLIPBOARD_EXTERNDEF extern
-#else
-#  define ICE_CLIPBOARD_EXTERNDEF
+#  define ICE_CLIPBOARD_APIDEF extern
+#elif defined(ICE_CLIPBOARD_STATIC)
+#  define ICE_CLIPBOARD_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_CLIPBOARD_INLINE to enable inline functionality.
+#if defined(ICE_CLIPBOARD_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_CLIPBOARD_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_CLIPBOARD_INLINEDEF inline
+#  endif
+#else
 #  define ICE_CLIPBOARD_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_CLIPBOARD_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_CLIPBOARD_DLLEXPORT or ICE_CLIPBOARD_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_CLIPBOARD_MICROSOFT)
 #  if defined(ICE_CLIPBOARD_DLLEXPORT)
-#    define ICE_CLIPBOARD_API ICE_CLIPBOARD_EXTERNDEF __declspec(dllexport) ICE_CLIPBOARD_INLINEDEF
+#    define ICE_CLIPBOARD_API __declspec(dllexport) ICE_CLIPBOARD_INLINEDEF
 #  elif defined(ICE_CLIPBOARD_DLLIMPORT)
-#    define ICE_CLIPBOARD_API ICE_CLIPBOARD_EXTERNDEF __declspec(dllimport) ICE_CLIPBOARD_INLINEDEF
+#    define ICE_CLIPBOARD_API __declspec(dllimport) ICE_CLIPBOARD_INLINEDEF
 #  else
-#    define ICE_CLIPBOARD_API ICE_CLIPBOARD_EXTERNDEF static ICE_CLIPBOARD_INLINEDEF
+#    define ICE_CLIPBOARD_API ICE_CLIPBOARD_APIDEF ICE_CLIPBOARD_INLINEDEF
 #  endif
 #else
-#  define ICE_CLIPBOARD_API ICE_CLIPBOARD_EXTERNDEF static ICE_CLIPBOARD_INLINEDEF
+#  define ICE_CLIPBOARD_API ICE_CLIPBOARD_APIDEF ICE_CLIPBOARD_INLINEDEF
 #endif
 
 // Haiku, And BeOS can't work with C as their APIs written in C++, They should be used with C++! :(
@@ -239,7 +249,7 @@ extern "C" {
 // ice_clipboard DEFINITIONS
 ///////////////////////////////////////////////////////////////////////////////////////////
 typedef enum {
-    ICE_CLIPBOARD_TRUE = 0,
+    ICE_CLIPBOARD_TRUE  = 0,
     ICE_CLIPBOARD_FALSE = -1,
 } ice_clipboard_bool;
 

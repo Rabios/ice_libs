@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 13/May/2021
 // ice_cpu.h
 // Single-Header Cross-Platform C library to get CPU info!
-// Updated: 15/May/2021
+// Updated: 25/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_cpu.h (FULL OVERVIEW)
@@ -188,7 +188,7 @@ THE SOFTWARE.
 #    define ICE_CPU_APPLE
 #  elif defined(__EMSCRIPTEN__) || defined(__EMSCRIPTEN) || defined(EMSCRIPTEN)
 #    define ICE_CPU_WEB
-#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #    define ICE_CPU_MICROSOFT
 #  elif defined(__GAMEBOY__) || defined(__gba__) || defined(__GBA__)
 #    define ICE_CPU_GAMEBOY
@@ -222,31 +222,41 @@ THE SOFTWARE.
 #endif
 
 // Allow to use them as extern functions if desired!
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_CPU_EXTERN) && defined(ICE_CPU_STATIC))
+#  define ICE_CPU_EXTERN
+#endif
+
 #if defined(ICE_CPU_EXTERN)
-#  define ICE_CPU_EXTERNDEF extern
-#else
-#  define ICE_CPU_EXTERNDEF
+#  define ICE_CPU_APIDEF extern
+#elif defined(ICE_CPU_STATIC)
+#  define ICE_CPU_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_CPU_INLINE to enable inline functionality.
+#if defined(ICE_AL_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_CPU_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_CPU_INLINEDEF inline
+#  endif
+#else
 #  define ICE_CPU_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_CPU_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_CPU_DLLEXPORT or ICE_CPU_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_CPU_MICROSOFT)
 #  if defined(ICE_CPU_DLLEXPORT)
-#    define ICE_CPU_API ICE_CPU_EXTERNDEF __declspec(dllexport) ICE_CPU_INLINEDEF
+#    define ICE_CPU_API __declspec(dllexport) ICE_CPU_INLINEDEF
 #  elif defined(ICE_CPU_DLLIMPORT)
-#    define ICE_CPU_API ICE_CPU_EXTERNDEF __declspec(dllimport) ICE_CPU_INLINEDEF
+#    define ICE_CPU_API __declspec(dllimport) ICE_CPU_INLINEDEF
 #  else
-#    define ICE_CPU_API ICE_CPU_EXTERNDEF static ICE_CPU_INLINEDEF
+#    define ICE_CPU_API ICE_CPU_APIDEF ICE_CPU_INLINEDEF
 #  endif
 #else
-#  define ICE_CPU_API ICE_CPU_EXTERNDEF static ICE_CPU_INLINEDEF
+#  define ICE_CPU_API ICE_CPU_APIDEF ICE_CPU_INLINEDEF
 #endif
 
 #if defined(__cplusplus)

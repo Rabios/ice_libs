@@ -6,8 +6,9 @@
 // Implements ice_easings source code, Works same as #pragma once
 #define ICE_EASINGS_IMPL
 
-// Allow to use ice_easings functions as extern ones...
-#define ICE_EASINGS_EXTERN 
+#define ICE_EASINGS_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_EASINGS_STATIC  // Makes functions of the library static with static keyword
+#define ICE_EASINGS_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_EASINGS_CALLCONV_VECTORCALL

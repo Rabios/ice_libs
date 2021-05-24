@@ -15,8 +15,9 @@ typedef enum {
 // Implements ice_str source code, Works same as #pragma once
 #define ICE_STR_IMPL
 
-// Allow to use ice_str functions as extern ones...
-#define ICE_STR_EXTERN 
+#define ICE_STR_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_STR_STATIC  // Makes functions of the library static with static keyword
+#define ICE_STR_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_STR_CALLCONV_VECTORCALL
@@ -45,25 +46,28 @@ typedef enum {
 ### Functions
 
 ```c
-int           ice_str_len(char* str);                                    // Returns length of string
-int           ice_str_arr_len(char** arr);                               // Returns length of array of strings
-char*         ice_str_sub(char* str, int from, int to);                  // Returns substring from index from -> index to
-char*         ice_str_strdup(char* str);                                 // Returns null terminated string
-char*         ice_str_concat(char* s1, char* s2);                        // Concats 2 strings and returns the results
-char*         ice_str_rep(char* str, int count);                         // Returns string repeated by times
-char*         ice_str_char(char* str, int index);                        // Returns char of string at index as null-terminated string
-ice_str_bool  ice_str_match(char* s1, char* s2);                         // Returns ICE_STR_TRUE if both 2 strings are same, Else returns ICE_STR_FALSE
-char*         ice_str_upper(char* str);                                  // Returns uppercased string
-char*         ice_str_lower(char* str);                                  // Returns lowercased string
-char*         ice_str_capitalize(char* str);                             // Returns capitalized string
-char**        ice_str_split(char* str, char delim);                      // Splits string into array of strings by delimiter
-char**        ice_str_splitlines(char* str);                             // Splits string into array of strings by new line character
-char*         ice_str_join(char** strs);                                 // Returns all strings joined from array
-char*         ice_str_join_with_delim(char** strs, char delim);          // Returns all strings joined from array with delimiter between each 2 strings joined
-ice_str_bool  ice_str_begin(char* s1, char* s2);                         // Returns ICE_STR_TRUE if string s1 begins with string s2, Else returns ICE_STR_FALSE
-ice_str_bool  ice_str_end(char* s1, char* s2);                           // Returns ICE_STR_TRUE if string s1 ends with string s2, Else returns ICE_STR_FALSE
-ice_str_bool  ice_str_end_char(char* str, char ch);                      // Returns ICE_STR_TRUE if string str ends with char ch, Else returns ICE_STR_FALSE
-char*         ice_str_rev(char* str);                                    // Returns string reversed
-void          ice_str_free(char* str);                                   // Frees string (equivalent to stdlib's free function)
-void          ice_str_arr_free(char** arr);                              // Frees array of strings
+// NOTE 1: All strings returned are NULL-terminated!
+// NOTE 2: Returned string allocated on heap, Consider free it with ice_str_free and then change value to NULL once you don't want to use the string.
+
+int          ice_str_len(char* str);                                // Returns length of string.
+int          ice_str_arr_len(char** arr);                           // Returns length of array of strings.
+char*        ice_str_sub(char* str, int from, int to);              // Returns substring from (from -> to) index.
+char*        ice_str_strdup(char* str);                             // Returns NULL-terminates string?
+char*        ice_str_concat(char* s1, char* s2);                    // Joins 2 strings in one and returns result.
+char*        ice_str_rep(char* str, int count);                     // Returns string repeated multiple times.
+char*        ice_str_char(char* str, int index);                    // Returns char at index as string.
+ice_str_bool ice_str_match(char* s1, char* s2);                     // Returns ICE_STR_TRUE if 2 strings are same or ICE_STR_FALSE if not.
+char*        ice_str_upper(char* str);                              // Returns uppercased string of str.
+char*        ice_str_lower(char* str);                              // Returns lowercased string of str.
+char*        ice_str_capitalize(char* str);                         // Returns capitalized string of str.
+char**       ice_str_split(char* str, char delim);                  // Split string into array by delimiter/separator (char) and return result.
+char**       ice_str_splitlines(char* str);                         // Split string into array by newline char and return the array.
+char*        ice_str_join(char** strs);                             // Joins strings from array into one string and returns it.
+char*        ice_str_join_with_delim(char** strs, char delim);      // Joins strings from array into one string and returns it.
+ice_str_bool ice_str_begin(char* s1, char* s2);                     // Returns ICE_STR_TRUE if string s1 starts with string s2 or ICE_STR_FALSE if not.
+ice_str_bool ice_str_end(char* s1, char* s2);                       // Returns ICE_STR_TRUE if string s1 ends with string s2 or ICE_STR_FALSE if not.
+ice_str_bool ice_str_end_char(char* str, char ch);                  // Returns ICE_STR_TRUE if string ends with character or ICE_STR_FALSE if not.
+char*        ice_str_rev(char* str);                                // Returns reversed string of str.
+void         ice_str_free(char* str);                               // Frees the string.
+void         ice_str_arr_free(char** arr);                          // Frees array of strings.
 ```

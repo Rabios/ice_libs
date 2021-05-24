@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 4/April/2021
 // ice_math.h
 // Single-Header Cross-Platform C library for working with Math!
-// Updated: 25/April/2021
+// Updated: 25/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_math.h (FULL OVERVIEW)
@@ -149,36 +149,46 @@ THE SOFTWARE.
 #endif
 
 // Detect Windows to allow building DLLs
-#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #  define ICE_MATH_MICROSOFT
 #endif
 
-// Allow to use them as extern functions if desired!
+// We can let our functions static instead of extern if desired.
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_MATH_EXTERN) && defined(ICE_MATH_STATIC))
+#  define ICE_MATH_EXTERN
+#endif
+
 #if defined(ICE_MATH_EXTERN)
-#  define ICE_MATH_EXTERNDEF extern
-#else
-#  define ICE_MATH_EXTERNDEF
+#  define ICE_MATH_APIDEF extern
+#elif defined(ICE_MATH_STATIC)
+#  define ICE_MATH_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_MATH_INLINE to enable inline functionality.
+#if defined(ICE_MATH_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_MATH_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_MATH_INLINEDEF inline
+#  endif
+#else
 #  define ICE_MATH_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_MATH_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_MATH_DLLEXPORT or ICE_MATH_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_MATH_MICROSOFT)
 #  if defined(ICE_MATH_DLLEXPORT)
-#    define ICE_MATH_API ICE_MATH_EXTERNDEF __declspec(dllexport) ICE_MATH_INLINEDEF
+#    define ICE_MATH_API __declspec(dllexport) ICE_MATH_INLINEDEF
 #  elif defined(ICE_MATH_DLLIMPORT)
-#    define ICE_MATH_API ICE_MATH_EXTERNDEF __declspec(dllimport) ICE_MATH_INLINEDEF
+#    define ICE_MATH_API __declspec(dllimport) ICE_MATH_INLINEDEF
 #  else
-#    define ICE_MATH_API ICE_MATH_EXTERNDEF static ICE_MATH_INLINEDEF
+#    define ICE_MATH_API ICE_MATH_APIDEF ICE_MATH_INLINEDEF
 #  endif
 #else
-#  define ICE_MATH_API ICE_MATH_EXTERNDEF static ICE_MATH_INLINEDEF
+#  define ICE_MATH_API ICE_MATH_APIDEF ICE_MATH_INLINEDEF
 #endif
 
 // Custom memory allocators
@@ -367,8 +377,8 @@ extern "C" {
 #define ICE_MATH_STATE_VECTOR_M         397         // changes to ICE_MATH_STATE_VECTOR_LENGTH also require changes to this
 
 typedef enum {
-    ICE_MATH_TRUE = 0,
-    ICE_MATH_FALSE = -1,
+    ICE_MATH_TRUE   = 0,
+    ICE_MATH_FALSE  = -1,
 } ice_math_bool;
 
 typedef struct ice_math_vec2 {

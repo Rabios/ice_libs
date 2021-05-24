@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 7/March/2021
 // ice_joy.h
 // Single-Header Cross-Platform Gamepad/Joystick input library written in C!
-// Updated: 24/May/2021
+// Updated: 25/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_joy.h (FULL OVERVIEW)
@@ -208,7 +208,7 @@ THE SOFTWARE.
 
 // ice_joy autodetection system (Huge but still worthy...)
 #if defined(ICE_JOY_PLATFORM_AUTODETECTED)
-#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #    define ICE_JOY_MICROSOFT
 #  elif defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android)
 #    define ICE_JOY_ANDROID
@@ -246,31 +246,41 @@ THE SOFTWARE.
 #endif
 
 // Allow to use them as extern functions if desired!
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_JOY_EXTERN) && defined(ICE_JOY_STATIC))
+#  define ICE_JOY_EXTERN
+#endif
+
 #if defined(ICE_JOY_EXTERN)
-#  define ICE_JOY_EXTERNDEF extern
-#else
-#  define ICE_JOY_EXTERNDEF
+#  define ICE_JOY_APIDEF extern
+#elif defined(ICE_JOY_STATIC)
+#  define ICE_JOY_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_JOY_INLINE to enable inline functionality.
+#if defined(ICE_JOY_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_JOY_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_JOY_INLINEDEF inline
+#  endif
+#else
 #  define ICE_JOY_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_JOY_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_JOY_DLLEXPORT or ICE_JOY_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_JOY_MICROSOFT)
 #  if defined(ICE_JOY_DLLEXPORT)
-#    define ICE_JOY_API ICE_JOY_EXTERNDEF __declspec(dllexport) ICE_JOY_INLINEDEF
+#    define ICE_JOY_API __declspec(dllexport) ICE_JOY_INLINEDEF
 #  elif defined(ICE_JOY_DLLIMPORT)
-#    define ICE_JOY_API ICE_JOY_EXTERNDEF __declspec(dllimport) ICE_JOY_INLINEDEF
+#    define ICE_JOY_API __declspec(dllimport) ICE_JOY_INLINEDEF
 #  else
-#    define ICE_JOY_API ICE_JOY_EXTERNDEF static ICE_JOY_INLINEDEF
+#    define ICE_JOY_API ICE_JOY_APIDEF ICE_JOY_INLINEDEF
 #  endif
 #else
-#  define ICE_JOY_API ICE_JOY_EXTERNDEF static ICE_JOY_INLINEDEF
+#  define ICE_JOY_API ICE_JOY_APIDEF ICE_JOY_INLINEDEF
 #endif
 
 // Haiku/BeOS can't work with C as the API written in C++, So we should use C++! :(
@@ -307,8 +317,8 @@ extern "C" {
 #endif
 
 typedef enum {
-    ICE_JOY_TRUE  = 0,
-    ICE_JOY_FALSE = -1,
+    ICE_JOY_TRUE    = 0,
+    ICE_JOY_FALSE   = -1,
 } ice_joy_bool;
 
 typedef enum {
@@ -388,7 +398,7 @@ ICE_JOY_API  int           ICE_JOY_CALLCONV  ice_joy_buttons_count(ice_joy_playe
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_close(void);                                                            // Closes ice_joy library, Returns ICE_JOY_TRUE on success and ICE_JOY_FALSE on failure.
 
 // Buttons
-ICE_JOY_API  int           ICE_JOY_CALLCONV  ice_joy_button_code(ice_joy_button button);                                     // Returns button value by button enum definition as integer.
+ICE_JOY_API  int           ICE_JOY_CALLCONV  ice_joy_button_code(ice_joy_button button);                                    // Returns button value by button enum definition as integer.
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_button_down(ice_joy_player index, ice_joy_button button);               // Returns ICE_JOY_TRUE if button from Joystick at index index is pressed, Else returns ICE_JOY_FALSE.
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_button_up(ice_joy_player index, ice_joy_button button);                 // Returns ICE_JOY_TRUE if button from Joystick at index index is pressed, Else returns ICE_JOY_FALSE.
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_button_pressed(ice_joy_player index, ice_joy_button button);            // Returns ICE_JOY_TRUE if button from Joystick at index index is pressed, Else returns ICE_JOY_FALSE.
@@ -1636,7 +1646,7 @@ ice_joy_bool android_app_get_input = ICE_JOY_FALSE;
 ice_joy_vec2 axes[2];
 
 // Trick to run from android_main
-extern int main(int argc, char **argv);
+extern int main(int argc, char *argv[]);
 
 #if defined(ICE_JOY_ANDROID_CUSTOM_INPUT_EVENT_HANDLERS)
 #  if defined(ANDROID_INPUT_HANDLE_FUNC)
@@ -1990,13 +2000,15 @@ ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_joysticks_count(void) {
 ICE_JOY_API ice_joy_str ICE_JOY_CALLCONV ice_joy_name(ice_joy_player index) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         EmscriptenGamepadEvent state;
+        static char name[64];
 
         if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
             return NULL;
         }
 
         if (emscripten_get_gamepad_status(index, &state) == EMSCRIPTEN_RESULT_SUCCESS) {
-            return state.id;
+            for (int i = 0; i < 64; i++) name[i] = state.id[i];
+            return name;
         }
     }
     
@@ -2753,8 +2765,8 @@ ICE_JOY_API ice_joy_vec2 ICE_JOY_CALLCONV ice_joy_analog_movement(ice_joy_player
 #define ICE_JOY_BUTTON_TRIANGLE         ICE_JOY_BUTTON_Y
 #define ICE_JOY_BUTTON_LB               BTN_TL
 #define ICE_JOY_BUTTON_RB               BTN_TR
-#define ICE_JOY_BUTTON_LT               BTL_TL2
-#define ICE_JOY_BUTTON_RT               BTL_TR2
+#define ICE_JOY_BUTTON_LT               BTN_TL2
+#define ICE_JOY_BUTTON_RT               BTN_TR2
 #define ICE_JOY_BUTTON_L1               BTN_TL
 #define ICE_JOY_BUTTON_R1               BTN_TR
 #define ICE_JOY_BUTTON_L2               BTN_TL2
@@ -2790,14 +2802,14 @@ typedef struct ice_joy_state {
 
 ice_joy_state ice_joy_states[ICE_JOY_JOYSTICKS];
 
-const char ice_joy_dev_names[ICE_JOY_JOYSTICKS][14] = {
+const char ice_joy_dev_names[ICE_JOY_JOYSTICKS][15] = {
     "/dev/input/js0",
     "/dev/input/js1",
     "/dev/input/js2",
     "/dev/input/js3",
 };
 
-const char ice_joy_dev_names_old[ICE_JOY_JOYSTICKS][8] = {
+const char ice_joy_dev_names_old[ICE_JOY_JOYSTICKS][9] = {
     "/dev/js0",
     "/dev/js1",
     "/dev/js2",
@@ -2832,7 +2844,7 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_connected(ice_joy_player index
         int axis_count = ice_joy_buttons_count(index);
     
         ice_joy_states[index].current.axis = (int*)calloc(axis_count, sizeof(int));
-        ice_joy_states[index].current.button = (char*)calloc(buttons_count, sizeof(char));
+        ice_joy_states[index].current.buttons = (char*)calloc(buttons_count, sizeof(char));
     
         fcntl(ice_joy_states[index].current.fd, F_SETFL, O_RDONLY | O_NONBLOCK);
         return ICE_JOY_TRUE;
@@ -2897,16 +2909,16 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_update(ice_joy_player index) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         ice_joy_states[index].previous = ice_joy_states[index].current;
     
-        ssize_t bytes = read(ice_joy_states[index].current.fd, ice_joy_states[index].current.event, sizeof(struct js_event));
+        ssize_t bytes = read(ice_joy_states[index].current.fd, &ice_joy_states[index].current.event, sizeof(struct js_event));
 
         if (bytes == sizeof(struct js_event)) {
-            switch (ice_joy_states[index].current.js.type & ~JS_EVENT_INIT) {
+            switch (ice_joy_states[index].current.event.type & ~JS_EVENT_INIT) {
                 case JS_EVENT_AXIS:
-                    ice_joy_states[index].current.axis[ice_joy_states[index].current.js.number] = ice_joy_states[index].current.js.value;
+                    ice_joy_states[index].current.axis[ice_joy_states[index].current.event.number] = ice_joy_states[index].current.event.value;
                     return ICE_JOY_TRUE;
                     break;
                 case JS_EVENT_BUTTON:
-                    ice_joy_states[index].current.buttons[ice_joy_states[index].current.js.number] = ice_joy_states[index].current.js.value;
+                    ice_joy_states[index].current.buttons[ice_joy_states[index].current.event.number] = ice_joy_states[index].current.event.value;
                     return ICE_JOY_TRUE;
                     break;
                 default:
@@ -2929,10 +2941,10 @@ ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_axis_count(ice_joy_player index) {
     
         if ((fd = open(ice_joy_dev_names[index], O_RDONLY)) == ICE_JOY_FALSE) {
             if ((fd = open(ice_joy_dev_names_old[index], O_RDONLY)) == ICE_JOY_FALSE) {
-                return NULL;
+                return 0;
             }
             
-            return NULL;
+            return 0;
         }
     
         ioctl(fd, JSIOCGAXES, &axis_count);
@@ -2952,10 +2964,10 @@ ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_buttons_count(ice_joy_player index) {
     
         if ((fd = open(ice_joy_dev_names[index], O_RDONLY | O_NONBLOCK)) == ICE_JOY_FALSE) {
             if ((fd = open(ice_joy_dev_names_old[index], O_RDONLY | O_NONBLOCK)) == ICE_JOY_FALSE) {
-                return NULL;
+                return 0;
             }
             
-            return NULL;
+            return 0;
         }
     
         ioctl(fd, JSIOCGBUTTONS, &buttons_count);
@@ -4318,6 +4330,8 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_hat_pressed(ice_joy_player ind
 
 // Returns button value by button enum definition as integer.
 ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_button_code(ice_joy_button button) {
+    if (button == ICE_JOY_NONE) return ICE_JOY_BUTTON_NONE;
+    
     int btns[16] = {
         ICE_JOY_BUTTON_A,
         ICE_JOY_BUTTON_B,

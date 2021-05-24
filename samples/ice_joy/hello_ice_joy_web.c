@@ -4,6 +4,7 @@
 #include "ice_joy.h"
 
 void update(void);
+int logname = 0;
 
 int main(int argc, char** argv) {
     if (ice_joy_init() != ICE_JOY_TRUE) {
@@ -20,9 +21,11 @@ int main(int argc, char** argv) {
 }
 
 void update(void) {
-    if (ice_joy_connected(0) == ICE_JOY_TRUE) {
-        if (ice_joy_update(0) == ICE_JOY_TRUE) {
-            if (ice_joy_button_pressed(0, ICE_JOY_START) == ICE_JOY_TRUE) {
+    if (ice_joy_connected(ICE_JOY_PLAYER1) == ICE_JOY_TRUE) {
+        if (ice_joy_update(ICE_JOY_PLAYER1) == ICE_JOY_TRUE) {
+            if (logname++ == 1) printf("JOYSTICK NAME: %s\n", ice_joy_name(ICE_JOY_PLAYER1));
+            
+            if (ice_joy_button_pressed(ICE_JOY_PLAYER1, ICE_JOY_START) == ICE_JOY_TRUE) {
                 printf("START PRESSED! YAY!\n");
             }
         } else {

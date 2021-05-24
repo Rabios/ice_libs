@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 26/March/2021
 // ice_ffi.h
 // Single-Header Cross-Platform C library for working with shared libs!
-// Updated: 23/April/2021
+// Updated: 25/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_ffi.h (FULL OVERVIEW)
@@ -156,7 +156,7 @@ THE SOFTWARE.
 
 // Platform detection
 #if defined(ICE_FFI_PLATFORM_AUTODETECTED)
-#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #    define ICE_FFI_MICROSOFT
 #  elif defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU) || defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
 #    define ICE_FFI_BEOS
@@ -166,31 +166,41 @@ THE SOFTWARE.
 #endif
 
 // Allow to use them as extern functions if desired!
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_FFI_EXTERN) && defined(ICE_FFI_STATIC))
+#  define ICE_FFI_EXTERN
+#endif
+
 #if defined(ICE_FFI_EXTERN)
-#  define ICE_FFI_EXTERNDEF extern
-#else
-#  define ICE_FFI_EXTERNDEF
+#  define ICE_FFI_APIDEF extern
+#elif defined(ICE_FFI_STATIC)
+#  define ICE_FFI_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_FFI_INLINE to enable inline functionality.
+#if defined(ICE_FFI_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_FFI_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_FFI_INLINEDEF inline
+#  endif
+#else
 #  define ICE_FFI_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_FFI_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_FFI_DLLEXPORT or ICE_FFI_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_FFI_MICROSOFT)
 #  if defined(ICE_FFI_DLLEXPORT)
-#    define ICE_FFI_API ICE_FFI_EXTERNDEF __declspec(dllexport) ICE_FFI_INLINEDEF
+#    define ICE_FFI_API __declspec(dllexport) ICE_FFI_INLINEDEF
 #  elif defined(ICE_FFI_DLLIMPORT)
-#    define ICE_FFI_API ICE_FFI_EXTERNDEF __declspec(dllimport) ICE_FFI_INLINEDEF
+#    define ICE_FFI_API __declspec(dllimport) ICE_FFI_INLINEDEF
 #  else
-#    define ICE_FFI_API ICE_FFI_EXTERNDEF static ICE_FFI_INLINEDEF
+#    define ICE_FFI_API ICE_FFI_APIDEF ICE_FFI_INLINEDEF
 #  endif
 #else
-#  define ICE_FFI_API ICE_FFI_EXTERNDEF static ICE_FFI_INLINEDEF
+#  define ICE_FFI_API ICE_FFI_APIDEF ICE_FFI_INLINEDEF
 #endif
 
 #if defined(__cplusplus)

@@ -71,8 +71,9 @@ typedef struct ice_math_mtrand {
 // Implements ice_math source code, Works same as #pragma once
 #define ICE_MATH_IMPL
 
-// Allow to use ice_math functions as extern ones...
-#define ICE_MATH_EXTERN 
+#define ICE_MATH_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_MATH_STATIC  // Makes functions of the library static with static keyword
+#define ICE_MATH_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_MATH_CALLCONV_VECTORCALL

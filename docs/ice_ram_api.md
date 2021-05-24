@@ -10,8 +10,9 @@ typedef unsigned long long int ice_ram_bytes;
 // Implements ice_ram source code, Works same as #pragma once
 #define ICE_RAM_IMPL
 
-// Allow to use ice_ram functions as extern ones...
-#define ICE_RAM_EXTERN
+#define ICE_RAM_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_RAM_STATIC  // Makes functions of the library static with static keyword
+#define ICE_RAM_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_RAM_CALLCONV_VECTORCALL

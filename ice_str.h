@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 19/April/2021
 // ice_str.h
 // Single-Header Cross-Platform C library for working with strings!
-// Updated: 25/April/2021
+// Updated: 25/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_str.h (FULL OVERVIEW)
@@ -143,37 +143,47 @@ THE SOFTWARE.
 
 // Platform detection
 #if !defined(ICE_STR_MICROSOFT)
-#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #     define ICE_STR_MICROSOFT
 #  endif
 #endif
 
 // Allow to use them as extern functions if desired!
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_STR_EXTERN) && defined(ICE_STR_STATIC))
+#  define ICE_STR_EXTERN
+#endif
+
 #if defined(ICE_STR_EXTERN)
-#  define ICE_STR_EXTERNDEF extern
-#else
-#  define ICE_STR_EXTERNDEF
+#  define ICE_STR_APIDEF extern
+#elif defined(ICE_STR_STATIC)
+#  define ICE_STR_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_STR_INLINE to enable inline functionality.
+#if defined(ICE_STR_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_STR_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_STR_INLINEDEF inline
+#  endif
+#else
 #  define ICE_STR_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_STR_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_STR_DLLEXPORT or ICE_STR_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_STR_MICROSOFT)
 #  if defined(ICE_STR_DLLEXPORT)
-#    define ICE_STR_API ICE_STR_EXTERNDEF __declspec(dllexport) ICE_STR_INLINEDEF
+#    define ICE_STR_API __declspec(dllexport) ICE_STR_INLINEDEF
 #  elif defined(ICE_STR_DLLIMPORT)
-#    define ICE_STR_API ICE_STR_EXTERNDEF __declspec(dllimport) ICE_STR_INLINEDEF
+#    define ICE_STR_API __declspec(dllimport) ICE_STR_INLINEDEF
 #  else
-#    define ICE_STR_API ICE_STR_EXTERNDEF static ICE_STR_INLINEDEF
+#    define ICE_STR_API ICE_STR_APIDEF ICE_STR_INLINEDEF
 #  endif
 #else
-#  define ICE_STR_API ICE_STR_EXTERNDEF static ICE_STR_INLINEDEF
+#  define ICE_STR_API ICE_STR_APIDEF ICE_STR_INLINEDEF
 #endif
 
 // Custom memory allocators
@@ -205,27 +215,31 @@ typedef enum {
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_str FUNCTIONS
 ///////////////////////////////////////////////////////////////////////////////////////////
-ICE_STR_API  int           ICE_STR_CALLCONV  ice_str_len(char* str);
-ICE_STR_API  int           ICE_STR_CALLCONV  ice_str_arr_len(char** arr);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_sub(char* str, int from, int to);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_strdup(char* str);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_concat(char* s1, char* s2);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_rep(char* str, int count);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_char(char* str, int index);
-ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_match(char* s1, char* s2);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_upper(char* str);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_lower(char* str);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_capitalize(char* str);
-ICE_STR_API  char**        ICE_STR_CALLCONV  ice_str_split(char* str, char delim);
-ICE_STR_API  char**        ICE_STR_CALLCONV  ice_str_splitlines(char* str);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_join(char** strs);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_join_with_delim(char** strs, char delim);
-ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_begin(char* s1, char* s2);
-ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_end(char* s1, char* s2);
-ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_end_char(char* str, char ch);
-ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_rev(char* str);
-ICE_STR_API  void          ICE_STR_CALLCONV  ice_str_free(char* str);
-ICE_STR_API  void          ICE_STR_CALLCONV  ice_str_arr_free(char** arr);
+
+// NOTE 1: All strings returned are NULL-terminated!
+// NOTE 2: Returned string allocated on heap, Consider free it with ice_str_free and then change value to NULL once you don't want to use the string.
+
+ICE_STR_API  int           ICE_STR_CALLCONV  ice_str_len(char* str);                                // Returns length of string.
+ICE_STR_API  int           ICE_STR_CALLCONV  ice_str_arr_len(char** arr);                           // Returns length of array of strings.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_sub(char* str, int from, int to);              // Returns substring from (from -> to) index.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_strdup(char* str);                             // Returns NULL-terminates string?
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_concat(char* s1, char* s2);                    // Joins 2 strings in one and returns result.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_rep(char* str, int count);                     // Returns string repeated multiple times.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_char(char* str, int index);                    // Returns char at index as string.
+ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_match(char* s1, char* s2);                     // Returns ICE_STR_TRUE if 2 strings are same or ICE_STR_FALSE if not.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_upper(char* str);                              // Returns uppercased string of str.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_lower(char* str);                              // Returns lowercased string of str.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_capitalize(char* str);                         // Returns capitalized string of str.
+ICE_STR_API  char**        ICE_STR_CALLCONV  ice_str_split(char* str, char delim);                  // Split string into array by delimiter/separator (char) and return result.
+ICE_STR_API  char**        ICE_STR_CALLCONV  ice_str_splitlines(char* str);                         // Split string into array by newline char and return the array.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_join(char** strs);                             // Joins strings from array into one string and returns it.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_join_with_delim(char** strs, char delim);      // Joins strings from array into one string and returns it.
+ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_begin(char* s1, char* s2);                     // Returns ICE_STR_TRUE if string s1 starts with string s2 or ICE_STR_FALSE if not.
+ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_end(char* s1, char* s2);                       // Returns ICE_STR_TRUE if string s1 ends with string s2 or ICE_STR_FALSE if not.
+ICE_STR_API  ice_str_bool  ICE_STR_CALLCONV  ice_str_end_char(char* str, char ch);                  // Returns ICE_STR_TRUE if string ends with character or ICE_STR_FALSE if not.
+ICE_STR_API  char*         ICE_STR_CALLCONV  ice_str_rev(char* str);                                // Returns reversed string of str.
+ICE_STR_API  void          ICE_STR_CALLCONV  ice_str_free(char* str);                               // Frees the string.
+ICE_STR_API  void          ICE_STR_CALLCONV  ice_str_arr_free(char** arr);                          // Frees array of strings.
 
 #if defined(__cplusplus)
 }
@@ -236,18 +250,21 @@ ICE_STR_API  void          ICE_STR_CALLCONV  ice_str_arr_free(char** arr);
 ///////////////////////////////////////////////////////////////////////////////////////////
 #if defined(ICE_STR_IMPL)
 
+// Returns length of string.
 ICE_STR_API int ICE_STR_CALLCONV ice_str_len(char* str) {
     int len = 0;
     while (str[len] != '\0') len++;
     return len;
 }
 
+// Returns length of array of strings.
 ICE_STR_API int ICE_STR_CALLCONV ice_str_arr_len(char** arr) {
     int arrlen = 0;
     while (arr[arrlen] != NULL) arrlen++;
     return arrlen;
 }
 
+// Returns substring from (from -> to) index.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(char* str, int from, int to) {
     char* res = (char*) ICE_STR_MALLOC((to - from) + 1 * sizeof(char));
     int count = 0;
@@ -261,6 +278,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(char* str, int from, int to) {
     return res;
 }
 
+// Returns NULL-terminates string?
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_strdup(char* str) {
     int len = ice_str_len(str);
     char* res = (char*) ICE_STR_MALLOC(len + 1 * sizeof(char));
@@ -273,6 +291,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_strdup(char* str) {
     return res;
 }
 
+// Joins 2 strings in one and returns result.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(char* s1, char* s2) {
     int len_str1 = ice_str_len(s1);
     int len_str2 = ice_str_len(s2);
@@ -290,6 +309,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(char* s1, char* s2) {
     return res;
 }
 
+// Returns string repeated multiple times.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(char* str, int count) {
     int lenstr = ice_str_len(str);
     char* res = (char*) ICE_STR_MALLOC((lenstr * count) + 1 * sizeof(char));
@@ -307,6 +327,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(char* str, int count) {
     return res;
 }
 
+// Returns char at index as string.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_char(char* str, int index) {
     char* c = (char*) ICE_STR_MALLOC(2 * sizeof(char));
     c[0] = str[index];
@@ -314,6 +335,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_char(char* str, int index) {
     return c;
 }
 
+// Returns ICE_STR_TRUE if 2 strings are same or ICE_STR_FALSE if not.
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_match(char* s1, char* s2) {
     int len_str1 = ice_str_len(s1);
     int len_str2 = ice_str_len(s2);
@@ -332,6 +354,7 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_match(char* s1, char* s2) {
     return (matches == len_str1) ? ICE_STR_TRUE : ICE_STR_FALSE;
 }
 
+// Returns uppercased string of str.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(char* str) {
     int lenstr = ice_str_len(str);
     char* res = (char*) ICE_STR_MALLOC(lenstr + 1 * sizeof(char));
@@ -370,6 +393,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(char* str) {
     return res;
 }
 
+// Returns lowercased string of str.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(char* str) {
     int lenstr = ice_str_len(str);
     char* res = (char*) ICE_STR_MALLOC(lenstr + 1 * sizeof(char));
@@ -408,6 +432,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(char* str) {
     return res;
 }
 
+// Returns capitalized string of str.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_capitalize(char* str) {
     int lenstr = ice_str_len(str);
     char* res = (char*) ICE_STR_MALLOC(lenstr + 1 * sizeof(char));
@@ -448,6 +473,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_capitalize(char* str) {
     return res;
 }
 
+// Split string into array by delimiter/separator (char) and return result.
 ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(char* str, char delim) {
     int arrlen = 0;
     int count = 0;
@@ -501,10 +527,12 @@ ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(char* str, char delim) {
     return res;
 }
 
+// Split string into array by newline char and return the array.
 ICE_STR_API char** ICE_STR_CALLCONV ice_str_splitlines(char* str) {
     return ice_str_split(str, '\n');
 }
 
+// Joins strings from array into one string and returns it.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(char** strs) {
     int arrlen = 0;
     int strs_size = 0;
@@ -532,6 +560,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(char** strs) {
     return res;
 }
 
+// Joins strings from array into one string and returns it.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_join_with_delim(char** strs, char delim) {
     int count = 0;
     int res_s = 0;
@@ -565,6 +594,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_join_with_delim(char** strs, char del
     return res;
 }
 
+// Returns ICE_STR_TRUE if string s1 starts with string s2 or ICE_STR_FALSE if not.
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begin(char* s1, char* s2) {
     int lenstr = ice_str_len(s2);
     char* sub = ice_str_sub(s1, 0, lenstr - 1);
@@ -572,6 +602,7 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begin(char* s1, char* s2) {
     return ice_str_match(sub, s2);
 }
 
+// Returns ICE_STR_TRUE if string s1 ends with string s2 or ICE_STR_FALSE if not.
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_end(char* s1, char* s2) {
     int lenstr1 = ice_str_len(s1);
     int lenstr2 = ice_str_len(s2);
@@ -580,11 +611,13 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_end(char* s1, char* s2) {
     return ice_str_match(sub, s2);
 }
 
+// Returns ICE_STR_TRUE if string ends with character or ICE_STR_FALSE if not.
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_end_char(char* str, char ch) {
     int lenstr = ice_str_len(str);
     return (str[lenstr - 1] == ch) ? ICE_STR_TRUE : ICE_STR_FALSE;
 }
 
+// Returns reversed string of str.
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(char* str) {
     int lenstr = ice_str_len(str);
     char* res = (char*) ICE_STR_MALLOC(lenstr * sizeof(char));
@@ -597,16 +630,21 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(char* str) {
     return res;
 }
 
+// Frees the string.
 ICE_STR_API void ICE_STR_CALLCONV ice_str_free(char* str) {
     ICE_STR_FREE(str);
+    str = NULL;
 }
 
+// Frees array of strings.
 ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char** arr) {
     for (int i = 0; i < ice_str_arr_len(arr); i++) {
         ICE_STR_FREE(arr[i]);
+        arr[i] = NULL;
     }
     
     ICE_STR_FREE(arr);
+    arr = NULL;
 }
 
 #endif  // ICE_STR_IMPL

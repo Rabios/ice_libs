@@ -15,8 +15,9 @@ typedef enum {
 // Implements ice_clipboard source code, Works same as #pragma once
 #define ICE_CLIPBOARD_IMPL
 
-// Allow to use ice_clipboard functions as extern ones...
-#define ICE_CLIPBOARD_EXTERN 
+#define ICE_CLIPBOARD_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_CLIPBOARD_STATIC  // Makes functions of the library static with static keyword
+#define ICE_CLIPBOARD_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_CLIPBOARD_CALLCONV_VECTORCALL

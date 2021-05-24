@@ -17,8 +17,9 @@ typedef enum {
 // Implements ice_cpu source code, Works same as #pragma once
 #define ICE_CPU_IMPL
 
-// Allow to use ice_cpu functions as extern ones...
-#define ICE_CPU_EXTERN 
+#define ICE_CPU_EXTERN  // Extern functions of the library with extern keyword (Enabled by default)
+#define ICE_CPU_STATIC  // Makes functions of the library static with static keyword
+#define ICE_CPU_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_CPU_CALLCONV_VECTORCALL

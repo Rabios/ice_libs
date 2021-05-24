@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 14/April/2021
 // ice_al.h
 // Single-Header Cross-Platform C OpenAL loader!
-// Updated: 23/May/2021
+// Updated: 24/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_al.h (FULL OVERVIEW)
@@ -93,36 +93,46 @@ Define ICE_AL_IMPL then include ice_al.h in your C/C++ code!
 #endif
 
 // Detect Windows to allow building DLLs
-#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(DURANGO)) && defined(_TITLE))
 #  define ICE_AL_MICROSOFT
 #endif
 
 // Allow to use them as extern functions if desired!
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_AL_EXTERN) && defined(ICE_AL_STATIC))
+#  define ICE_AL_EXTERN
+#endif
+
 #if defined(ICE_AL_EXTERN)
-#  define ICE_AL_EXTERNDEF extern
-#else
-#  define ICE_AL_EXTERNDEF
+#  define ICE_AL_APIDEF extern
+#elif defined(ICE_AL_STATIC)
+#  define ICE_AL_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_AL_INLINE to enable inline functionality.
+#if defined(ICE_AL_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_AL_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_AL_INLINEDEF inline
+#  endif
+#else
 #  define ICE_AL_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_AL_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_AL_DLLEXPORT or ICE_AL_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_AL_MICROSOFT)
 #  if defined(ICE_AL_DLLEXPORT)
-#    define ICE_AL_API ICE_AL_EXTERNDEF __declspec(dllexport) ICE_AL_INLINEDEF
+#    define ICE_AL_API __declspec(dllexport) ICE_AL_INLINEDEF
 #  elif defined(ICE_AL_DLLIMPORT)
-#    define ICE_AL_API ICE_AL_EXTERNDEF __declspec(dllimport) ICE_AL_INLINEDEF
+#    define ICE_AL_API __declspec(dllimport) ICE_AL_INLINEDEF
 #  else
-#    define ICE_AL_API ICE_AL_EXTERNDEF static ICE_AL_INLINEDEF
+#    define ICE_AL_API ICE_AL_APIDEF ICE_AL_INLINEDEF
 #  endif
 #else
-#  define ICE_AL_API ICE_AL_EXTERNDEF static ICE_AL_INLINEDEF
+#  define ICE_AL_API ICE_AL_APIDEF ICE_AL_INLINEDEF
 #endif
 
 #if defined(__cplusplus)
@@ -469,16 +479,19 @@ PFNALCCAPTURESTOP alcCaptureStop;
 PFNALCCAPTURESAMPLES alcCaptureSamples;
 
 void* oal_lib;
-void* ice_al_load(void);
-void* ice_al_proc(char* name);
-ice_al_bool ice_al_close(void);
-ice_al_bool ice_al_init(void);
+ICE_AL_API  void*        ICE_AL_CALLCONV  ice_al_load(void);
+ICE_AL_API  void*        ICE_AL_CALLCONV  ice_al_proc(char* name);
+ICE_AL_API  ice_al_bool  ICE_AL_CALLCONV  ice_al_close(void);
+ICE_AL_API  ice_al_bool  ICE_AL_CALLCONV  ice_al_init(void);
 
+#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #if defined(_WIN32) || defined(WIN32)
 const char* oal_libname = "OpenAL32.dll";
 
 #elif defined(_WIN64) || defined(WIN64)
 const char* oal_libname = "OpenAL32.dll";
+
+#endif
 
 #elif defined(__APPLE__) || defined(__MACH__) || defined(__DARWIN__) || defined(__darwin__) || defined(__DARWIN) || defined(_DARWIN)
 const char* oal_libname = "libopenal.dylib";
@@ -496,63 +509,62 @@ const char* oal_libname = "libopenal.so";
 // ice_al IMPLEMENTATION
 ///////////////////////////////////////////////////////////////////////////////////////////
 #if defined(ICE_AL_IMPL)
-#include <stdio.h>
 
 #if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
 #  include <windows.h>
-#  define ICE_AL_PLATFORM_WINDOWS
+#  define ICE_AL_MICROSOFT
 #elif defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU) || defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
 #  include <image.h>
-#  define ICE_AL_PLATFORM_BEOS
+#  define ICE_AL_BEOS
 #else
 #  include <dlfcn.h>
-#  define ICE_AL_PLATFORM_UNIX
+#  define ICE_AL_UNIX
 #endif
 
-void* ice_al_load(void) {
-#if defined(ICE_AL_PLATFORM_WINDOWS)
+ICE_AL_API void* ICE_AL_CALLCONV ice_al_load(void) {
+#if defined(ICE_AL_MICROSOFT)
 return (HMODULE)LoadLibraryA(steamworks_libname);
 
-#elif defined(ICE_AL_PLATFORM_BEOS)
+#elif defined(ICE_AL_BEOS)
 return (image_id)load_add_on(steamworks_libname);
 
-#elif defined(ICE_AL_PLATFORM_UNIX)
+#elif defined(ICE_AL_UNIX)
 return dlopen(steamworks_libname, RTLD_LAZY | RTLD_GLOBAL);
 
 #endif
 }
 
-void* ice_al_proc(char* name) {
-#if defined(ICE_AL_PLATFORM_WINDOWS)
+ICE_AL_API void* ICE_AL_CALLCONV ice_al_proc(char* name) {
+#if defined(ICE_AL_MICROSOFT)
 return GetProcAddress((HMODULE)steam_lib, name);
 
-#elif defined(ICE_AL_PLATFORM_BEOS)
+#elif defined(ICE_AL_BEOS)
 void* addr;
 
 if (get_image_symbol((image_id)steam_lib, name, B_SYMBOL_TYPE_ANY, &addr) == B_OK) {
     return addr;
 }
 
-#elif defined(ICE_AL_PLATFORM_UNIX)
+#elif defined(ICE_AL_UNIX)
 return dlsym(steam_lib, name);
 
 #endif
 }
 
-ice_al_bool ice_al_close(void) {
-#if defined(ICE_AL_PLATFORM_WINDOWS)
+ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_close(void) {
+#if defined(ICE_AL_MICROSOFT)
 return (FreeLibrary((HMODULE)steam_lib) == TRUE) ? ICE_AL_TRUE : ICE_AL_FALSE;
 
-#elif defined(ICE_AL_PLATFORM_BEOS)
+#elif defined(ICE_AL_BEOS)
 return (unload_add_on((image_id)steam_lib) == B_OK) ? ICE_AL_TRUE : ICE_AL_FALSE;
 
-#elif defined(ICE_AL_PLATFORM_UNIX)
+#elif defined(ICE_AL_UNIX)
 return (dlclose(steam_lib) == 0) ? ICE_AL_TRUE : ICE_AL_FALSE;
 
 #endif
 }
 
-ice_al_bool ice_oal_init(void) {
+ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_init(void) {
     oal_lib = ice_al_load();
     if (oal_lib == NULL) return ICE_AL_FALSE;
     

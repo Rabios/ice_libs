@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 18/April/2021
 // ice_ram.h
 // Single-Header Cross-Platform C library to get free and total RAM!
-// Updated: 25/April/2021
+// Updated: 25/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_ram.h (FULL OVERVIEW)
@@ -172,39 +172,49 @@ THE SOFTWARE.
 #    define ICE_RAM_UNIX
 #  elif defined(__linux__) || defined(__LINUX__) || defined(LINUX) || defined(__LINUX) || defined(__linux) || defined(linux) && !(defined(__ANDROID__) || defined(ANDROID) || defined(__ANDROID) || defined(__android))
 #    define ICE_RAM_UNIX
-#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #    define ICE_RAM_MICROSOFT
 #  elif defined(PSP) || defined(__PSP__) || defined(__psp__) || defined(__PSP) || defined(_PSP)
 #    define ICE_RAM_PSP
 #  endif
 #endif
 
-// Allow to use them as extern functions if desired!
+// We can let our functions static instead of extern if desired.
+// NOTE: extern functions cannot be static so we disable static keyword.
+#if !(defined(ICE_RAM_EXTERN) && defined(ICE_RAM_STATIC))
+#  define ICE_RAM_EXTERN
+#endif
+
 #if defined(ICE_RAM_EXTERN)
-#  define ICE_RAM_EXTERNDEF extern
-#else
-#  define ICE_RAM_EXTERNDEF
+#  define ICE_RAM_APIDEF extern
+#elif defined(ICE_RAM_STATIC)
+#  define ICE_RAM_APIDEF static
 #endif
 
 // If using ANSI C, Disable inline keyword usage so you can use library with ANSI C if possible!
-#if !defined(__STDC_VERSION__)
+// NOTE: Use ICE_RAM_INLINE to enable inline functionality.
+#if defined(ICE_RAM_INLINE)
+#  if !defined(__STDC_VERSION__)
+#    define ICE_RAM_INLINEDEF
+#  elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
+#    define ICE_RAM_INLINEDEF inline
+#  endif
+#else
 #  define ICE_RAM_INLINEDEF
-#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
-#  define ICE_RAM_INLINEDEF inline
 #endif
 
 // Allow to build DLL via ICE_RAM_DLLEXPORT or ICE_RAM_DLLIMPORT if desired!
-// Else, Just define API as static inlined C code!
+// Else, Just define API as extern C code!
 #if defined(ICE_RAM_MICROSOFT)
 #  if defined(ICE_RAM_DLLEXPORT)
-#    define ICE_RAM_API ICE_RAM_EXTERNDEF __declspec(dllexport) ICE_RAM_INLINEDEF
+#    define ICE_RAM_API __declspec(dllexport) ICE_RAM_INLINEDEF
 #  elif defined(ICE_RAM_DLLIMPORT)
-#    define ICE_RAM_API ICE_RAM_EXTERNDEF __declspec(dllimport) ICE_RAM_INLINEDEF
+#    define ICE_RAM_API __declspec(dllimport) ICE_RAM_INLINEDEF
 #  else
-#    define ICE_RAM_API ICE_RAM_EXTERNDEF static ICE_RAM_INLINEDEF
+#    define ICE_RAM_API ICE_RAM_APIDEF ICE_RAM_INLINEDEF
 #  endif
 #else
-#  define ICE_RAM_API ICE_RAM_EXTERNDEF static ICE_RAM_INLINEDEF
+#  define ICE_RAM_API ICE_RAM_APIDEF ICE_RAM_INLINEDEF
 #endif
 
 #if defined(__cplusplus)

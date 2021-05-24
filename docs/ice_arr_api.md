@@ -27,8 +27,9 @@ typedef struct ice_arr_array {
 // Implements ice_arr source code, Works same as #pragma once
 #define ICE_ARR_IMPL
 
-// Allow to use ice_arr functions as extern ones...
-#define ICE_ARR_EXTERN 
+#define ICE_ARR_EXTERN  // Extern functions of the library with extern keyword (Enabled by default) (Enabled by default)
+#define ICE_ARR_STATIC  // Makes functions of the library static with static keyword
+#define ICE_ARR_INLINE  // Inline functions of the library with inline keyword
 
 // Call conventions (You could define one of these to set compiler calling convention)
 #define ICE_ARR_CALLCONV_VECTORCALL
