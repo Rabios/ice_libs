@@ -14,6 +14,10 @@ Improved the form of the libraries.
 
 Fixed `ice_al.h` to run correctly on Linux platforms.
 
+### May 22, 2021
+
+Edited libs to disable MSVC warning of non-secure functions usage.
+
 ### May 21, 2021
 
 1. Fixed naming of GBA platform for `ice_cpu.h` library (Thanks to [Mahyar Koshkouei](https://github.com/deltabeard) for the fix)
