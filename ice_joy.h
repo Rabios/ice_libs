@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 7/March/2021
 // ice_joy.h
 // Single-Header Cross-Platform Gamepad/Joystick input library written in C!
-// Updated: 25/May/2021
+// Updated: 26/May/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_joy.h (FULL OVERVIEW)
@@ -2751,42 +2751,48 @@ ICE_JOY_API ice_joy_vec2 ICE_JOY_CALLCONV ice_joy_analog_movement(ice_joy_player
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
-#include <linux/joystick.h>
+
+#if defined(BSD) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__bsdi__) || defined(__DragonFly__)
+#  include <machine/joystick.h>
+#else
+#  include <linux/joystick.h>
+#endif
+
+#if (JS_VERSION < 0x20100)
+#  error "Your Linux does not support modern Joystick API :("
+#endif
 
 // Buttons definitions
 #define ICE_JOY_BUTTON_NONE             -1
-#define ICE_JOY_BUTTON_A                BTN_A
-#define ICE_JOY_BUTTON_B                BTN_B
-#define ICE_JOY_BUTTON_X                BTN_X
-#define ICE_JOY_BUTTON_Y                BTN_Y
+#define ICE_JOY_BUTTON_A                0
+#define ICE_JOY_BUTTON_B                1
+#define ICE_JOY_BUTTON_X                2
+#define ICE_JOY_BUTTON_Y                3
 #define ICE_JOY_BUTTON_CROSS            ICE_JOY_BUTTON_A
 #define ICE_JOY_BUTTON_CIRCLE           ICE_JOY_BUTTON_B
 #define ICE_JOY_BUTTON_SQUARE           ICE_JOY_BUTTON_X
 #define ICE_JOY_BUTTON_TRIANGLE         ICE_JOY_BUTTON_Y
-#define ICE_JOY_BUTTON_LB               BTN_TL
-#define ICE_JOY_BUTTON_RB               BTN_TR
-#define ICE_JOY_BUTTON_LT               BTN_TL2
-#define ICE_JOY_BUTTON_RT               BTN_TR2
-#define ICE_JOY_BUTTON_L1               BTN_TL
-#define ICE_JOY_BUTTON_R1               BTN_TR
-#define ICE_JOY_BUTTON_L2               BTN_TL2
-#define ICE_JOY_BUTTON_R2               BTN_TR2
-#define ICE_JOY_BUTTON_L3               BTN_THUMBL
-#define ICE_JOY_BUTTON_R3               BTN_THUMBR
-#define ICE_JOY_BUTTON_START            BTN_START
+#define ICE_JOY_BUTTON_LB               4
+#define ICE_JOY_BUTTON_RB               5
+#define ICE_JOY_BUTTON_LT               20
+#define ICE_JOY_BUTTON_RT               30
+#define ICE_JOY_BUTTON_L1               ICE_JOY_BUTTON_LB
+#define ICE_JOY_BUTTON_R1               ICE_JOY_BUTTON_RB
+#define ICE_JOY_BUTTON_L2               ICE_JOY_BUTTON_LT
+#define ICE_JOY_BUTTON_R2               ICE_JOY_BUTTON_RT
+#define ICE_JOY_BUTTON_L3               9
+#define ICE_JOY_BUTTON_R3               10
+#define ICE_JOY_BUTTON_START            7
 #define ICE_JOY_BUTTON_MENU             ICE_JOY_BUTTON_START
 #define ICE_JOY_BUTTON_OPTIONS          ICE_JOY_BUTTON_START
-#define ICE_JOY_BUTTON_SELECT           BTN_SELECT
+#define ICE_JOY_BUTTON_SELECT           6
 #define ICE_JOY_BUTTON_BACK             ICE_JOY_BUTTON_SELECT
 #define ICE_JOY_BUTTON_VIEW             ICE_JOY_BUTTON_SELECT
-#define ICE_JOY_BUTTON_DPAD_UP          BTN_DPAD_UP
-#define ICE_JOY_BUTTON_DPAD_DOWN        BTN_DPAD_DOWN
-#define ICE_JOY_BUTTON_DPAD_LEFT        BTN_DPAD_LEFT
-#define ICE_JOY_BUTTON_DPAD_RIGHT       BTN_DPAD_RIGHT
+#define ICE_JOY_BUTTON_DPAD_UP          40
+#define ICE_JOY_BUTTON_DPAD_DOWN        50
+#define ICE_JOY_BUTTON_DPAD_LEFT        60
+#define ICE_JOY_BUTTON_DPAD_RIGHT       70
 
-#if !(JS_VERSION >= 0x010000)
-#  error "ice_joy library requires Linux 2.2.x and above!"
-#else
 typedef struct ice_joy_joyinfo {
     int fd;
     int* axis;
@@ -2794,7 +2800,6 @@ typedef struct ice_joy_joyinfo {
     struct js_event event;
 } ice_joy_joyinfo;
 
-#endif
 typedef struct ice_joy_state {
     ice_joy_joyinfo previous;
     ice_joy_joyinfo current;
@@ -2827,13 +2832,53 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_init(void) {
     return ice_joy_open;
 }
 
+// [DEV] Checks if button is actually one of axis.
+// Applicates to: DPAD buttons, LT and RT
+ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_is_button_axis(int button) {
+    return ((button == 20) || (button == 30) || (button == 40) || (button == 50) || (button == 60) || (button == 70)) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+}
+
+// If button we check for is axis, Check if pressed!
+ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_axis_pressed(int a) {
+    if (a == ICE_JOY_BUTTON_LT) {
+        return (ice_joy_states[index].current.axis[2] == 32767) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+    } else if (a == ICE_JOY_BUTTON_RT) {
+        return (ice_joy_states[index].current.axis[5] == 32767) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+    } else if (a == ICE_JOY_BUTTON_DPAD_UP) {
+        return (ice_joy_states[index].current.axis[7] == -32767) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+    } else if (a == ICE_JOY_BUTTON_DPAD_DOWN) {
+        return (ice_joy_states[index].current.axis[7] == 32767) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+    } else if (a == ICE_JOY_BUTTON_DPAD_LEFT) {
+        return (ice_joy_states[index].current.axis[6] == -32767) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+    } else if (a == ICE_JOY_BUTTON_DPAD_RIGHT) {
+        return (ice_joy_states[index].current.axis[6] == 32767) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+    } else {
+        return ICE_JOY_FALSE;
+    }
+}
+
+// If button we check for is axis, Check if pressed!
+ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_axis_index(int a) {
+    if (a == ICE_JOY_BUTTON_LT) {
+        return 2;
+    } else if (a == ICE_JOY_BUTTON_RT) {
+        return 5;
+    } else if ((a == ICE_JOY_BUTTON_DPAD_UP) || (a == ICE_JOY_BUTTON_DPAD_DOWN)) {
+        return 7;
+    } else if ((a == ICE_JOY_BUTTON_DPAD_LEFT) || (a == ICE_JOY_BUTTON_DPAD_RIGHT)) {
+        return 6;
+    } else {
+        return -1;
+    }
+}
+
 // Returns ICE_JOY_TRUE if Joystick at index index is connected, Else returns ICE_JOY_FALSE.
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_connected(ice_joy_player index) {
     if (ice_joy_open == ICE_JOY_TRUE) {
-        ice_joy_states[index].current.fd = open(ice_joy_dev_names[index], O_RDONLY | O_NONBLOCK);
+        ice_joy_states[index].current.fd = open(ice_joy_dev_names[index], O_RDONLY);
 
         if (ice_joy_states[index].current.fd == ICE_JOY_FALSE) {
-            ice_joy_states[index].current.fd = open(ice_joy_dev_names_old[index], O_RDONLY | O_NONBLOCK);
+            ice_joy_states[index].current.fd = open(ice_joy_dev_names_old[index], O_RDONLY);
         
             if (ice_joy_states[index].current.fd == ICE_JOY_FALSE) {
                 return ICE_JOY_FALSE;
@@ -2846,7 +2891,7 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_connected(ice_joy_player index
         ice_joy_states[index].current.axis = (int*)calloc(axis_count, sizeof(int));
         ice_joy_states[index].current.buttons = (char*)calloc(buttons_count, sizeof(char));
     
-        fcntl(ice_joy_states[index].current.fd, F_SETFL, O_RDONLY | O_NONBLOCK);
+        fcntl(ice_joy_states[index].current.fd, F_SETFL, O_NONBLOCK);
         return ICE_JOY_TRUE;
     }
     
@@ -2915,17 +2960,14 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_update(ice_joy_player index) {
             switch (ice_joy_states[index].current.event.type & ~JS_EVENT_INIT) {
                 case JS_EVENT_AXIS:
                     ice_joy_states[index].current.axis[ice_joy_states[index].current.event.number] = ice_joy_states[index].current.event.value;
-                    return ICE_JOY_TRUE;
                     break;
                 case JS_EVENT_BUTTON:
                     ice_joy_states[index].current.buttons[ice_joy_states[index].current.event.number] = ice_joy_states[index].current.event.value;
-                    return ICE_JOY_TRUE;
                     break;
                 default:
-                    return ICE_JOY_TRUE;
                     break;
             }
-        
+            
             return ICE_JOY_TRUE;
         }
     }
@@ -2998,7 +3040,12 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_close(void) {
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_button_down(ice_joy_player index, ice_joy_button button) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         button = ice_joy_button_code(button);
-        return ((ice_joy_states[index].current.buttons[button] > 0)) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        
+        if (ice_joy_is_button_axis(button) == ICE_JOY_TRUE) {
+            return ice_joy_axis_pressed(button);
+        } else {
+            return (ice_joy_states[index].current.buttons[button]) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        }
     }
     
     return ICE_JOY_FALSE;
@@ -3008,7 +3055,12 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_button_down(ice_joy_player ind
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_button_up(ice_joy_player index, ice_joy_button button) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         button = ice_joy_button_code(button);
-        return (!(ice_joy_states[index].current.buttons[button] > 0)) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        
+        if (ice_joy_is_button_axis(button) == ICE_JOY_TRUE) {
+            return (ice_joy_axis_pressed(button) == ICE_JOY_FALSE) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        } else {
+            return (!ice_joy_states[index].current.buttons[button]) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        }
     }
     
     return ICE_JOY_FALSE;
@@ -3018,7 +3070,13 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_button_up(ice_joy_player index
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_button_pressed(ice_joy_player index, ice_joy_button button) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         button = ice_joy_button_code(button);
-        return ((ice_joy_states[index].current.buttons[button] > 0) && (ice_joy_states[index].current.buttons[button] != ice_joy_states[index].previous.buttons[button])) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        
+        if (ice_joy_is_button_axis(button) == ICE_JOY_TRUE) {
+            int axis_index = ice_joy_axis_index(button);
+            return (ice_joy_axis_pressed(button) == ICE_JOY_TRUE && (ice_joy_states[index].current.axis[button] != ice_joy_states[index].previous.axis[button])) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        } else {
+            return ((ice_joy_states[index].current.buttons[button]) && (ice_joy_states[index].current.buttons[button] != ice_joy_states[index].previous.buttons[button])) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        }
     }
     
     return ICE_JOY_FALSE;
@@ -3028,7 +3086,13 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_button_pressed(ice_joy_player 
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_button_released(ice_joy_player index, ice_joy_button button) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         button = ice_joy_button_code(button);
-        return (!(ice_joy_states[index].current.buttons[button] > 0) && (ice_joy_states[index].current.buttons[button] != ice_joy_states[index].previous.buttons[button])) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        
+        if (ice_joy_is_button_axis(button) == ICE_JOY_TRUE) {
+            int axis_index = ice_joy_axis_index(button);
+            return (ice_joy_axis_pressed(button) == ICE_JOY_FALSE && (ice_joy_states[index].current.axis[button] != ice_joy_states[index].previous.axis[button])) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        } else {
+            return ((!ice_joy_states[index].current.buttons[button]) && (ice_joy_states[index].current.buttons[button] != ice_joy_states[index].previous.buttons[button])) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+        }
     }
     
     return ICE_JOY_FALSE;
@@ -3040,13 +3104,13 @@ ICE_JOY_API ice_joy_vec2 ICE_JOY_CALLCONV ice_joy_analog_movement(ice_joy_player
     if (ice_joy_open == ICE_JOY_TRUE) {
         if (analog == ICE_JOY_MOVE_ANALOG) {
             return (ice_joy_vec2) {
-                (float) ice_joy_states[index].current.axis[0],
-                (float) ice_joy_states[index].current.axis[1],
+                (float) ice_joy_states[index].current.axis[3] / 32767,
+                (float) ice_joy_states[index].current.axis[4] / 32767,
             };
         } else if (analog == ICE_JOY_CAMERA_ANALOG) {
             return (ice_joy_vec2) {
-                (float) ice_joy_states[index].current.axis[2],
-                (float) ice_joy_states[index].current.axis[3],
+                (float) ice_joy_states[index].current.axis[0] / 32767,
+                (float) ice_joy_states[index].current.axis[1] / 32767,
             };
         }
     }
