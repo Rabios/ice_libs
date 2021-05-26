@@ -14,6 +14,8 @@ Since months, I (Rabia) was working on something called "fegame", Universal game
 
 However things didn't came with success and stuck with a lot of things so i decided to make `ice_libs` which you see right now, But in same time this born as standalone project away of "fegame" which stopped to work on this amazing thing! :)
 
+Oh and also, Come join us at discord from [here!](https://discord.gg/DruPBE5m2C)
+
 ### Goals
 
 1. Portability: ice libraries always trying to use ANSI C when possible, Except if in need to use C++ (Haiku, BeOS, UWP) or Objective-C (Apple).
