@@ -16,7 +16,7 @@ Fixed `ice_al.h` to run correctly on Linux platforms.
 
 ### May 21, 2021
 
-1. Fixed naming of GBA platform (Thanks to [Mahyar Koshkouei](https://github.com/deltabeard) for the fix)
+1. Fixed naming of GBA platform for `ice_cpu.h` library (Thanks to [Mahyar Koshkouei](https://github.com/deltabeard) for the fix)
 2. Added info about licensing.
 
 ### May 15, 2021
