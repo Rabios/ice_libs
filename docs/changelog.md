@@ -1,5 +1,9 @@
 # Changelog
 
+### May 27, 2021
+
+Added plan of ice_libs in "Projects" tab.
+
 ### May 26, 2021
 
 1. Added link to the official Discord server, Join us [here](https://discord.gg/DruPBE5m2C)
