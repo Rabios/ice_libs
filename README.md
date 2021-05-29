@@ -14,6 +14,8 @@ Since months, I (Rabia) was working on something called "fegame", Universal game
 
 However things didn't came with success and stuck with a lot of things so i decided to make `ice_libs` which you see right now, But in same time this born as standalone project away of "fegame" which stopped to work on this amazing thing! :)
 
+Oh and also, Come join us at discord from [here!](https://discord.gg/DruPBE5m2C)
+
 ### Goals
 
 1. Portability: ice libraries always trying to use ANSI C when possible, Except if in need to use C++ (Haiku, BeOS, UWP) or Objective-C (Apple).
@@ -43,7 +45,7 @@ However things didn't came with success and stuck with a lot of things so i deci
 | [ice_arr.h](https://github.com/Rabios/ice_libs/raw/master/ice_arr.h)                  | Cross-Platform Single-Header for working with numeric arrays     | Anywhere                                                                                                                                                | C             | 783           |
 | [ice_battery.h](https://github.com/Rabios/ice_libs/raw/master/ice_battery.h)          | Cross-Platform Single-Header for getting battery info            | Microsoft platforms, Unix, Unix-like, Web, Nintendo Switch, PSP, PSVita                                                                                 | C             | 1006          |
 | [ice_cpu.h](https://github.com/Rabios/ice_libs/raw/master/ice_cpu.h)                  | Cross-Platform Single-Header for getting basic CPU info          | Microsoft platforms, Unix, Unix-like, Web, Nintendo Switch, PSP, PSVita, PS1, PS2, PS3, PS4, PS5, NDS, 3DS, HP-UX, IRIX, GameCube, Wii, WiiU, GBA       | C             | 729           |
-| [ice_joy.h](https://github.com/Rabios/ice_libs/raw/master/ice_joy.h)                  | Cross-Platform Single-Header for Joystick input                  | Microsoft platforms, Unix-like (No BSD), Web, Nintendo Switch, PSP, PSVita, PS1, PS2, PS3, PS4, NDS, 3DS, GameCube, Wii, WiiU, Haiku, BeOS              | C, C++, Obj-C | 4359          |
+| [ice_joy.h](https://github.com/Rabios/ice_libs/raw/master/ice_joy.h)                  | Cross-Platform Single-Header for Joystick input                  | Microsoft platforms, Unix-like (No old BSD support), Web, Nintendo Switch, PSP, PSVita, PS1, PS2, PS3, PS4, NDS, 3DS, GameCube, Wii, WiiU, Haiku, BeOS              | C, C++, Obj-C | 4497          |
 
 > More libs incoming, Get prepared for!
 

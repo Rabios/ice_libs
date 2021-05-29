@@ -1,4 +1,4 @@
-# ice_libs Documentations
+# ice_libs Docs
 
 - [ice_clipboard.h Documentation](ice_clipboard_api.md)
 - [ice_easings.h Documentation](ice_easings_api.md)
@@ -13,3 +13,4 @@
 - [ice_str.h Documentation](ice_str_api.md)
 - [ice_arr.h Documentation](ice_arr_api.md)
 - [ice_cpu.h Documentation](ice_cpu_api.md)
+- [Changelog](changelog.md)
