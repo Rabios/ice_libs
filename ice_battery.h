@@ -218,6 +218,7 @@ THE SOFTWARE.
 #  define ICE_BATTERY_API ICE_BATTERY_APIDEF ICE_BATTERY_INLINEDEF
 #endif
 
+// UWP can't work with C as his API mostly written in C++, They should be used with C++! :(
 #ifdef ICE_BATTERY_UWP
 #  if !defined(__cplusplus)
 #    error "ice_battery's UWP implementation requires C++!"

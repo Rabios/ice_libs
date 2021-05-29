@@ -220,7 +220,7 @@ THE SOFTWARE.
 #  define ICE_CLIPBOARD_API ICE_CLIPBOARD_APIDEF ICE_CLIPBOARD_INLINEDEF
 #endif
 
-// Haiku, And BeOS can't work with C as their APIs written in C++, They should be used with C++! :(
+// UWP, Haiku, And BeOS can't work with C as their APIs mostly written in C++, They should be used with C++! :(
 #if (defined(ICE_JOY_UWP) || defined(ICE_JOY_BEOS))
 #  if !defined(__cplusplus)
 #    error "C++ required for UWP, Haiku, and BeOS platforms!"
