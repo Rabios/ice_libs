@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 14/April/2021
 // ice_battery.h
 // Single-Header Cross-Platform C library to get battery level and status...
-// Updated: 25/May/2021
+// Updated: 29/May/2021
 
 // Special thanks goes to Christopher Mitchell at https://cemetech.net for this code, Which Linux implementation built on top of.
 // https://www.cemetech.net/forum/viewtopic.php?t=3638
@@ -287,22 +287,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     return ICE_BATTERY_FALSE;
 }
 
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
     return ICE_BATTERY_TRUE;
 }
@@ -385,22 +369,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     return (res > 0) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
 
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
     (*env)->DeleteLocalRef(env, intent);
     return ICE_BATTERY_TRUE;
@@ -410,7 +378,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #include <math.h>
-    
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_init(void) {
     [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
@@ -423,22 +390,6 @@ ICE_BATTERY_API int ICE_BATTERY_CALLCONV ice_battery_level(void) {
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void) {
     return ([[UIDevice currentDevice] batteryState] == 2) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
@@ -486,22 +437,6 @@ ICE_BATTERY_API int ICE_BATTERY_CALLCONV ice_battery_level(void) {
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void) {
     return (CFDictionaryGetValue(psrc, CFSTR(kIOPSIsChargingKey)) == kCFBooleanTrue) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-   return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
@@ -620,22 +555,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     }
     
     return ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
@@ -774,22 +693,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     }
 }
 
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
     close(ice_battery_info_handle);
     close(ice_battery_state_handle);
@@ -817,22 +720,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     }
 }
 
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
     return ICE_BATTERY_TRUE;
 }
@@ -857,22 +744,6 @@ ICE_BATTERY_API int ICE_BATTERY_CALLCONV ice_battery_level(void) {
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void) {
     return (!(Battery.AggregateBattery.GetReport().Status == Windows.System.Power.BatteryStatus.Discharging)) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
@@ -909,22 +780,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     return (chtype > 0) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE; 
 }
 
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
     psmExit();
 }
@@ -942,22 +797,6 @@ ICE_BATTERY_API int ICE_BATTERY_CALLCONV ice_battery_level(void) {
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void) {
     return scePowerIsBatteryCharging() ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
-    return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_high(void) {
-    return (ice_battery_level() < 100 && ice_battery_level() >= 50) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void) {
-    return (ice_battery_level() < 50 && ice_battery_level() >= 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
-}
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
-    return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
@@ -979,6 +818,12 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     return (scePowerIsBatteryCharging()) ? ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
 
+ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
+    return ICE_BATTERY_TRUE;
+}
+
+#endif
+
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_full(void) {
     return (ice_battery_level() == 100) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
@@ -994,12 +839,6 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_mid(void
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_level_low(void) {
     return (ice_battery_level() < 25) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
 }
-
-ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
-    return ICE_BATTERY_TRUE;
-}
-
-#endif
 
 #endif  // ICE_BATTERY_IMPL
 #endif  // ICE_BATTERY_H
