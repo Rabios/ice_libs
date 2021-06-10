@@ -1,5 +1,9 @@
 # Changelog
 
+### June 10, 2021
+
+Added docs of `ice_al` and `ice_steam` so you can have idea how they works!
+
 ### May 27, 2021
 
 Added plan of ice_libs in "Projects" tab.

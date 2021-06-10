@@ -13,4 +13,6 @@
 - [ice_str.h Documentation](ice_str_api.md)
 - [ice_arr.h Documentation](ice_arr_api.md)
 - [ice_cpu.h Documentation](ice_cpu_api.md)
+- [ice_al.h Documentation](ice_al_api.md)
+- [ice_steam.h Documentation](ice_steam_api.md)
 - [Changelog](changelog.md)
