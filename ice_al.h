@@ -517,13 +517,13 @@ const char* oal_libname = "libopenal.so";
 
 ICE_AL_API void* ICE_AL_CALLCONV ice_al_load(void) {
 #if defined(ICE_AL_MICROSOFT)
-return (HMODULE)LoadLibraryA(steamworks_libname);
+return (HMODULE)LoadLibraryA(oal_libname);
 
 #elif defined(ICE_AL_BEOS)
-return (image_id)load_add_on(steamworks_libname);
+return (image_id)load_add_on(oal_libname);
 
 #elif defined(ICE_AL_UNIX)
-return dlopen(steamworks_libname, RTLD_LAZY | RTLD_GLOBAL);
+return dlopen(oal_libname, RTLD_LAZY | RTLD_GLOBAL);
 
 #endif
 }
