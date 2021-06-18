@@ -485,13 +485,7 @@ ICE_AL_API  ice_al_bool  ICE_AL_CALLCONV  ice_al_close(void);
 ICE_AL_API  ice_al_bool  ICE_AL_CALLCONV  ice_al_init(void);
 
 #if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
-#if defined(_WIN32) || defined(WIN32)
 const char* oal_libname = "OpenAL32.dll";
-
-#elif defined(_WIN64) || defined(WIN64)
-const char* oal_libname = "OpenAL32.dll";
-
-#endif
 
 #elif defined(__APPLE__) || defined(__MACH__) || defined(__DARWIN__) || defined(__darwin__) || defined(__DARWIN) || defined(_DARWIN)
 const char* oal_libname = "libopenal.dylib";
