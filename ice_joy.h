@@ -398,7 +398,7 @@ ICE_JOY_API  int           ICE_JOY_CALLCONV  ice_joy_buttons_count(ice_joy_playe
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_close(void);                                                            // Closes ice_joy library, Returns ICE_JOY_TRUE on success and ICE_JOY_FALSE on failure.
 
 // Buttons
-ICE_JOY_API  int           ICE_JOY_CALLCONV  ice_joy_button_code(ice_joy_button button);                                    // Returns button value by button enum definition as integer.
+ICE_JOY_API  int           ICE_JOY_CALLCONV  ice_joy_button_code(ice_joy_button button);                                     // Returns button value by button enum definition as integer.
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_button_down(ice_joy_player index, ice_joy_button button);               // Returns ICE_JOY_TRUE if button from Joystick at index index is pressed, Else returns ICE_JOY_FALSE.
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_button_up(ice_joy_player index, ice_joy_button button);                 // Returns ICE_JOY_TRUE if button from Joystick at index index is pressed, Else returns ICE_JOY_FALSE.
 ICE_JOY_API  ice_joy_bool  ICE_JOY_CALLCONV  ice_joy_button_pressed(ice_joy_player index, ice_joy_button button);            // Returns ICE_JOY_TRUE if button from Joystick at index index is pressed, Else returns ICE_JOY_FALSE.
