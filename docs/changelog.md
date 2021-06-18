@@ -1,5 +1,12 @@
 # Changelog
 
+### June 18, 2021
+
+1. Fixes for `ice_al` library!
+2. Added Nelua and Lua bindings for some ice libraries!
+
+> P.S: Don't worry i still work on `ice_libs` so enjoy!
+
 ### June 10, 2021
 
 Added docs of `ice_al` and `ice_steam` so you can have idea how they works!
