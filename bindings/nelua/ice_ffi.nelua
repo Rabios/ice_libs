@@ -1,0 +1,12 @@
+#[[
+  cdefine ICE_FFI_IMPL
+  cinclude "\"ice_ffi.h\""
+]]
+global ice_ffi_handle: type <cimport, nodecl, forwarddecl> = @record{}
+global ice_ffi_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_FFI_TRUE = 0,
+  ICE_FFI_FALSE = -1
+}
+global function ice_ffi_load_library(path: cstring): ice_ffi_handle <cimport, nodecl> end
+global function ice_ffi_unload_library(lib: ice_ffi_handle): ice_ffi_bool <cimport, nodecl> end
+global function ice_ffi_get_address(lib: ice_ffi_handle, proc_name: cstring): ice_ffi_handle <cimport, nodecl> end

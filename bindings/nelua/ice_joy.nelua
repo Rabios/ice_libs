@@ -1,0 +1,80 @@
+#[[
+  cdefine ICE_JOY_IMPL
+  cinclude "\"ice_joy.h\""
+]]
+global ice_joy_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_JOY_TRUE = 0,
+  ICE_JOY_FALSE = -1
+}
+global ice_joy_analog: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_JOY_MOVE_ANALOG = 0,
+  ICE_JOY_CAMERA_ANALOG = 1
+}
+global ice_joy_player: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_JOY_PLAYER1 = 0,
+  ICE_JOY_PLAYER2 = 1,
+  ICE_JOY_PLAYER3 = 2,
+  ICE_JOY_PLAYER4 = 3
+}
+global ice_joy_button: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_JOY_NONE        = -1,
+  ICE_JOY_A           = 0,
+  ICE_JOY_B           = 1,
+  ICE_JOY_X           = 2,
+  ICE_JOY_Y           = 3,
+  ICE_JOY_CROSS       = 0,
+  ICE_JOY_CIRCLE      = 1,
+  ICE_JOY_SQUARE      = 2,
+  ICE_JOY_TRIANGLE    = 3,
+  ICE_JOY_LB          = 4,
+  ICE_JOY_RB          = 5,
+  ICE_JOY_LT          = 6,
+  ICE_JOY_RT          = 7,
+  ICE_JOY_L1          = 4,
+  ICE_JOY_R1          = 5,
+  ICE_JOY_L2          = 6,
+  ICE_JOY_R2          = 7,
+  ICE_JOY_OPTIONS     = 9,
+  ICE_JOY_START       = 9,
+  ICE_JOY_L3          = 10,
+  ICE_JOY_R3          = 11,
+  ICE_JOY_BACK        = 8,
+  ICE_JOY_VIEW        = 8,
+  ICE_JOY_MENU        = 9,
+  ICE_JOY_SELECT      = 8,
+  ICE_JOY_UP          = 12,
+  ICE_JOY_DOWN        = 13,
+  ICE_JOY_LEFT        = 14,
+  ICE_JOY_RIGHT       = 15
+}
+global ice_joy_hat: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_JOY_HAT_CENTERED = 0,
+  ICE_JOY_HAT_UP = 1,
+  ICE_JOY_HAT_UP_RIGHT = 2,
+  ICE_JOY_HAT_RIGHT = 3,
+  ICE_JOY_HAT_DOWN_RIGHT = 4,
+  ICE_JOY_HAT_DOWN = 5,
+  ICE_JOY_HAT_DOWN_LEFT = 6,
+  ICE_JOY_HAT_LEFT = 7,
+  ICE_JOY_HAT_UP_LEFT = 8
+}
+global ice_joy_vec2: type <cimport, nodecl> = @record {
+  x: float32,
+  y: float32
+}
+global ice_joy_str: type <cimport, nodecl> = @cstring
+global function ice_joy_init(): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_connected(index: ice_joy_player): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_joysticks_count(): cint <cimport, nodecl> end
+global function ice_joy_name(index: ice_joy_player): cstring <cimport, nodecl> end
+global function ice_joy_update(index: ice_joy_player): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_axis_count(index: ice_joy_player): cint <cimport, nodecl> end
+global function ice_joy_buttons_count(index: ice_joy_player): cint <cimport, nodecl> end
+global function ice_joy_close(): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_button_code(button: ice_joy_button): cint <cimport, nodecl> end
+global function ice_joy_button_down(index: ice_joy_player, button: ice_joy_button): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_button_up(index: ice_joy_player, button: ice_joy_button): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_button_pressed(index: ice_joy_player, button: ice_joy_button): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_button_released(index: ice_joy_player, button: ice_joy_button): ice_joy_bool <cimport, nodecl> end
+global function ice_joy_analog_movement(index: ice_joy_player, analog: ice_joy_analog): ice_joy_vec2 <cimport, nodecl> end
+global function ice_joy_hat_pressed(index: ice_joy_player, hat: ice_joy_hat): ice_joy_bool <cimport, nodecl> end

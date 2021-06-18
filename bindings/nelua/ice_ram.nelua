@@ -1,0 +1,7 @@
+#[[
+  cdefine "ICE_RAM_IMPL"
+  cinclude "\"ice_ram.h\""
+]]
+global ice_ram_bytes: type <cimport, nodecl> = @culonglong
+global function ice_ram_total(): ice_ram_bytes <cimport, nodecl> end
+global function ice_ram_free(): ice_ram_bytes <cimport, nodecl> end
