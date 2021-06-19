@@ -1795,10 +1795,14 @@ ICE_JOY_API ice_joy_str ICE_JOY_CALLCONV ice_joy_name(ice_joy_player index) {
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_update(ice_joy_player index) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         if ((poll_res = ALooper_pollAll(android_app_get_input, NULL, &poll_events, (void**)&source)) >= 0) {
-            if (source != NULL) source->process(app, source);
-
+            if (source != NULL) {
+                source->process(app, source);
+                return ICE_JOY_TRUE;
+            }
+            
             if (app->destroyRequested) {
                 android_app_get_input = ICE_JOY_FALSE; // Don't close window but don't trigger input anymore!
+                return ICE_JOY_FALSE;
             }
         }
     }
