@@ -1,5 +1,10 @@
 # Changelog
 
+### June 19, 2021
+
+1. Improved web support!
+2. Some notable fixes for Android in `ice_joy` library!
+
 ### June 18, 2021
 
 1. Fixes for `ice_al` library!

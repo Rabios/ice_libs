@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 4/April/2021
 // ice_steam.h
 // Single-Header Cross-Platform C library for working with Steamworks API!
-// Updated: 25/May/2021
+// Updated: 19/June/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_steam.h (FULL OVERVIEW)
@@ -117,9 +117,25 @@ Define ICE_STEAM_IMPL then include ice_steam.h in your C/C++ code!
 #  define ICE_STEAM_INLINEDEF
 #endif
 
-// Detect Windows to allow building DLLs
-#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
-#  define ICE_STEAM_MICROSOFT
+// Autodetect platform if not defined!
+// If no platform defined, This definition will define itself.
+#if !defined(ICE_STEAM_MICROSOFT) && !defined(ICE_STEAM_BEOS) && !defined(ICE_STEAM_UNIX)
+#  define ICE_STEAM_PLATFORM_AUTODETECTED
+#endif
+
+// ice_steam autodetection system (Huge but still worthy...)
+#if defined(ICE_STEAM_PLATFORM_AUTODETECTED)
+#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
+#    define ICE_STEAM_MICROSOFT
+#  elif defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU) || defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
+#    define ICE_STEAM_BEOS
+#  else
+#    if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
+#      define ICE_STEAM_UNIX
+#    else
+#      error "Steamworks SDK does not support Android! :("
+#    endif
+#  endif
 #endif
 
 // Allow to build DLL via ICE_STEAM_DLLEXPORT or ICE_STEAM_DLLIMPORT if desired!
@@ -3988,10 +4004,8 @@ const char * steamworks_libname = "steam_api64.dll";
 const char * steamworks_libname = "libsteam_api.dylib";
 
 #else
-#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 const char * steamworks_libname = "libsteam_api.so";
 
-#endif
 #endif
 
 #if defined(__cplusplus)
@@ -4004,19 +4018,12 @@ const char * steamworks_libname = "libsteam_api.so";
 #if defined(ICE_STEAM_IMPL)
 #include <stdio.h>
 
-#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
+#if defined(ICE_STEAM_MICROSOFT)
 #  include <windows.h>
-#  define ICE_STEAM_MICROSOFT
-#elif defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU) || defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
+#elif defined(ICE_STEAM_BEOS)
 #  include <image.h>
-#  define ICE_STEAM_BEOS
-#else
-#  if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
-#    include <dlfcn.h>
-#    define ICE_STEAM_UNIX
-#  else
-#    error "Steamworks SDK does not support Android yet! :("
-#  endif
+#elif defined(ICE_STEAM_UNIX)
+#  include <dlfcn.h>
 #endif
 
 ICE_STEAM_API void* ICE_STEAM_CALLCONV ice_steam_load(void) {
@@ -4027,9 +4034,8 @@ return (HMODULE)LoadLibraryA(steamworks_libname);
 return (image_id)load_add_on(steamworks_libname);
 
 #elif defined(ICE_STEAM_UNIX)
-#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 return dlopen(steamworks_libname, RTLD_LAZY | RTLD_GLOBAL);
-#endif
+
 #endif
 }
 
@@ -4045,9 +4051,8 @@ if (get_image_symbol((image_id)steam_lib, name, B_SYMBOL_TYPE_ANY, &addr) == B_O
 }
 
 #elif defined(ICE_STEAM_UNIX)
-#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 return dlsym(steam_lib, name);
-#endif
+
 #endif
 }
 
@@ -4059,9 +4064,8 @@ return (FreeLibrary((HMODULE)steam_lib) == TRUE) ? ICE_STEAM_TRUE : ICE_STEAM_FA
 return (unload_add_on((image_id)steam_lib) == B_OK) ? ICE_STEAM_TRUE : ICE_STEAM_FALSE;
 
 #elif defined(ICE_STEAM_UNIX)
-#if !(defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android))
 return (dlclose(steam_lib) == 0) ? ICE_STEAM_TRUE : ICE_STEAM_FALSE;
-#endif
+
 #else
 return ICE_STEAM_FALSE;
 

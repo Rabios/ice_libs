@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 7/March/2021
 // ice_joy.h
 // Single-Header Cross-Platform Gamepad/Joystick input library written in C!
-// Updated: 26/May/2021
+// Updated: 19/June/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_joy.h (FULL OVERVIEW)
@@ -60,6 +60,10 @@ Add #define ICE_JOY_ANDROID_CUSTOM_INPUT_EVENT_HANDLERS then define 2 functions 
 #define ANDROID_INPUT_HANDLE_FUNC   android_input_handling_func_name  // Once loop, ice_joy will call it inside input events function
 
 NOTE: Include ice_joy.h after doing this step if you're on Android!
+
+[5] LINUX IMPLEMENTATION NOTES:
+
+If your use BSD, ice_joy supported if Linux kernel version >= 2.2.x
 */
 
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -202,7 +206,7 @@ THE SOFTWARE.
 
 // Autodetect platform if not defined!
 // If no platform defined, This definition will define itself.
-#if !defined(ICE_JOY_MICROSOFT) && !defined(ICE_JOY_LINUX) && !defined(ICE_JOY_BSD) && !defined(ICE_JOY_APPLE) && !defined(ICE_JOY_ANDROID) && !defined(ICE_JOY_WEB) && !defined(ICE_JOY_SWITCH) && !defined(ICE_JOY_3DS) && !defined(ICE_JOY_PSP) && !defined(ICE_JOY_PSVITA) && !defined(ICE_JOY_PS1) && !defined(ICE_JOY_PS2) && !defined(ICE_JOY_PS3) && !defined(ICE_JOY_PS4) && !defined(ICE_JOY_BEOS) && !defined(ICE_JOY_WII) && !defined(ICE_JOY_PSVITA) && !defined(ICE_JOY_GAMECUBE) && !defined(ICE_JOY_NDS)
+#if !defined(ICE_JOY_MICROSOFT) && !defined(ICE_JOY_LINUX) && !defined(ICE_JOY_APPLE) && !defined(ICE_JOY_ANDROID) && !defined(ICE_JOY_WEB) && !defined(ICE_JOY_SWITCH) && !defined(ICE_JOY_3DS) && !defined(ICE_JOY_PSP) && !defined(ICE_JOY_PSVITA) && !defined(ICE_JOY_PS1) && !defined(ICE_JOY_PS2) && !defined(ICE_JOY_PS3) && !defined(ICE_JOY_PS4) && !defined(ICE_JOY_BEOS) && !defined(ICE_JOY_WII) && !defined(ICE_JOY_PSVITA) && !defined(ICE_JOY_GAMECUBE) && !defined(ICE_JOY_NDS)
 #  define ICE_JOY_PLATFORM_AUTODETECTED
 #endif
 
@@ -1951,7 +1955,7 @@ ice_joy_state ice_joy_states[ICE_JOY_JOYSTICKS];
 // Initializes ice_joy library, Returns ICE_JOY_TRUE on success or ICE_JOY_FALSE on failure.
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_init(void) {
     if (ice_joy_open == ICE_JOY_FALSE) {
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             ice_joy_open = ICE_JOY_FALSE;
         }
         
@@ -1967,7 +1971,7 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_connected(ice_joy_player index
     if (ice_joy_open == ICE_JOY_TRUE) {
         EmscriptenGamepadEvent state;
     
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             return ICE_JOY_FALSE;
         }
     
@@ -1984,7 +1988,7 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_connected(ice_joy_player index
 // Returns count of current connected Joysticks as integer.
 ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_joysticks_count(void) {
     if (ice_joy_open == ICE_JOY_TRUE) {
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             return 0;
         }
 
@@ -2006,7 +2010,7 @@ ICE_JOY_API ice_joy_str ICE_JOY_CALLCONV ice_joy_name(ice_joy_player index) {
         EmscriptenGamepadEvent state;
         static char name[64];
 
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             return NULL;
         }
 
@@ -2024,7 +2028,7 @@ ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_update(ice_joy_player index) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         ice_joy_states[index].previous = ice_joy_states[index].current;
 
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             return ICE_JOY_FALSE;
         }
 
@@ -2043,7 +2047,7 @@ ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_axis_count(ice_joy_player index) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         EmscriptenGamepadEvent state;
 
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             return 0;
         }
 
@@ -2062,7 +2066,7 @@ ICE_JOY_API int ICE_JOY_CALLCONV ice_joy_buttons_count(ice_joy_player index) {
     if (ice_joy_open == ICE_JOY_TRUE) {
         EmscriptenGamepadEvent state;
 
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             return 0;
         }
 
@@ -2133,7 +2137,7 @@ ICE_JOY_API ice_joy_vec2 ICE_JOY_CALLCONV ice_joy_analog_movement(ice_joy_player
     if (ice_joy_open == ICE_JOY_TRUE) {
         EmscriptenGamepadEvent state;
 
-        if (emscripten_sample_gamepad_data() == EMSCRIPTEN_RESULT_NOT_SUPPORTED) {
+        if (emscripten_sample_gamepad_data() != EMSCRIPTEN_RESULT_SUCCESS) {
             return (ice_joy_vec2) { 0, 0 };
         }
 

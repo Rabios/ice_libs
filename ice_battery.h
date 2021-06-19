@@ -282,7 +282,7 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
     EMSCRIPTEN_RESULT res = emscripten_get_battery_status(&bat_ev);
     
     if (res == EMSCRIPTEN_RESULT_SUCCESS) {
-        return (bat_ev.charging == true) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
+        return (bat_ev.charging) ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
     }
     
     return ICE_BATTERY_FALSE;

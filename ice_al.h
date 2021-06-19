@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 14/April/2021
 // ice_al.h
 // Single-Header Cross-Platform C OpenAL loader!
-// Updated: 18/June/2021
+// Updated: 19/June/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_al.h (FULL OVERVIEW)
@@ -95,6 +95,23 @@ Define ICE_AL_IMPL then include ice_al.h in your C/C++ code!
 // Detect Windows to allow building DLLs
 #if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(DURANGO)) && defined(_TITLE))
 #  define ICE_AL_MICROSOFT
+#endif
+
+// Autodetect platform if not defined!
+// If no platform defined, This definition will define itself.
+#if !defined(ICE_AL_MICROSOFT) && !defined(ICE_AL_BEOS) && !defined(ICE_AL_UNIX)
+#  define ICE_AL_PLATFORM_AUTODETECTED
+#endif
+
+// ice_al autodetection system (Huge but still worthy...)
+#if defined(ICE_AL_PLATFORM_AUTODETECTED)
+#  if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
+#    define ICE_AL_MICROSOFT
+#  elif defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU) || defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
+#    define ICE_AL_BEOS
+#  else
+#    define ICE_AL_UNIX
+#  endif
 #endif
 
 // Allow to use them as extern functions if desired!
@@ -504,15 +521,12 @@ const char* oal_libname = "libopenal.so";
 ///////////////////////////////////////////////////////////////////////////////////////////
 #if defined(ICE_AL_IMPL)
 
-#if defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox)
+#if defined(ICE_AL_MICROSOFT)
 #  include <windows.h>
-#  define ICE_AL_MICROSOFT
-#elif defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU) || defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)
+#elif defined(ICE_AL_BEOS)
 #  include <image.h>
-#  define ICE_AL_BEOS
-#else
+#elif defined(ICE_AL_UNIX)
 #  include <dlfcn.h>
-#  define ICE_AL_UNIX
 #endif
 
 ICE_AL_API void* ICE_AL_CALLCONV ice_al_load(void) {
@@ -530,30 +544,30 @@ return dlopen(oal_libname, RTLD_LAZY | RTLD_GLOBAL);
 
 ICE_AL_API void* ICE_AL_CALLCONV ice_al_proc(char* name) {
 #if defined(ICE_AL_MICROSOFT)
-return GetProcAddress((HMODULE)steam_lib, name);
+return GetProcAddress((HMODULE)oal_lib, name);
 
 #elif defined(ICE_AL_BEOS)
 void* addr;
 
-if (get_image_symbol((image_id)steam_lib, name, B_SYMBOL_TYPE_ANY, &addr) == B_OK) {
+if (get_image_symbol((image_id)oal_lib, name, B_SYMBOL_TYPE_ANY, &addr) == B_OK) {
     return addr;
 }
 
 #elif defined(ICE_AL_UNIX)
-return dlsym(steam_lib, name);
+return dlsym(oal_lib, name);
 
 #endif
 }
 
 ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_close(void) {
 #if defined(ICE_AL_MICROSOFT)
-return (FreeLibrary((HMODULE)steam_lib) == TRUE) ? ICE_AL_TRUE : ICE_AL_FALSE;
+return (FreeLibrary((HMODULE)oal_lib) == TRUE) ? ICE_AL_TRUE : ICE_AL_FALSE;
 
 #elif defined(ICE_AL_BEOS)
-return (unload_add_on((image_id)steam_lib) == B_OK) ? ICE_AL_TRUE : ICE_AL_FALSE;
+return (unload_add_on((image_id)oal_lib) == B_OK) ? ICE_AL_TRUE : ICE_AL_FALSE;
 
 #elif defined(ICE_AL_UNIX)
-return (dlclose(steam_lib) == 0) ? ICE_AL_TRUE : ICE_AL_FALSE;
+return (dlclose(oal_lib) == 0) ? ICE_AL_TRUE : ICE_AL_FALSE;
 
 #endif
 }
