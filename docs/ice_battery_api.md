@@ -29,6 +29,7 @@ typedef enum {
 // Platforms could be defined (But not forced to...)
 #define ICE_BATTERY_MICROSOFT       // Microsoft platforms
 #define ICE_BATTERY_ANDROID         // Android (JNI)
+#define ICE_BATTERY_TIZEN           // Tizen
 #define ICE_BATTERY_IOS             // iOS
 #define ICE_BATTERY_OSX             // OSX
 #define ICE_BATTERY_UWP             // UWP

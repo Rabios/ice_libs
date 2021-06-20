@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 14/April/2021
 // ice_battery.h
 // Single-Header Cross-Platform C library to get battery level and status...
-// Updated: 29/May/2021
+// Updated: 20/June/2021
 
 // Special thanks goes to Christopher Mitchell at https://cemetech.net for this code, Which Linux implementation built on top of.
 // https://www.cemetech.net/forum/viewtopic.php?t=3638
@@ -25,7 +25,8 @@ Works on:
 8. UWP
 9. PSP
 10. PSVita
-11. Nintendo Switch.
+11. Nintendo Switch
+12. Tizen
 
 [2] USAGE:
 Define ICE_BATTERY_IMPL Then include ice_battery.h in your C/C++ code!
@@ -153,6 +154,8 @@ THE SOFTWARE.
 #if defined(ICE_BATTERY_PLATFORM_AUTODETECTED)
 #  if defined(__ANDROID__) || defined(__android__) || defined(ANDROID) || defined(__ANDROID) || defined(__android) || defined(android) || defined(_ANDROID) || defined(_android)
 #    define ICE_BATTERY_ANDROID
+#  elif defined(__TIZEN_H__) || defined(TIZEN_DEPRECATION) || defined(__TIZEN__)
+#    define ICE_BATTERY_TIZEN
 #  elif defined(__APPLE__) || defined(__MACH__) || defined(__DARWIN__) || defined(__darwin__) || defined(__DARWIN) || defined(_DARWIN)
 #    if defined(APPLE_IOS) || defined(IOS) || defined(__IPHONEOS__) || defined(TARGET_OS_SIMULATOR) || defined(__IOS__) || defined(__APPLE_IOS__) || defined(IOS_OBJ_C) || defined(TARGET_OS_IOS)
 #      define ICE_BATTERY_IOS
@@ -223,6 +226,13 @@ THE SOFTWARE.
 #  if !defined(__cplusplus)
 #    error "ice_battery's UWP implementation requires C++!"
 #  endif
+#endif
+
+// Provide support for bool type!
+#if defined(__STDC__) && __STDC_VERSION__ >= 199901L
+#  include <stdbool.h>
+#elif !defined(__cplusplus) && !defined(bool)
+    typedef enum bool { false, true } bool;
 #endif
 
 #if defined(__cplusplus)
@@ -372,6 +382,38 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void)
 
 ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
     (*env)->DeleteLocalRef(env, intent);
+    return ICE_BATTERY_TRUE;
+}
+
+#elif defined(ICE_BATTERY_TIZEN)
+#include <device/battery.h>
+#include <device/callback.h> 
+
+ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_init(void) {
+    return ICE_BATTERY_TRUE;
+}
+
+ICE_BATTERY_API int ICE_BATTERY_CALLCONV ice_battery_level(void) {
+    int res = 0;
+    
+    if (device_battery_get_percent(&res) == 0) {
+        return res;
+    }
+    
+    return -1;
+}
+
+ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_charging(void) {
+    bool res;
+    
+    if (device_battery_is_charging(&res) == 0) {
+        return res ? ICE_BATTERY_TRUE : ICE_BATTERY_FALSE;
+    }
+    
+    return ICE_BATTERY_FALSE;
+}
+
+ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_close(void) {
     return ICE_BATTERY_TRUE;
 }
 
