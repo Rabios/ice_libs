@@ -1435,9 +1435,10 @@ ice_joy_state ice_joy_states[ICE_JOY_JOYSTICKS];
 // Connection, Misc, etc...
 // Initializes ice_joy library, Returns ICE_JOY_TRUE on success or ICE_JOY_FALSE on failure.
 ICE_JOY_API ice_joy_bool ICE_JOY_CALLCONV ice_joy_init(void) {
-    if (ice_joy_open == ICE_JOY_TRUE) {
+    if (ice_joy_open == ICE_JOY_FALSE) {
         if ([[GCController controllers] count] > 0) {
             ice_joy_open = ([GCController controllers][0].extendedGamepad) ? ICE_JOY_TRUE : ICE_JOY_FALSE;
+            return ice_joy_open;
         }
         
         return ICE_JOY_FALSE;
@@ -4028,7 +4029,7 @@ ICE_JOY_API ice_joy_vec2 ICE_JOY_CALLCONV ice_joy_analog_movement(ice_joy_player
 
 #elif defined(ICE_JOY_MICROSOFT)
 ///////////////////////////////////////////////////////////////////////////////////////////
-// ICE_JOY_MICROSOFT IMPLEMENTATION  (Microsoft Devices - XInput)
+// ICE_JOY_MICROSOFT IMPLEMENTATION  (Microsoft Platforms - XInput)
 ///////////////////////////////////////////////////////////////////////////////////////////
 #include <windows.h>
 #include <Xinput.h>

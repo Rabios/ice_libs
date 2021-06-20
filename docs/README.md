@@ -15,4 +15,5 @@
 - [ice_cpu.h Documentation](ice_cpu_api.md)
 - [ice_al.h Documentation](ice_al_api.md)
 - [ice_steam.h Documentation](ice_steam_api.md)
+- [ice_mouse.h Documentation](ice_mouse_api.md)
 - [Changelog](changelog.md)
