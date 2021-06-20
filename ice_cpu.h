@@ -31,6 +31,7 @@ Works on:
 17. HP-UX
 18. GBA
 19. NDS
+20. Tizen
 
 [2] IMPLEMENTATION:
 Windows             -> GlobalMemoryStatusEx
@@ -38,6 +39,7 @@ Apple               -> host_statistics (mach.h and mach_host.h)
 Unix, IRIX          -> sysconf
 Emscripten          -> window.navigator.hardwareConcurrency
 HP-UX               -> mpctl
+Tizen               -> system_info_get_platform_string + eina
 Other platforms     -> Constants as nothing changes
 
 [3] USAGE:
