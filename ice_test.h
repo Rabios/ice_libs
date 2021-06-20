@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 20/April/2021
 // ice_test.h
 // Single-Header Cross-Platform tiny C library for unit testing!
-// Updated: 7/May/2021
+// Updated: 21/June/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_test.h (FULL OVERVIEW)
@@ -118,7 +118,7 @@ THE SOFTWARE.
     assert(a == b);\
 }
 
-#define ICE_TEST_ASSERT_STR_EQU(a, b) {\
+#define ICE_TEST_ASSERT_STR_EQU(a, b) ({\
     int lenstr1 = 0;\
     int lenstr2 = 0;\
     int matches = 0;\
@@ -132,7 +132,7 @@ THE SOFTWARE.
         }\
     }\
     assert(matches == lenstr1);\
-}
+})
 
 #define ICE_TEST_ASSERT_TRUE(a) {\
     assert(a);\
