@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
         // Update mouse and print position!
         if (ice_mouse_update() == ICE_MOUSE_TRUE) {
             ice_mouse_vec2 pos = ice_mouse_pos();
-            printf("Mouse X: %f, Mouse Y: %f\n", mouse_pos.x, mouse_pos.y);
+            printf("Mouse X: %f, Mouse Y: %f\n", pos.x, pos.y);
             
             // If right mouse button pressed, Break the loop and exit the program!
             if (ice_mouse_button_pressed(ICE_MOUSE_BUTTON_RIGHT) == ICE_MOUSE_TRUE) {
