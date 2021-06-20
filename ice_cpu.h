@@ -216,6 +216,8 @@ THE SOFTWARE.
 #    define ICE_CPU_PSP
 #  elif defined(_PSVITA) || defined(VITA) || defined(__vita__) || defined(__PSVITA) || defined(__VITA__) || defined(_PSVITA) || defined(SN_TARGET_PSP2) || defined(__PSV__) || defined(__psv__) || defined(_PSV) || defined(__PSVita__) || defined(__PSVita)
 #    define ICE_CPU_PSVITA
+#  elif defined(__TIZEN_H__) || defined(TIZEN_DEPRECATION) || defined(__TIZEN__)
+#    define ICE_CPU_TIZEN
 #  else
 #    define ICE_CPU_UNIX
 #  endif
@@ -570,6 +572,29 @@ ICE_CPU_API unsigned int ICE_CPU_CALLCONV ice_cpu_cores_count(void) {
 // Returns CPU name used by device as string.
 ICE_CPU_API char* ICE_CPU_CALLCONV ice_cpu_name(void) {
     return "ARM® Cortex™-A9 @ 333 MHz";
+}
+
+#elif defined(ICE_CPU_TIZEN)
+///////////////////////////////////////////////////////////////////////////////////////////
+// ICE_CPU_TIZEN IMPLEMENTATION    (Tizen)
+///////////////////////////////////////////////////////////////////////////////////////////
+#include <system_info.h>
+#include <Eina.h>
+
+// Returns count of CPU cores device has as unsigned integer.
+ICE_CPU_API unsigned int ICE_CPU_CALLCONV ice_cpu_cores_count(void) {
+    return eina_cpu_count();
+}
+
+// Returns CPU name used by device as string.
+ICE_CPU_API char* ICE_CPU_CALLCONV ice_cpu_name(void) {
+    char *res;
+    
+    if (system_info_get_platform_string("http://tizen.org/feature/platform.core.cpu.arch", &res) == 0) {
+        return res;
+    }
+    
+    return NULL;
 }
 
 #elif defined(ICE_CPU_UNIX)
