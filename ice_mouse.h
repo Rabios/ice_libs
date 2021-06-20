@@ -35,9 +35,9 @@ Add #define ICE_MOUSE_ANDROID_CUSTOM_INPUT_EVENT_HANDLERS then set the 2 functio
 
 [LINUX]
 ice_mouse expects to recieve mouse input via /dev/input/mice file descriptor...
-But, you can set it to default file before #include "ice_mouse.h" by following way:
+But, you can set file descriptor file path before #include "ice_mouse.h" by following way:
 
-#define ICE_MOUSE_FD_PATH "/dev/input/mouse0"
+#define ICE_MOUSE_FD_PATH "/dev/input/mouse0" // Now ice_mouse will recieve input from /dev/input/mouse0 instead.
 
 [MacOS/OSX]
 You need to include ice_mouse in your NSView code as ice_mouse provides Objective-C events like mouseDown, mouseUp, scrollWheel, mouseDragged, and mouseLocation.
@@ -292,6 +292,10 @@ static ice_mouse_bool ice_mouse_open = ICE_MOUSE_FALSE;
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 
+#ifndef WHEEL_DELTA
+#define WHEEL_DELTA 120
+#endif
+
 static LPDIRECTINPUT8 di;
 static LPDIRECTINPUTDEVICE8 mice;
 
@@ -301,6 +305,7 @@ static DIMOUSESTATE2 prev_ev;
 static int window_flags = DISCL_BACKGROUND | DISCL_NONEXCLUSIVE;
 static void* win = NULL;
 static ice_mouse_vec2 mouse_pos;
+static int used_console_window = 0;
 
 // Sets which window will handle input by ice_mouse (Designed for Windows but returns ICE_MOUSE_TRUE on other-platforms).
 ICE_MOUSE_API ice_mouse_bool ICE_MOUSE_CALLCONV ice_mouse_set_window_handle(void* window) {
@@ -324,6 +329,7 @@ ICE_MOUSE_API ice_mouse_bool ICE_MOUSE_CALLCONV ice_mouse_init(void) {
         if (!win) {
             win = GetConsoleWindow();
             SetCursorPos(0, 0);
+            used_console_window = 1;
         }
 
         if (FAILED(DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &IID_IDirectInput8, (VOID**)&di, NULL))) {
@@ -388,14 +394,17 @@ ICE_MOUSE_API ice_mouse_bool ICE_MOUSE_CALLCONV ice_mouse_update(void) {
             IDirectInputDevice_Acquire(mice);
             return;
         }
-    
-        //mouse_pos.x += (float)next_ev.lX;
-        //mouse_pos.y += (float)next_ev.lY;
-        POINT pos;
-        GetCursorPos(&pos);
-        mouse_pos.x = (float) pos.x;
-        mouse_pos.y = (float) pos.y;
-    
+        
+        if (!used_console_window) {
+            mouse_pos.x += (float)next_ev.lX;
+            mouse_pos.y += (float)next_ev.lY;
+        } else {
+            POINT pos;
+            GetCursorPos(&pos);
+            mouse_pos.x = (float) pos.x;
+            mouse_pos.y = (float) pos.y;
+        }
+        
         return ICE_MOUSE_TRUE;
     }
     
