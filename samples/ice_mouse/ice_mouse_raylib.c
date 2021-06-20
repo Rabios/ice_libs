@@ -119,7 +119,7 @@ typedef struct tagBITMAPINFOHEADER {
 #include <stdio.h>
 
 typedef struct ice_mouse_vec2 { float x; float y; } ice_mouse_vec2;
-typedef enum { ICE_MOUSE_TRUE = 0, ICE_MOUSE_FALSE = -1, } ice_mouse_bool;
+typedef enum { ICE_MOUSE_TRUE = 0, ICE_MOUSE_FALSE = -1 } ice_mouse_bool;
 
 typedef enum {
     ICE_MOUSE_BUTTON_LEFT = 0,
@@ -250,8 +250,9 @@ int main(int argc, char** argv) {
         BeginDrawing();
         ClearBackground(RAYWHITE);
         ice_mouse_vec2 pos = ice_mouse_pos();
-        DrawText(TextFormat("X: %f, Y: %f", pos.x, pos.y), 16, 16, 18, circle_color);
+        
         DrawCircleV((Vector2) { pos.x, pos.y }, player_size, circle_color);
+        DrawText(TextFormat("X: %f, Y: %f", pos.x, pos.y), 16, 16, 22, BLACK);
         player_size += ice_mouse_wheel();
         EndDrawing();
     }
