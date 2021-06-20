@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 18/April/2021
 // ice_ram.h
 // Single-Header Cross-Platform C library to get free and total RAM!
-// Updated: 25/May/2021
+// Updated: 21/June/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_ram.h (FULL OVERVIEW)
@@ -17,6 +17,7 @@ Works on:
 3. Linux (Including BeOS, Haiku, Android, And any Linux-based System)
 4. Emscripten
 5. PSP
+6. Tizen
 
 [2] IMPLEMENTATION:
 Windows             -> GlobalMemoryStatusEx
@@ -24,6 +25,7 @@ Apple               -> host_statistics (mach.h and mach_host.h)
 Unix                -> sysinfo
 Emscripten          -> os module (Node.js), window.performance.memory + navigator.deviceMemory (Web)
 PSP                 -> sceKernelTotalFreeMemSize (pspdev/pspsdk)
+Tizen               -> runtime_info_get_system_memory_info
 
 [3] USAGE:
 Define ICE_RAM_IMPL then include ice_ram.h in your C/C++ code!
@@ -360,7 +362,7 @@ runtime_memory_info_s inf;
 
 // Returns total memory (RAM) device has, In bytes.
 ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_total(void) {
-	runtime_info_get_system_memory_info(&inf);
+    runtime_info_get_system_memory_info(&inf);
     return inf.total * 1024;
 }
 
@@ -376,16 +378,16 @@ ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_free(void) {
 ///////////////////////////////////////////////////////////////////////////////////////////
 #include <sys/sysinfo.h>
 
-struct sysinfo si;
-
 // Returns total memory (RAM) device has, In bytes.
 ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_total(void) {
+    struct sysinfo si;
     sysinfo(&si);
     return (ice_ram_bytes) si.totalram;
 }
 
 // Returns available/free memory (RAM) device has, In bytes.
 ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_free(void) {
+    struct sysinfo si;
     sysinfo(&si);
     return (ice_ram_bytes) si.freeram;
 }
