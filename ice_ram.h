@@ -168,14 +168,14 @@ THE SOFTWARE.
 #    define ICE_RAM_APPLE
 #  elif defined(__EMSCRIPTEN__) || defined(__EMSCRIPTEN) || defined(EMSCRIPTEN)
 #    define ICE_RAM_WEB
-#  elif (defined(__BeOS) || defined(__BEOS__) || defined(_BEOS)) || (defined(__HAIKU) || defined(__HAIKU__) || defined(_HAIKU))
-#    define ICE_RAM_UNIX
-#  elif defined(__linux__) || defined(__LINUX__) || defined(LINUX) || defined(__LINUX) || defined(__linux) || defined(linux) && !(defined(__ANDROID__) || defined(ANDROID) || defined(__ANDROID) || defined(__android))
-#    define ICE_RAM_UNIX
+#  elif defined(__TIZEN_H__) || defined(TIZEN_DEPRECATION) || defined(__TIZEN__)
+#    define ICE_RAM_TIZEN
 #  elif defined(__WIN) || defined(_WIN32_) || defined(_WIN64_) || defined(WIN32) || defined(__WIN32__) || defined(WIN64) || defined(__WIN64__) || defined(WINDOWS) || defined(_WINDOWS) || defined(__WINDOWS) || defined(_WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(_MSC_VER) || defined(__WINDOWS__) || defined(_X360) || defined(XBOX360) || defined(__X360) || defined(__X360__) || defined(_XBOXONE) || defined(XBONE) || defined(XBOX) || defined(__XBOX__) || defined(__XBOX) || defined(__xbox__) || defined(__xbox) || defined(_XBOX) || defined(xbox) || ((defined(_XBOX_ONE) || defined(_DURANGO)) && defined(_TITLE))
 #    define ICE_RAM_MICROSOFT
 #  elif defined(PSP) || defined(__PSP__) || defined(__psp__) || defined(__PSP) || defined(_PSP)
 #    define ICE_RAM_PSP
+#  else
+#    define ICE_RAM_UNIX
 #  endif
 #endif
 
@@ -348,6 +348,26 @@ ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_free(void) {
     natural_t mem_total = mem_used + mem_free;
     
     return (ice_ram_bytes) mem_free;
+}
+
+#elif defined(ICE_RAM_TIZEN)
+///////////////////////////////////////////////////////////////////////////////////////////
+// ICE_RAM_TIZEN IMPLEMENTATION     (Tizen)
+///////////////////////////////////////////////////////////////////////////////////////////
+#include <runtime_info.h>
+
+runtime_memory_info_s inf;
+
+// Returns total memory (RAM) device has, In bytes.
+ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_total(void) {
+	runtime_info_get_system_memory_info(&inf);
+    return inf.total;
+}
+
+// Returns available/free memory (RAM) device has, In bytes.
+ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_free(void) {
+    runtime_info_get_system_memory_info(&inf);
+    return inf.free;
 }
 
 #elif defined(ICE_RAM_UNIX)

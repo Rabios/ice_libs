@@ -3,7 +3,7 @@
 ### June 20, 2021
 
 1. Added `ice_mouse` for mouse input!
-2. `ice_battery` and `ice_cpu` now supports Tizen!
+2. `ice_battery` and `ice_cpu` and `ice_ram` now supports Tizen!
 
 ### June 19, 2021
 

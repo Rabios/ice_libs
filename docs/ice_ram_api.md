@@ -25,6 +25,7 @@ typedef unsigned long long int ice_ram_bytes;
 #define ICE_RAM_APPLE           // Apple platforms
 #define ICE_RAM_WEB             // Node.js and Web (Emscripten)
 #define ICE_RAM_PSP             // Sony PlayStation Portable
+#define ICE_RAM_TIZEN           // Tizen
 #define ICE_RAM_UNIX            // Elsewhere
 
 // If no platform defined, This definition will define itself
