@@ -136,6 +136,7 @@ static DIMOUSESTATE2 prev_ev;
 static int window_flags = DISCL_BACKGROUND | DISCL_NONEXCLUSIVE;
 static void* win = NULL;
 ice_mouse_vec2 mouse_pos;
+float player_size = 25.0f;
 
 void ice_mouse_set_window_handle(void* window) {
     if (window) {
@@ -214,6 +215,8 @@ float ice_mouse_wheel(void) {
     return (float)(next_ev.lZ / WHEEL_DELTA);
 }
 
+ice_mouse_vec2 ice_mouse_pos(void) { return mouse_pos; }
+
 int main(int argc, char** argv) {
     InitWindow(800, 450, "DirectInput test!");
     SetTargetFPS(60);
@@ -246,9 +249,10 @@ int main(int argc, char** argv) {
         
         BeginDrawing();
         ClearBackground(RAYWHITE);
-        DrawText(TextFormat("X: %f, Y: %f", mouse_pos.x, mouse_pos.y), 16, 16, 18, circle_color);
-        DrawCircleV((Vector2) { mouse_pos.x, mouse_pos.y }, 25.0f, circle_color);
-        mouse_pos.y += ice_mouse_wheel();
+        ice_mouse_vec2 pos = ice_mouse_pos();
+        DrawText(TextFormat("X: %f, Y: %f", pos.x, pos.y), 16, 16, 18, circle_color);
+        DrawCircleV((Vector2) { pos.x, pos.y }, player_size, circle_color);
+        player_size += ice_mouse_wheel();
         EndDrawing();
     }
     
