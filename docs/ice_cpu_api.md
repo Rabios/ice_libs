@@ -46,6 +46,7 @@ typedef enum {
 #define ICE_CPU_PS5            // Sony PlayStation 5
 #define ICE_CPU_PSP            // Sony PlayStation Portable
 #define ICE_CPU_PSVITA         // Sony PlayStation Vita
+#define ICE_CPU_TIZEN          // Tizen
 #define ICE_CPU_UNIX           // Elsewhere
 
 // If no platform defined, This definition will define itself

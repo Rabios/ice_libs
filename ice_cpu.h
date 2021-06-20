@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 13/May/2021
 // ice_cpu.h
 // Single-Header Cross-Platform C library to get CPU info!
-// Updated: 25/May/2021
+// Updated: 20/June/2021
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // ice_cpu.h (FULL OVERVIEW)
