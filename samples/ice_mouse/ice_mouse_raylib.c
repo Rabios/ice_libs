@@ -1,5 +1,5 @@
 // NOTE: You need to have raylib installed on Windows, Also this can work with "Notepad++ for raylib"
-// Also it worth mention that this uses small subset of ice_mouse...
+// Also it worth mention that this has slightly-changed implementation of ice_mouse that does not require you to include it as it's inside the example!
 
 // To compile:
 // Add -ldinput -ldinput8 -ldxguid -lwinmm when compiling to link required libs...
