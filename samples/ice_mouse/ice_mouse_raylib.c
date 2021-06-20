@@ -207,15 +207,27 @@ ice_mouse_bool ice_mouse_update(void) {
     return ICE_MOUSE_TRUE;
 }
 
-ice_mouse_bool ice_mouse_button_pressed(int b) {
-    return (next_ev.rgbButtons[b] && next_ev.rgbButtons[b] != prev_ev.rgbButtons[b]) ? ICE_MOUSE_TRUE : ICE_MOUSE_FALSE;
-}
-
 float ice_mouse_wheel(void) {
     return (float)(next_ev.lZ / WHEEL_DELTA);
 }
 
 ice_mouse_vec2 ice_mouse_pos(void) { return mouse_pos; }
+
+ice_mouse_bool ice_mouse_button_down(int b) {
+    return (next_ev.rgbButtons[b]) ? ICE_MOUSE_TRUE : ICE_MOUSE_FALSE;
+}
+
+ice_mouse_bool ice_mouse_button_up(int b) {
+    return (!next_ev.rgbButtons[b]) ? ICE_MOUSE_TRUE : ICE_MOUSE_FALSE;
+}
+
+ice_mouse_bool ice_mouse_button_pressed(int b) {
+    return (next_ev.rgbButtons[b] && next_ev.rgbButtons[b] != prev_ev.rgbButtons[b]) ? ICE_MOUSE_TRUE : ICE_MOUSE_FALSE;
+}
+
+ice_mouse_bool ice_mouse_button_released(int b) {
+    return (!next_ev.rgbButtons[b] && next_ev.rgbButtons[b] != prev_ev.rgbButtons[b]) ? ICE_MOUSE_TRUE : ICE_MOUSE_FALSE;
+}
 
 int main(int argc, char** argv) {
     InitWindow(800, 450, "DirectInput test!");
