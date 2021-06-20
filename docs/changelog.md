@@ -1,5 +1,9 @@
 # Changelog
 
+### June 20, 2021
+
+Added `ice_mouse` for mouse input!
+
 ### June 19, 2021
 
 1. Improved web support!
