@@ -361,13 +361,13 @@ runtime_memory_info_s inf;
 // Returns total memory (RAM) device has, In bytes.
 ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_total(void) {
 	runtime_info_get_system_memory_info(&inf);
-    return inf.total;
+    return inf.total * 1024;
 }
 
 // Returns available/free memory (RAM) device has, In bytes.
 ICE_RAM_API ice_ram_bytes ICE_RAM_CALLCONV ice_ram_free(void) {
     runtime_info_get_system_memory_info(&inf);
-    return inf.free;
+    return inf.free * 1024;
 }
 
 #elif defined(ICE_RAM_UNIX)
