@@ -1,7 +1,7 @@
 // Written by Rabia Alhaffar in 14/April/2021
 // ice_battery.h
 // Single-Header Cross-Platform C library to get battery level and status...
-// Updated: 20/June/2021
+// Updated: 5/September/2021
 
 // Special thanks goes to Christopher Mitchell at https://cemetech.net for this code, Which Linux implementation built on top of.
 // https://www.cemetech.net/forum/viewtopic.php?t=3638
