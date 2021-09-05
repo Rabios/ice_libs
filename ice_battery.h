@@ -325,7 +325,7 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_init(void) {
     int status = (*mJavaVM)->AttachCurrentThread(mJavaVM, &env, NULL);
     
     if (status < 0) {
-        return ICE_CLIPBOARD_FALSE;
+        return ICE_BATTERY_FALSE;
     }
     pthread_setspecific(thkey, (void*) env);    
     
@@ -353,7 +353,7 @@ ICE_BATTERY_API ice_battery_bool ICE_BATTERY_CALLCONV ice_battery_init(void) {
     imid = (*env)->GetMethodID(env, cls, "getIntExtra", "(Ljava/lang/String;I)I");
     bmid = (*env)->GetMethodID(env, cls, "getBooleanExtra", "(Ljava/lang/String;Z)Z");
     
-    return ICE_CLIPBOARD_TRUE;
+    return ICE_BATTERY_TRUE;
 }
 
 ICE_BATTERY_API int ICE_BATTERY_CALLCONV ice_battery_level(void) {
