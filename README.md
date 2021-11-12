@@ -1,6 +1,6 @@
 # ice_libs
 
-> NOTE: This project is still work in progress, I promise will get back to finish this later...
+> NOTE: This project is still work in progress, And is getting rewritten so libraries code will change by the time...
 
 <div align="center">
   <img src="img/icon1.png" width="256", height="256"><br><br>
