@@ -1,6 +1,6 @@
 # ice_libs
 
-> NOTE: This project is still work in progress, And is getting rewritten so libraries code will change by the time...
+> NOTE: This project is still work in progress, Development of the project is still continuous in `dev` branch and everyone is welcome to join development, Thanks for your patience...
 
 <div align="center">
   <img src="img/icon1.png" width="256", height="256"><br><br>
