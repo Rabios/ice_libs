@@ -395,8 +395,6 @@ using namespace Windows::System::Power;
 #if defined(ICE_BATT_IOS) || defined(ICE_BATT_OSX)
 #  if __has_feature(objc_arc)
 #    define ICE_BATT_OBJC_ARC_ENABLED 1
-#  else
-#    define ICE_BATT_OBJC_ARC_DISABLED 1
 #  endif
 #endif
 
@@ -552,7 +550,7 @@ goto finish:
     batt_charging = (batt_state == 2) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_exist = (batt_state == 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
 
-#if defined(ICE_BATT_OBJC_ARC_DISABLED)
+#if !defined(ICE_BATT_OBJC_ARC_ENABLED)
     [pool release];
 #endif
     
@@ -603,7 +601,7 @@ goto finish:
     psval = CFDictionaryGetValue(psrc, CFSTR(kIOPSIsChargingKey));
     batt_charging = (CFBooleanGetValue((CFBooleanRef) psval) == TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
 
-#if defined(ICE_BATT_OBJC_ARC_DISABLED)
+#if !defined(ICE_BATT_OBJC_ARC_ENABLED)
     [pool release];
 #endif
 

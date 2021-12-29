@@ -48,22 +48,6 @@ You could support or contribute to ice_libs project by possibly one of following
 #ifndef ICE_ARR_H
 #define ICE_ARR_H 1
 
-/* Disable security warnings for MSVC compiler, We don't want to force using C11! */
-#ifdef _MSC_VER
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE 1
-#  endif
-#  ifndef _CRT_SECURE_NO_WARNINGS
-#    define _CRT_SECURE_NO_WARNINGS 1
-#  endif
-#  pragma warning(disable:4996)
-#endif
-
-/* Define C interface for Windows libraries! ;) */
-#ifndef CINTERFACE
-#  define CINTERFACE 1
-#endif
-
 /* Allow to use calling conventions if desired... */
 #if defined(ICE_ARR_VECTORCALL)
 #  if defined(_MSC_VER)
@@ -189,7 +173,6 @@ typedef struct ice_arr_array {
     long size;                  /* Size of allocation that Array uses */
     long len;                   /* Length of the Array */
 } ice_arr_array;
-
 
 /* ============================== Macros ============================== */
 

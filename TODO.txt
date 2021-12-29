@@ -2,9 +2,7 @@
 
 [o] Remove memory allocation casts, and include <stdlib.h> or pico_malloc.h depending on platform...
 [ ] Test GlobalFree in Windows implementations
-[o] Remove compound literals for ANSI-C compatibility!
 [o] Remove unnecessary definitions for libs
-[o] Improve Objective-C ARC/NSAutoReleasePool usage... (preprocessor definitions to check ARC existence)
 [ ] Create macro to ease function definition
 [ ] Do checks on how values are returned by libs (like if long long required), in that case libs needs C99!
 [ ] Update docs

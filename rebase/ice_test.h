@@ -109,10 +109,10 @@ Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU inst
 
 /* Tests equality between 2 strings. */
 #define ICE_TEST_ASSERT_STR_EQU(a, b) {         \
-    unsigned lenstr1 = 0;                       \
-    unsigned lenstr2 = 0;                       \
-    unsigned matches = 0;                       \
-    unsigned i;                                 \
+    unsigned long lenstr1 = 0;                  \
+    unsigned long lenstr2 = 0;                  \
+    unsigned long matches = 0;                  \
+    unsigned long i;                            \
                                                 \
     while (a[lenstr1] != '\0') lenstr1++;       \
     while (b[lenstr2] != '\0') lenstr2++;       \

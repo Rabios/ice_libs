@@ -360,6 +360,13 @@ using namespace Platform;
 using namespace Windows::ApplicationModel::DataTransfer;
 #endif
 
+/* Check if ARC enabled or not... */
+#if defined(ICE_CLIP_IOS) || defined(ICE_CLIP_OSX)
+#  if __has_feature(objc_arc)
+#    define ICE_CLIP_OBJC_ARC_ENABLED 1
+#  endif
+#endif
+
 #if defined(ICE_CLIP_ANDROID)
 /* native activity that ice_clip will use on Android for Clipboard */
 static ANativeActivity* ice_clip_native_activity;
@@ -464,7 +471,7 @@ failure:
 
 #elif defined(ICE_CLIP_IOS)
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     @autoreleasepool {
 #else
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -480,19 +487,19 @@ failure:
         
     const char* res = [str UTF8String];
 
-#if !__has_feature(objc_arc)
+#if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
 #endif
 
     return res;
         
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     }
 #endif
 
 #elif defined(ICE_CLIP_OSX)
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     @autoreleasepool {
 #else
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -506,13 +513,13 @@ failure:
     
     const char* res = [str UTF8String];
     
-#if !__has_feature(objc_arc)
+#if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
 #endif
 
     return res;
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     }
 #endif
 
@@ -666,7 +673,7 @@ goto failure:
 
 #elif defined(ICE_CLIP_IOS)
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     @autoreleasepool {
 #else
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -678,19 +685,19 @@ goto failure:
     NSString *txt = [NSString stringWithFormat:@"%s", text];
     pasteboard.string = txt;
 
-#if !__has_feature(objc_arc)
+#if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
 #endif
         
     return ICE_CLIP_TRUE;
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     }
 #endif
 
 #elif defined(ICE_CLIP_OSX)
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     @autoreleasepool {
 #else
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -706,16 +713,14 @@ goto failure:
     BOOL res = [pasteboard setString:txt forType:NSStringPboardType];
     if (pasteboard == NO) return ICE_CLIP_FALSE;
         
-#if !__has_feature(objc_arc)   
+#if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
 #endif
     
     return ICE_CLIP_TRUE;
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     }
-#endif
-
 #endif
 
 #elif defined(ICE_CLIP_BB10)
@@ -826,7 +831,7 @@ ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_clear(void) {
     return ice_clip_set("");
 #elif defined(ICE_CLIP_IOS)
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     @autoreleasepool {
 #else
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -837,19 +842,19 @@ ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_clear(void) {
 
     pasteboard.string = @"";
     
-#if !__has_feature(objc_arc)
+#if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
 #endif
 
     return ICE_CLIP_TRUE;
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     }
 #endif
 
 #elif defined(ICE_CLIP_OSX)
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     @autoreleasepool {
 #else
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
@@ -860,13 +865,13 @@ ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_clear(void) {
 
     [pasteboard clearContents];
 
-#if !__has_feature(objc_arc)
+#if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
 #endif
 
     return ICE_CLIP_TRUE;
 
-#if __has_feature(objc_arc)
+#if defined(ICE_CLIP_OBJC_ARC_ENABLED)
     }
 #endif
 
