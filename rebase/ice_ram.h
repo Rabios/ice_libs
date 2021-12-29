@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
     }
     
     // Print RAM info (free, used, total) in Bytes
-    printf("%s %lu bytes\n%s %lu bytes\n%s %lu bytes\n",
+    printf("%s %llu bytes\n%s %llu bytes\n%s %llu bytes\n",
             "Free RAM:", info.free,
             "Used RAM:", info.used,
             "Total RAM:", info.total);
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
 =================================== Library API ===================================
 
 // Typedef for free and used and total Bytes of RAM
-typedef unsigned long ice_ram_bytes;
+typedef unsigned long long ice_ram_bytes;
 
 // Boolean Enum, To avoid including stdbool.h
 typedef enum ice_ram_bool {
@@ -263,7 +263,7 @@ extern "C" {
 /* ============================== Data Types ============================== */
 
 /* Typedef for free and used and total Bytes of RAM */
-typedef unsigned long ice_ram_bytes;
+typedef unsigned long long ice_ram_bytes;
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_ram_bool {

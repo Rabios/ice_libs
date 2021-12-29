@@ -17,17 +17,12 @@
 
 [ice_batt.h]: Maybe add BeOS/Haiku support?
 [ice_batt.h]: Complete error system
-[ice_ram.h]: Check if C99 usage is "really" required
-[ice_clip.h]: Linux, Palm, Tizen, and Symbian implementations...
+[ice_clip.h]: Linux, Palm, Tizen, and Symbian implementations (if possible...)
 
 ================= CURRENT WIP LIBRARIES =================
 
-[o] ice_math.h (Complete the lib)
-[ ] ice_vecmath.h (Complete the lib)
-[ ] ice_steam.h (Complete the lib)
-[ ] ice_hashmap.h (Fix the implementation)
-[ ] ice_arr.h (Complete the lib)
-
-[ ] ice_mouse.h
-[ ] ice_kbd.h
-[ ] ice_joy.h
+ice_math.h (Complete the lib)
+ice_vecmath.h (Complete the lib)
+ice_steam.h (Complete the lib)
+ice_hashmap.h (Fix the implementation)
+ice_arr.h (Complete the lib)

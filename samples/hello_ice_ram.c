@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
     }
     
     /* Print RAM info (free, used, total) in Bytes */
-    printf("%s %lu bytes\n%s %lu bytes\n%s %lu bytes\n",
+    printf("%s %llu bytes\n%s %llu bytes\n%s %llu bytes\n",
             "Free RAM:", info.free,
             "Used RAM:", info.used,
             "Total RAM:", info.total);
