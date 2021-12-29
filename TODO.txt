@@ -15,11 +15,10 @@
 [o] Make site
 [ ] Publish All
 
-[ ] Complete error system for ice_batt.h
-
 ================= TODO LIST FROM LIBRARIES =================
 
 [ice_batt.h]: Maybe add BeOS/Haiku support?
+[ice_batt.h]: Complete error system
 [ice_ram.h]: Check if C99 usage is "really" required
 [ice_clip.h]: Linux, Palm, Tizen, and Symbian implementations...
 
