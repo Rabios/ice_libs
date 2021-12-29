@@ -1,0 +1,36 @@
+================= TODO =================
+
+[o] Remove memory allocation casts, and include <stdlib.h> or pico_malloc.h depending on platform...
+[ ] Test GlobalFree in Windows implementations
+[o] Remove compound literals for ANSI-C compatibility!
+[o] Remove unnecessary definitions for libs
+[o] Improve Objective-C ARC/NSAutoReleasePool usage... (preprocessor definitions to check ARC existence)
+[ ] Create macro to ease function definition
+[ ] Do checks on how values are returned by libs (like if long long required), in that case libs needs C99!
+[ ] Update docs
+[ ] Update and complete bindings!
+[ ] Continue working on the libs
+[ ] Test all
+[ ] Make bindings
+[o] Make site
+[ ] Publish All
+
+[ ] Complete error system for ice_batt.h
+
+================= TODO LIST FROM LIBRARIES =================
+
+[ice_batt.h]: Maybe add BeOS/Haiku support?
+[ice_ram.h]: Check if C99 usage is "really" required
+[ice_clip.h]: Linux, Palm, Tizen, and Symbian implementations...
+
+================= CURRENT WIP LIBRARIES =================
+
+[o] ice_math.h (Complete the lib)
+[ ] ice_vecmath.h (Complete the lib)
+[ ] ice_steam.h (Complete the lib)
+[ ] ice_hashmap.h (Fix the implementation)
+[ ] ice_arr.h (Complete the lib)
+
+[ ] ice_mouse.h
+[ ] ice_kbd.h
+[ ] ice_joy.h

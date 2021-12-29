@@ -1,0 +1,25 @@
+##[[
+  cdefine "ICE_BATT_IMPL"
+  cinclude "ice_batt.h"
+]]
+
+-- Boolean Enum, To avoid including stdbool.h
+global ice_batt_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_BATT_FALSE = -1,
+  ICE_BATT_TRUE = 0
+}
+
+-- Struct that contains battery status (Exists?, Charging?, Battery Level)
+global ice_batt_info: type <cimport, nodecl> = @record {
+  exists: ice_batt_bool,
+  charging: ice_batt_bool,
+  level: cuint
+}
+
+## if ccinfo.is_android then
+-- [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
+global function ice_batt_use_native_activity(activity: pointer): void <cimport, nodecl> end
+## end
+
+-- Returns curreny battery status
+global function ice_batt_status(): ice_batt_info <cimport, nodecl> end

@@ -1,0 +1,74 @@
+##[[
+  cdefine "ICE_TIME_IMPL"
+  cinclude "ice_time.h"
+]]
+
+-- Typedef for very long integers
+global ice_time_ulong: type <cimport, nodecl> = @culonglong
+
+-- Enumeration for week days
+global ice_time_day: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_TIME_DAY_SUNDAY = 1,
+  ICE_TIME_DAY_MONDAY,
+  ICE_TIME_DAY_TUESDAY,
+  ICE_TIME_DAY_WEDNESDAY,
+  ICE_TIME_DAY_THURSDAY,
+  ICE_TIME_DAY_FRIDAY,
+  ICE_TIME_DAY_SATURDAY
+}
+
+-- Enumeration for year months
+global ice_time_month: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_TIME_MONTH_JANUARY = 1,
+  ICE_TIME_MONTH_FEBRUARY,
+  ICE_TIME_MONTH_MARCH,
+  ICE_TIME_MONTH_APRIL,
+  ICE_TIME_MONTH_MAY,
+  ICE_TIME_MONTH_JUNE,
+  ICE_TIME_MONTH_JULY,
+  ICE_TIME_MONTH_AUGUST,
+  ICE_TIME_MONTH_SEPTEMBER,
+  ICE_TIME_MONTH_OCTOBER,
+  ICE_TIME_MONTH_NOVEMBER,
+  ICE_TIME_MONTH_DECEMBER
+}
+
+-- Enumeration for seasons (helpful?)
+global ice_time_season: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_TIME_SEASON_WINTER = 1,
+  ICE_TIME_SEASON_SPRING,
+  ICE_TIME_SEASON_SUMMER,
+  ICE_TIME_SEASON_AUTUMN
+}
+
+-- Struct that contains patched current time info, Including ticks
+global ice_time_info: type <cimport, nodecl> = @record {
+  string: cstring,                  -- Time as string
+  clock_ticks: ice_time_ulong,      -- Clock Ticks (Nanoseconds)
+  system_ticks: ice_time_ulong,     -- Ticks since system started (Milliseconds)
+  epoch: ice_time_ulong,            -- Unix timestamp
+  nanoseconds: ice_time_ulong,
+  microseconds: ice_time_ulong,
+  milliseconds: ice_time_ulong,
+  second: cuint,
+  minute: cuint,
+  hour: cuint,
+  week_day: ice_time_day,           -- (ICE_TIME_DAY_SUNDAY - ICE_TIME_DAY_SATURDAY)
+  month_day: cuint,                 -- (1 - Month last day number)
+  year_day: cuint,                  -- (1 - 365)
+  month: ice_time_month,
+  season: ice_time_season,          -- (ICE_TIME_SEASON_WINTER - ICE_TIME_SEASON_AUTUMN)
+  year: cuint
+}
+
+-- Returns difference between 2 ticks, The 2 ticks can be acquired by getting clock_ticks from ice_time_status
+global function ice_time_diff(t1: ice_time_ulong, t2: ice_time_ulong): ice_time_ulong <cimport, nodecl> end
+
+-- Returns Delta Time between 2 ticks, The 2 ticks can be acquired by getting clock_ticks from ice_time_status
+global function ice_time_dt(t1: ice_time_ulong, t2: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Returns current time info (Second, Year, Month, etc...)
+global function ice_time_status(): ice_time_info <cimport, nodecl> end
+
+-- Sleeps thread/program for milliseconds
+global function ice_time_sleep(ms: ice_time_ulong): void <cimport, nodecl> end
