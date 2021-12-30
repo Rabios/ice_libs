@@ -548,7 +548,7 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info*
     time_info->str = tm_str;
     time_info->clock_ticks = (ice_time_ulong) clock();
     time_info->system_ticks = systicks;
-    time_info->epoch = (ice_time_ulong) pico_time;
+    time_info->epoch = (ice_time_ulong) t;
     time_info->nanoseconds = (ice_time_ulong) (systicks * 1000);
     time_info->microseconds = (ice_time_ulong) systicks;
     time_info->milliseconds = (ice_time_ulong) (systicks / 1000);
@@ -605,7 +605,7 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info*
 
     return err;
 
-goto failure:
+failure:
     time_info->str = 0;
     time_info->clock_ticks = 0;
     time_info->system_ticks = 0;
