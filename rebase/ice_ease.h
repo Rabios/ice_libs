@@ -4,7 +4,7 @@ ice_ease.h, Single-Header Cross-Platform C library for working with Easings!
 
 ================================== Full Overview ==================================
 
-ice_ease.h is Single-Header Cross-Platform C library for Easings, It's based on Robert Penner easings and Easing functions from easings.net
+ice_ease.h is Single-Header Cross-Platform C library for Easings, It's based on Robert Penner's easings and Easing functions from easings.net
 
 To use it #define ICE_EASE_IMPL then #include "ice_ease.h" in your C/C++ code!
 
@@ -13,16 +13,24 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
-#define ICE_EASE_IMPL
+// Define the implementation of the library and include it
+#define ICE_EASE_IMPL 1
 #include "ice_ease.h"
+
 #include <stdio.h>
 
-int main(ice_ease_type ease_type, char** argv) {
-    // easings.net implementation (1 argument, 5.0)
-    printf("Ease Linear 1: %f\n", ice_ease_linear(ICE_EASE_TYPE_PROGRESS, 5.0));
+int main(int argc, char **argv) {
+    double linear1, linear4;
+
+    // Use linear easing, With 1 argument (easings.net)
+    linear1 = ice_ease_linear(ICE_EASE_TYPE_PROGRESS, 5.0);
     
-    // Robert Penner implementation (4 arguments, 1.0 2.0 3.0 4.0)
-    printf("Ease Linear 4: %f\n", ice_ease_linear(ICE_EASE_TYPE_PENNER, 1.0, 2.0, 3.0, 4.0));
+    // Use linear easing, But with 4 arguments (Robert Penner's version)
+    linear4 = ice_ease_linear(ICE_EASE_TYPE_PENNER, 1.0, 2.0, 3.0, 4.0);
+
+    // Print the results...
+    printf("Linear easing with one variable: %f\nLinear easing with four variables: %f\n",
+           linear1, linear4);
 
     return 0;
 }
@@ -103,9 +111,6 @@ double ice_ease_bounce_in_out(ice_ease_type ease_type, ...);
 
 1. Linux    => -lm
 
-// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma(s)
-
-
 ================================= Usable #define(s) ===============================
 
 // Define the implementation, This should be #defined before including ice_ease.h in the code...
@@ -141,7 +146,7 @@ double ice_ease_bounce_in_out(ice_ease_type ease_type, ...);
 #define ICE_EASE_EXTERN         // externs library functions
 #define ICE_EASE_STATIC         // statics library functions
 
-// NOTE: ICE_EASE_EXTERN and ICE_EASE_STATIC cannot be #defined together in the code...
+// NOTE: You cannot #define both ICE_EASE_EXTERN and ICE_EASE_STATIC together in the code...
 
 
 ============================== Implementation Resources ===========================
@@ -166,7 +171,7 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_EASE_H
+#if !defined(ICE_EASE_H)
 #define ICE_EASE_H 1
 
 /* Allow to use calling conventions if desired... */
@@ -269,7 +274,7 @@ extern "C" {
 /* =============================== Macros =============================== */
 
 /* PI definition */
-#ifndef ICE_EASE_PI
+#if !defined(ICE_EASE_PI)
 #  define ICE_EASE_PI 3.14159265358979323846
 #endif
 

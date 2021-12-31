@@ -1,10 +1,10 @@
 ================= TODO =================
 
 [o] Remove memory allocation casts, and include <stdlib.h> or pico_malloc.h depending on platform...
-[ ] Test GlobalFree in Windows implementations
 [o] Remove unnecessary definitions for libs
-[ ] Create macro to ease function definition
-[ ] Do checks on how values are returned by libs (like if long long required), in that case libs needs C99!
+[o] Do checks on how values are returned by libs (like if long long required), in that case libs needs C99!
+[o] Edit asterisks positions in pointer functions
+[ ] Use emscripten/emmalloc.h on Web
 [ ] Update docs
 [ ] Update and complete bindings!
 [ ] Continue working on the libs
@@ -15,9 +15,42 @@
 
 ================= TODO LIST FROM LIBRARIES =================
 
-[ice_batt.h]: Maybe add BeOS/Haiku support?
-[ice_batt.h]: Complete error system
-[ice_clip.h]: Linux, Palm, Tizen, and Symbian implementations (if possible...)
+==== ice_ffi.h ====
+
+ice_ffi.h: In function 'ice_ffi_get':
+ice_ffi.h:305:17: warning: ISO C forbids initialization between function pointer and 'void *' [-Wpedantic]
+  305 |     void* sym = GetProcAddress(lib, symbol);
+      |                 ^~~~~~~~~~~~~~
+testfile2.c: In function 'main':
+testfile2.c:40:6: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+   40 |     *(unsigned**)(&F42) = sym;
+      |      ^~~~~~~~~~~~~~~~~~
+
+==== ice_batt.h ====
+
+1. Maybe add BeOS/Haiku support?
+2. Complete error system
+3. Fix documentation and examples
+
+==== ice_clip.h ====
+
+Linux, Palm, Tizen, and Symbian implementations...
+
+==== ice_math.h ====
+
+Implement these...
+
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erf(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erfc(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erfi(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_gamma(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_lgamma(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_j0(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_j1(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_jn(int b, double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_y0(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_y1(double n);
+ICE_MATH_API double ICE_MATH_CALLCONV ice_math_yn(int b, double n);
 
 ================= CURRENT WIP LIBRARIES =================
 
@@ -26,3 +59,8 @@ ice_vecmath.h (Complete the lib)
 ice_steam.h (Complete the lib)
 ice_hashmap.h (Fix the implementation)
 ice_arr.h (Complete the lib)
+
+================= CHECKING COMPLETED LIBRARIES =================
+
+ice_str.h
+ice_time.h

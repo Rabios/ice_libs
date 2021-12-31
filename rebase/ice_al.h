@@ -13,26 +13,56 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
-#define ICE_AL_IMPL
+// Define the implementation of the library and include it
+#define ICE_AL_IMPL 1
 #include "ice_al.h"
+
 #include <stdio.h>
 
-int main(int argc, char** argv) {
-    // Load OpenAL API from shared library, Here we loaded the API from OpenAL-soft shared library (Also can be loaded from openal32.dll, Or anything contains the API depending on platform)
-    ice_al_bool res = ice_al_load("soft_oal.dll");
-    if (res == ICE_AL_FALSE) return -1;
-    
-    // Initializes default audio device, To check if OpenAL would work or no...
-    const char* devicename = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
-    ALCdevice* device = alcOpenDevice(devicename);
-    
-    if (device == NULL) return -1;
-    printf("WE DID IT!\n");
-    
-    // Unload the OpenAL API and terminate the program
-    res = ice_al_unload();
-    if (res == ICE_AL_FALSE) return -1;
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
+int main(int argc, char** argv) {
+    ice_al_bool res;
+
+    // OpenAL device and OpenAL device name
+    char* device_name;
+    ALCdevice* dev;
+
+    // Define the path of the OpenAL shared library/object depending on the platform (NOTE: You can also use OpenAL-soft)
+#if defined(ICE_AL_MICROSOFT)
+    const char *path = "OpenAL32.dll";
+#else
+    const char *path = "./liboal.so";
+#endif
+    
+    // Load OpenAL shared library/object then load OpenAL API
+    res = ice_al_load(path);
+    
+    // If the function failed to load OpenAL shared library and failed to load OpenAL API, Trace error then terminate the program
+    if (res == ICE_AL_FALSE) {
+        trace("ice_al_load", "ERROR: failed to load OpenAL shared library/object!");
+        return -1;
+    }
+    
+    // Get the default OpenAL audio device and initialize
+    device_name = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+    dev = alcOpenDevice(device_name);
+    
+    // If the function failed to initialize the default OpenAL device, Trace error then terminate the program
+    if (dev == 0) {
+        trace("alcOpenDevice", "ERROR: failed to open audio device!");
+        return -1;
+    }
+    
+    trace("main", "OpenAL audio device works!");
+    
+    // Once done close the OpenAL device, If the function failed to close the default OpenAL device, Trace error then terminate the program
+    if (alcCloseDevice(dev) == ALC_FALSE) {
+        trace("alcCloseDevice", "ERROR: failed to close audio device!");
+        return -1;
+    }
+    
     return 0;
 }
 
@@ -49,10 +79,10 @@ typedef enum ice_al_bool {
 } ice_al_bool;
 
 // [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call
-ice_al_handle ice_al_proc(const char* symbol);
+ice_al_handle ice_al_proc(const char *symbol);
 
 // Loads OpenAL API from shared library path (eg. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure
-ice_al_bool ice_al_load(const char* path);
+ice_al_bool ice_al_load(const char *path);
 
 // Unloads OpenAL API, Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure
 ice_al_bool ice_al_unload(void);
@@ -67,7 +97,7 @@ ice_al_bool ice_al_unload(void);
 1. Microsoft Windows    => -lkernel32
 2. Linux                => -ldl
 
-// NOTE: When using MSVC on Microsoft Windows, static libraries automatically linked via #pragmas
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
 
 ================================= Usable #define(s) ===============================
@@ -108,7 +138,7 @@ ice_al_bool ice_al_unload(void);
 #define ICE_AL_STATIC          // statics library functions
 
 // NOTES:
-// 1. ICE_AL_EXTERN and ICE_AL_STATIC cannot be #defined together in the code...
+// 1. You cannot #define both ICE_AL_EXTERN and ICE_AL_STATIC together in the code...
 // 2. The definitions ONLY affects the OpenAL loader API
 
 
@@ -486,13 +516,20 @@ typedef enum ice_al_bool {
 /* ============================= Functions ============================= */
 
 /* [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call */
-ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char* symbol);
+ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char *symbol);
 
 /* Loads OpenAL API from shared library path (eg. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
-ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char* path);
+ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char *path);
 
 /* Unloads OpenAL API, Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
 ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_unload(void);
+
+/*
+API above is the OpenAL loader API, For OpenAL API:
+
+1. https://www.openal.org/documentation/openal-1.1-specification.pdf
+2. https://www.openal.org/documentation/OpenAL_Programmers_Guide.pdf
+*/
 
 #if defined(__cplusplus)
 }
@@ -516,41 +553,33 @@ ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_unload(void);
 static ice_al_handle ice_al_lib;
 
 /* [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call */
-ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char* symbol) {
-    ice_al_handle sym = 0;
-
+ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char *symbol) {
 #if defined(ICE_AL_MICROSOFT)
-    sym = GetProcAddress(ice_al_lib, symbol);
-    
+    return GetProcAddress(ice_al_lib, symbol);
 #elif defined(ICE_AL_BEOS)
+    ice_al_handle sym;
     int res = get_image_symbol((isize) ice_al_lib, symbol, B_SYMBOL_TYPE_ANY, &sym);
-
+    
     if (res != 0) return 0;
 
 #elif defined(ICE_AL_UNIX)
-    sym = dlsym(ice_al_lib, symbol);
+    return dlsym(ice_al_lib, symbol);
 #endif
-
-    return sym;
 }
 
 /* Loads OpenAL API from shared library path (eg. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
 ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char* path) {
 #if defined(ICE_AL_MICROSOFT)
     ice_al_lib = LoadLibraryA(path);
-    
     if (ice_al_lib == 0) return ICE_AL_FALSE;
-
 #elif defined(ICE_AL_BEOS)
     isize lib = load_add_on(path);
-
     if (lib < 0) return ICE_AL_FALSE;
     
     ice_al_lib = (ice_al_handle) lib;
 
 #elif defined(ICE_AL_UNIX)
     ice_al_lib = dlopen(path, RTLD_NOW | RTLD_GLOBAL);
-    
     if (ice_al_lib == 0) return ICE_AL_FALSE;
 #endif
 

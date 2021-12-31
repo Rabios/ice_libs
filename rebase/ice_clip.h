@@ -13,23 +13,52 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
-#define ICE_CLIP_IMPL
+// Define the implementation of the library and include it
+#define ICE_CLIP_IMPL 1
 #include "ice_clip.h"
+
 #include <stdio.h>
 
-int main(int argc, char** argv) {
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+
+int main(int argc, char **argv) {
+    // To store result of called functions
+    ice_clip_bool res;
+    
+    // String to copy to clipboard later...
+    const char *str = "SPEED!";
+
+    // Retrieve the clipboard text
+    const char *text = ice_clip_get();
+
+    // If the function failed to retrieve Clipboard text, Trace error then terminate the program
+    if (text == NULL) {
+        trace("ice_clip_get", "ERROR: failed to retrieve Clipboard text!");
+        return -1;
+    }
+    
+    printf("Text from the Clipboard: %s\n", text);
+
     // Clear the Clipboard
-    if (ice_clip_clear() == ICE_CLIP_FALSE) {
+    res = ice_clip_clear();
+
+    // If the function failed to clear the Clipboard, Trace error then terminate the program
+    if (res == ICE_CLIP_FALSE) {
+        trace("ice_clip_clear", "ERROR: failed to clear the Clipboard!");
         return -1;
     }
-    
+
     // Copy text to Clipboard
-    if (ice_clip_set("SPEED") == ICE_CLIP_FALSE) {
+    res = ice_clip_set(str);
+
+    // If the function failed to copy text to the Clipboard, Trace error then terminate the program
+    if (res == ICE_CLIP_FALSE) {
+        printf("ERROR: Failed to copy text to Clipboard!\n");
         return -1;
     }
     
-    // Get text from Clipboard
-    printf("Clipboard Text: %s\n", ice_clip_get());
+    printf("Text copied to the Clipboard: %s\n", str);
     
     return 0;
 }
@@ -44,16 +73,16 @@ typedef enum ice_clip_bool {
 } ice_clip_bool;
 
 // [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_clip on Android, This Should be called first before other ice_clip.h functions
-void ice_clip_use_native_activity(const void* activity);
+void ice_clip_use_native_activity(void *activity);
 
 // [WINDOWS-ONLY, OPTIONAL] Sets the Window to be used with ice_clip, This is optional feature as the Windows implementation do not need Window by default
-void ice_clip_use_window(const void* window);
+void ice_clip_use_window(void *window);
 
 // Retrieves the text from Clipboard
 const char* ice_clip_get(void);
 
 // Sets the Clipboard text, Returns ICE_CLIP_TRUE on success or ICE_CLIP_FALSE on failure
-ice_clip_bool ice_clip_set(const char* text);
+ice_clip_bool ice_clip_set(const char *text);
 
 // Clears the Clipboard, Returns ICE_CLIP_TRUE on success or ICE_CLIP_FALSE on failure
 ice_clip_bool ice_clip_clear(void);
@@ -66,7 +95,7 @@ ice_clip_bool ice_clip_clear(void);
 3. MacOS/OSX                    =>  -framework Foundation -framework AppKit
 4. BlackBerry 10                =>  -lbbsystem
 
-// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragmas
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
 
 ================================= Usable #define(s) ===============================
@@ -109,7 +138,7 @@ ice_clip_bool ice_clip_clear(void);
 #define ICE_CLIP_EXTERN         // externs library functions
 #define ICE_CLIP_STATIC         // statics library functions
 
-// NOTE: ICE_CLIP_EXTERN and ICE_CLIP_STATIC cannot be #defined together in the code...
+// NOTE: You cannot #define both ICE_CLIP_EXTERN and ICE_CLIP_STATIC together in the code...
 
 
 ============================== Implementation Resources ===========================
@@ -139,24 +168,8 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_CLIP_H
+#if !defined(ICE_CLIP_H)
 #define ICE_CLIP_H 1
-
-/* Disable security warnings for MSVC compiler, We don't want to force using C11! */
-#ifdef _MSC_VER
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE 1
-#  endif
-#  ifndef _CRT_SECURE_NO_WARNINGS
-#    define _CRT_SECURE_NO_WARNINGS 1
-#  endif
-#  pragma warning(disable:4996)
-#endif
-
-/* Define C interface for Windows libraries! ;) */
-#ifndef CINTERFACE
-#  define CINTERFACE 1
-#endif
 
 /* Allow to use calling conventions if desired... */
 #if defined(ICE_CLIP_VECTORCALL)
@@ -294,19 +307,19 @@ typedef enum ice_clip_bool {
 
 #if defined(ICE_CLIP_ANDROID)
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_clip on Android, This Should be called first before other ice_clip.h functions */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(const void* activity);
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(void *activity);
 #endif
 
 #if defined(ICE_CLIP_MICROSOFT)
 /* [WINDOWS-ONLY, OPTIONAL] Sets the Window to be used with ice_clip, This is optional feature as the Windows implementation do not need Window by default */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(const void* window);
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(void *window);
 #endif
 
 /* Retrieves the text from Clipboard, Returns the text on success or NULL on failure */
 ICE_CLIP_API const char* ICE_CLIP_CALLCONV ice_clip_get(void);
 
 /* Sets the Clipboard text, Returns ICE_CLIP_TRUE on success or ICE_CLIP_FALSE on failure */
-ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_set(const char* text);
+ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_set(const char *text);
 
 /* Clears the Clipboard, Returns ICE_CLIP_TRUE on success or ICE_CLIP_FALSE on failure */
 ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_clear(void);
@@ -349,6 +362,7 @@ using namespace bb::system;
 #    pragma comment(lib, "kernel32.lib")
 #    pragma comment(lib, "user32.lib")
 #  else
+#    include <windef.h>
 #    include <winbase.h>
 #    include <winuser.h>
 #  endif
@@ -369,20 +383,20 @@ using namespace Windows::ApplicationModel::DataTransfer;
 
 #if defined(ICE_CLIP_ANDROID)
 /* native activity that ice_clip will use on Android for Clipboard */
-static ANativeActivity* ice_clip_native_activity;
+static ANativeActivity *ice_clip_native_activity;
 
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_clip on Android, This Should be called first before other ice_clip.h functions */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(const void* activity) {
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(void *activity) {
     ice_clip_native_activity = (ANativeActivity*) activity;
 }
 #endif
 
 #if defined(ICE_CLIP_MICROSOFT)
 /* Window that ice_clip can use on Windows (Optional because ice_clip does not require Window on Windows) */
-static void* ice_clip_hwnd = 0;
+static void *ice_clip_hwnd = 0;
 
 /* [WINDOWS-ONLY, OPTIONAL] Sets the Window to be used with ice_clip, This is optional feature as the Windows implementation do not need Window by default */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(const void* window) {
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(void *window) {
     ice_clip_hwnd = window;
 }
 #endif
@@ -390,7 +404,7 @@ ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(const void* window) {
 /* Retrieves the text from Clipboard, Returns the text on success or NULL on failure */
 ICE_CLIP_API const char* ICE_CLIP_CALLCONV ice_clip_get(void) {
 #if defined(ICE_CLIP_ANDROID)
-    JNIEnv* env = ice_clip_native_activity->env;
+    JNIEnv *env = ice_clip_native_activity->env;
     jclass activity_class = (jclass) ice_clip_native_activity->clazz;
     jstring service = env->NewStringUTF(env, "clipboard");
     jmethodID mid;
@@ -432,7 +446,7 @@ ICE_CLIP_API const char* ICE_CLIP_CALLCONV ice_clip_get(void) {
     env->DeleteLocalRef(env, context);
     
     if (sequence) {
-        char* utf;
+        char *utf;
 
         mid = env->GetMethodID(env, env->GetObjectClass(env, sequence), "toString", "()Ljava/lang/String;");
         if (mid == 0) goto failure;
@@ -444,7 +458,7 @@ ICE_CLIP_API const char* ICE_CLIP_CALLCONV ice_clip_get(void) {
         if (utf == 0) goto failure;
         
         if (utf) {
-            const char* text = strdup(utf);
+            const char *text = strdup(utf);
             
             env->ReleaseStringUTFChars(env, string, utf);
             env->DeleteLocalRef(env, sequence);
@@ -485,7 +499,7 @@ failure:
     int has_text = ([pasteboard hasStrings] == NO || str == 0) ? -1 : 0;
     if (has_text == -1) return 0;
         
-    const char* res = [str UTF8String];
+    const char *res = [str UTF8String];
 
 #if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
@@ -511,7 +525,7 @@ failure:
     NSString *str = [pasteboard stringForType:NSPasteboardTypeString];
     if (str == 0) return 0;
     
-    const char* res = [str UTF8String];
+    const char *res = [str UTF8String];
     
 #if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
@@ -531,7 +545,7 @@ failure:
     data_not_empty = !data.isEmpty();
     
     if (data_not_empty == true) {
-        const char* res = return data.constData();
+        const char *res = return data.constData();
         
         delete clipboard;
         delete data;
@@ -548,8 +562,8 @@ failure:
     bool r1;
     int r2;
     int lenstr;
-    const char* str;
-    BMessage* clip;
+    const char *str;
+    BMessage *clip;
 
     r1 = be_clipboard->Lock();
     if (r1 == false) return 0;
@@ -568,7 +582,7 @@ failure:
     return 0;
 
 #elif defined(ICE_CLIP_MICROSOFT)
-    char* res;
+    char *res;
     int fetch_res, close_res;
 
     fetch_res = OpenClipboard(ice_clip_hwnd);
@@ -586,11 +600,11 @@ deinit:
     return res;
 
 #elif defined(ICE_CLIP_UWP)
-    Windows::ApplicationModel::DataTransfer::DataPackageView^ datapackview = Windows::ApplicationModel::DataTransfer::Clipboard::GetContent();
+    Windows::ApplicationModel::DataTransfer::DataPackageView ^datapackview = Windows::ApplicationModel::DataTransfer::Clipboard::GetContent();
     bool pass = datapackview->Contains(Windows::ApplicationModel::DataTransfer::StandardDataFormats::Text);
     
     if (pass == true) {
-        Platform::String^ text_data = datapackview->GetTextAsync()->ToString();
+        Platform::String ^text_data = datapackview->GetTextAsync()->ToString();
         
         std::wstring txt1(text_data->Begin());
         delete text_data;
@@ -609,9 +623,9 @@ deinit:
 }
 
 /* Sets the Clipboard text, Returns ICE_CLIP_TRUE on success or ICE_CLIP_FALSE on failure */
-ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_set(const char* text) {
+ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_set(const char *text) {
 #if defined(ICE_CLIP_ANDROID)
-    JNIEnv* env = ice_clip_native_activity->env;
+    JNIEnv *env = ice_clip_native_activity->env;
     
     jclass activity_class = (jclass) ice_clip_native_activity->clazz;
     jclass clipboard_class;
@@ -770,9 +784,8 @@ failure:
     return ICE_CLIP_FALSE;
 
 #elif defined(ICE_CLIP_MICROSOFT)
-    void* clipbuffer;
-    void* clipset;
-    char* buffer;
+    void *clipbuffer, *clipset;
+    char *buffer;
     int res;
     unsigned alloc_size = strlen(text) + 1;
 
@@ -805,10 +818,10 @@ failure:
     return ICE_CLIP_FALSE;
     
 #elif defined(ICE_CLIP_UWP)
-    Windows::ApplicationModel::DataTransfer::DataPackage^ datapack = ref new Windows::ApplicationModel::DataTransfer::DataPackage();
-    Platform::String^ str;
+    Windows::ApplicationModel::DataTransfer::DataPackage ^datapack = ref new Windows::ApplicationModel::DataTransfer::DataPackage();
+    Platform::String ^str;
     const size_t sz = strlen(text) + 1;
-    wchar_t* wc = new wchar_t[sz];
+    wchar_t *wc = new wchar_t[sz];
 
     mbstowcs(wc, text, sz);
     
@@ -860,7 +873,7 @@ ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_clear(void) {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 #endif
 
-    NSPasteboard* pasteboard = [NSPasteboard generalPasteboard];
+    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
     if (pasteboard == 0) return ICE_CLIP_FALSE;
 
     [pasteboard clearContents];

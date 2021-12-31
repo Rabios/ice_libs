@@ -13,19 +13,34 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
-#define ICE_BATT_IMPL
+// Define the implementation of the library then include it
+#define ICE_BATT_IMPL 1
 #include "ice_batt.h"
+
 #include <stdio.h>
 
-int main(int argc, char** argv) {
-    // Fetch battery info
-    ice_batt_info status = ice_batt_status();
-    
-    // Prints if battery exists and if charging and battery level
-    printf("Battery Exists: %s\n", (status.exists == ICE_BATT_TRUE) ? "YES" : "NO");
-    printf("Battery Charging: %s\n", (status.charging == ICE_BATT_TRUE) ? "YES" : "NO");
-    printf("Battery Level: %u\n", status.level);
-    
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+
+int main(int argc, char **argv) {
+    // Struct that contains battery information
+    ice_batt_info batt;
+
+    // Fetch battery information and store the information in the struct
+    ice_batt_error err = ice_batt_get_info(&batt);
+
+    // If the function failed to fetch battery information, Trace error then terminate the program
+    if (err != ICE_BATT_ERROR_OK) {
+        trace("ice_batt_get_status", "ERROR: failed to fetch battery information!");
+        return -1;
+    }
+
+    // Print information we got
+    printf("Device has battery: %s\nIs battery charging: %s\nBattery Level: %u\n",
+      (batt.exists == ICE_BATT_TRUE) ? "YES" : "NO",
+      (batt.charging == ICE_BATT_TRUE) ? "YES" : "NO",
+      batt.level);
+
     return 0;
 }
 
@@ -46,10 +61,10 @@ typedef struct ice_batt_info {
 } ice_batt_info;
 
 // [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
-void ice_batt_use_native_activity(const void* activity);
+void ice_batt_use_native_activity(void *activity);
 
 // Returns curreny battery status
-ice_batt_info ice_batt_status(void);
+ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
 
 
 ================================== Linking Flags ==================================
@@ -61,7 +76,7 @@ ice_batt_info ice_batt_status(void);
 5. Nintendo Switch (libnx)      =>  -lnx
 6. PlayStation Vita (vitasdk)   =>  -lScePower_stub
 
-// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragmas
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
 
 ================================= Usable #define(s) ===============================
@@ -110,7 +125,7 @@ ice_batt_info ice_batt_status(void);
 #define ICE_BATT_EXTERN         // externs library functions
 #define ICE_BATT_STATIC         // statics library functions
 
-// NOTE: ICE_BATT_EXTERN and ICE_BATT_STATIC cannot be #defined together in the code...
+// NOTE: You cannot #define both ICE_BATT_EXTERN and ICE_BATT_STATIC together in the code...
 
 
 ============================== Implementation Resources ===========================
@@ -146,24 +161,8 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_BATT_H
+#if !defined(ICE_BATT_H)
 #define ICE_BATT_H 1
-
-/* Disable security warnings for MSVC compiler, We don't want to force using C11! */
-#ifdef _MSC_VER
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE 1
-#  endif
-#  ifndef _CRT_SECURE_NO_WARNINGS
-#    define _CRT_SECURE_NO_WARNINGS 1
-#  endif
-#  pragma warning(disable:4996)
-#endif
-
-/* Define C interface for Windows libraries! ;) */
-#ifndef CINTERFACE
-#  define CINTERFACE 1
-#endif
 
 /* Allow to use calling conventions if desired... */
 #if defined(ICE_BATT_VECTORCALL)
@@ -308,28 +307,26 @@ typedef enum ice_batt_bool {
 
 /* Struct that contains battery status (Exists?, Charging?, Battery Level) */
 typedef struct ice_batt_info {
-    ice_batt_bool exists;
-    ice_batt_bool charging;
+    ice_batt_bool exists, charging;
     unsigned level;
 } ice_batt_info;
 
 /* Enumeration for errors that may occur */
 typedef enum ice_batt_error {
     ICE_BATT_ERROR_OK = 0,          /* OK - no errors */
-    ICE_BATT_ERROR_NO_BATTERY,      /* Occurs when device has no battery */
-    ICE_BATT_ERROR_UNKNOWN_STATUS,  /* Occurs when failed to get battery status, Or if battery status is undefined */
-    ICE_BATT_ERROR_SYSCALL_FAILURE  /* Occurs when failed to call platform-specific function */
+    ICE_BATT_ERROR_UNKNOWN_STATUS,  /* Occurs when failed to get battery status, Or if battery status is undefined, Or device doesn't have battery */
+    ICE_BATT_ERROR_SYSCALL_FAILURE  /* Occurs when platform-specific function fails */
 } ice_batt_error;
 
 /* ============================== Functions ============================== */
 
 #if defined(ICE_BATT_ANDROID)
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions */
-ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(const void* activity);
+ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(void *activity);
 #endif
 
-/* fetches battery information and stores result information in info, Returns ICE_BATT_TRUE on success or ICE_BATT_FALSE on failure */
-ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info* info);
+/* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_TRUE on success or ICE_BATT_FALSE on failure */
+ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_info(ice_batt_info *batt_info);
 
 #if defined(__cplusplus)
 }
@@ -374,6 +371,7 @@ using namespace Windows::System::Power;
 #    include <windows.h>
 #    pragma comment(lib, "kernel32.lib")
 #  else
+#    include <windef.h>
 #    include <winbase.h>
 #  endif
 #elif defined(ICE_BATT_SWITCH)
@@ -381,7 +379,7 @@ using namespace Windows::System::Power;
 #elif defined(ICE_BATT_PSP)
 #  include <psppower.h>
 #elif defined(ICE_BATT_PSVITA)
-#  include <psp2kern/power.h>
+#  include <psp2/power.h>
 #elif defined(ICE_BATT_BSD)
 #  include <unistd.h>
 #  include <sys/types.h>
@@ -409,18 +407,19 @@ using namespace Windows::System::Power;
     }
 
 /* native activity that ice_batt will use on Android for Clipboard */
-static ANativeActivity* ice_batt_native_activity;
+static ANativeActivity *ice_batt_native_activity;
 
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions */
-ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(const void* activity) {
+ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(void *activity) {
     ice_batt_native_activity = (ANativeActivity*) activity;
 }
 #endif
 
-ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info* info) {
+/* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_TRUE on success or ICE_BATT_FALSE on failure */
+ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info *batt_info) {
     ice_batt_error error = ICE_BATT_ERROR_OK;
 #if defined(ICE_BATT_ANDROID)
-    JNIEnv* env = ice_batt_native_activity->env;
+    JNIEnv *env = ice_batt_native_activity->env;
     jclass activity_class = (jclass) ice_batt_native_activity->clazz;
 
     jmethodID mid, imid, bmid;
@@ -428,8 +427,7 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info*
     jstring name, action;
     jboolean res;
     int level, scale;
-    unsigned batt_level = 0;
-    ice_batt_bool batt_charging = ICE_BATT_FALSE;
+    float batt_level;
     ice_batt_bool failed = ICE_BATT_FALSE;
 
     mid = env->GetStaticMethodID(env, activity_class, "getContext", "()Landroid/content/Context;");
@@ -440,7 +438,9 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info*
     
     action = env->NewStringUTF(env, "android.intent.action.BATTERY_CHANGED");
     ice_batt_android_null_check(action);
-    
+
+    batt_info->exists = ICE_BATT_TRUE;
+
     cls = env->FindClass(env, "android/content/IntentFilter");
     ice_batt_android_null_check(cls);
 
@@ -465,7 +465,7 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info*
     name = env->NewStringUTF(env, "level");
     ice_batt_android_null_check(name);
     
-    level = envCallIntMethod(env, intent, imid, name, -1);
+    level = env->CallIntMethod(env, intent, imid, name, -1);
 
     name = env->NewStringUTF(env, "scale");
     ice_batt_android_null_check(name);
@@ -478,7 +478,13 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info*
         goto finish;
     }
     
-    batt_level = (unsigned) (level * 100 / scale);
+    batt_level = (float) ((level * 100.0f) / scale);
+    if (!(batt_level >= 0.0f && batt_level <= 100.0f)) {
+        batt_info->exists = ICE_BATT_FALSE;
+        batt_level = 0.0f;
+    }
+
+    batt_info->level = (unsigned) batt_level;
     
     bmid = env->GetMethodID(env, cls, "getBooleanExtra", "(Ljava/lang/String;Z)Z");
     ice_batt_android_null_check(bmid);
@@ -489,7 +495,7 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info*
     res = env->CallBooleanMethod(env, intent, bmid, name, -1);
     ice_batt_android_null_check(res);
 
-    batt_charging = (res > 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (res > 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
 
     goto finish;
 
@@ -504,14 +510,11 @@ goto finish:
 
     if (failed == ICE_BATT_TRUE) goto failure;
 
-    info->exists = ICE_BATT_TRUE;
-    info->charging = batt_charging;
-    info->level = batt_level;
+    return error;
 
 #elif defined(ICE_BATT_TIZEN)
-    int res;
-    int batt_level = 0;
-    bool batt_charging = false;
+    int res, batt_level;
+    bool batt_charging;
     
     res = device_battery_get_percent(&batt_level);
     if (res != 0) {
@@ -525,9 +528,9 @@ goto finish:
         goto failure;
     }
 
-    info->exists = ICE_BATT_TRUE;
-    info->charging = (batt_charging == true) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->level = (unsigned) batt_level;
+    batt_info->exists = ICE_BATT_TRUE;
+    batt_info->charging = (batt_charging == true) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = (unsigned) batt_level;
     
 #elif defined(ICE_BATT_IOS)
 
@@ -536,33 +539,31 @@ goto finish:
 #else
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 #endif
-    int batt_level, batt_state;
-    ice_batt_bool batt_charging, batt_exist;
+    int batt_level;
+    long batt_state;
     
     UIDevice *device = [UIDevice currentDevice];
     [device setBatteryMonitoringEnabled:YES];
     
     batt_level = (int) ([device batteryLevel] * 100.0f);
-    batt_state = (int) [device batteryState];
+    batt_state = (long) [device batteryState];
+
+    if (batt_level < 0) batt_level = 0;
 
     [device setBatteryMonitoringEnabled:NO];
-        
-    batt_charging = (batt_state == 2) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    batt_exist = (batt_state == 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+
+    batt_info->exists = (batt_state == 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (batt_state == 2) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = (unsigned) batt_level;
 
 #if !defined(ICE_BATT_OBJC_ARC_ENABLED)
     [pool release];
 #endif
     
-    info->exists = batt_exist;
-    info->charging = batt_charging;
-    info->level = (unsigned) batt_level;
-    
 #if defined(ICE_BATT_OBJC_ARC_ENABLED)
     }
 #endif
 
-/* [@Rabios] TODO: Do some checks here... */
 #elif defined(ICE_BATT_OSX)
 
 #if defined(ICE_BATT_OBJC_ARC_ENABLED)
@@ -575,7 +576,7 @@ goto finish:
     CFDictionaryRef psrc;
     void *psval;
     int cur_cap = 0, max_cap = 0, srcs = CFArrayGetCount(sources);
-    unsigned batt_level;
+    float batt_level;
     ice_batt_bool batt_charging;
     
     if (srcs > 0) {
@@ -589,25 +590,44 @@ goto finish:
         error = ICE_BATT_ERROR_NO_BATTERY;
         goto failure;
     }
+
+    batt_info->exists = ICE_BATT_TRUE;
     
     psval = CFDictionaryGetValue(psrc, CFSTR(kIOPSCurrentCapacityKey));
+    if (psval == 0) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
+
     CFNumberGetValue((CFNumberRef) psval, kCFNumberSInt32Type, &cur_cap);
     
     psval = CFDictionaryGetValue(psrc, CFSTR(kIOPSMaxCapacityKey));
+    if (psval == 0) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
+
     CFNumberGetValue((CFNumberRef) psval, kCFNumberSInt32Type, &max_cap);
     
-    batt_level = (unsigned)((float)(cur_cap / max_cap) * 100);
-    
+    batt_level = ((float)((cur_cap / max_cap) * 100.0f));
+    if (!(batt_level >= 0.0f && batt_level <= 100.0f)) {
+        batt_info->exists = ICE_BATT_FALSE;
+        batt_level = 0.0f;
+    }
+
+    batt_info->level = (unsigned) batt_level;
+
     psval = CFDictionaryGetValue(psrc, CFSTR(kIOPSIsChargingKey));
-    batt_charging = (CFBooleanGetValue((CFBooleanRef) psval) == TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    if (psval == 0) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
+
+    batt_info->charging = (CFBooleanGetValue((CFBooleanRef) psval) == TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
 
 #if !defined(ICE_BATT_OBJC_ARC_ENABLED)
     [pool release];
 #endif
-
-    info->exists = ICE_BATT_TRUE;
-    info->charging = batt_charging;
-    info->level = batt_level;
 
 #if defined(ICE_BATT_OBJC_ARC_ENABLED)
     }
@@ -616,10 +636,10 @@ goto finish:
 #elif defined(ICE_BATT_BB10)
     bb::device::BatteryInfo info;
     bb::device::BatteryChargingState::Type charge_state;
-    ice_batt_bool batt_exist, charging;
+    ice_batt_bool batt_charging;
     int batt_level;
     
-    batt_exist = info.isPresent() ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->exists = info.isPresent() ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_level = info.level();
     
     if (batt_level == -1) {
@@ -631,38 +651,41 @@ goto finish:
     }
     
     charge_state = info.chargingState();
-    charging = (charge_state == bb::device::BatteryChargingState::Charging || charge_state == bb::device::BatteryChargingState::Full) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    
+
     delete info;
 
-    info->exists = batt_exist;
-    info->charging = charging;
-    info->level = (unsigned) batt_level;
+    batt_info->charging = (charge_state == bb::device::BatteryChargingState::Charging) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = (unsigned) batt_level;
 
 #elif defined(ICE_BATT_WEB)
-    EmscriptenBatteryEvent batt_state;
-    
-    if (emscripten_get_battery_status(&batt_state) != 0) {
+    EmscriptenBatteryEvent status;
+    double batt_level;
+
+    /* It should [goto failure] if device has no battery! */
+    if (emscripten_get_battery_status(&status) != 0) {
         error = ICE_BATT_ERROR_UNKNOWN_STATUS;
         goto failure;
     }
 
-    info->exists = (batt_state.dischargingTime != 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->charging = (batt_state.charging == 1) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->level = (unsigned)(batt_state.level * 100);
+    batt_level = status.level * 100.0;
+    if (batt_level < 0) batt_level = 0;
+
+    batt_info->exists = ICE_BATT_TRUE;
+    batt_info->charging = (status.charging == 1) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = (unsigned) batt_level;
 
 #elif defined(ICE_BATT_UWP)
-    Windows::Devices::Power::BatteryReport^ batt_state = Windows::Devices::Power::Battery::AggregateBattery->GetReport();
-    
-    ice_batt_bool batt_exists = (batt_state->Status != Windows::System::Power::BatteryStatus::NotPresent) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    ice_batt_bool batt_charging = (batt_state->Status != Windows::System::Power::BatteryStatus::Charging) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    unsigned batt_level = (unsigned)((float)(batt_state->RemainingCapacityInMilliwattHours->Value / batt_state->FullChargeCapacityInMilliwattHours->Value) * 100);
-    
-    delete batt_state;
+    Windows::Devices::Power::BatteryReport ^batt_state = Windows::Devices::Power::Battery::AggregateBattery->GetReport();
+    float batt_level;
 
-    info.exists = batt_exists;
-    info.charging = batt_charging;
-    info.level = (batt_exists == ICE_BATT_TRUE) ? batt_level : 0;
+    batt_info->exists = (batt_state->Status != Windows::System::Power::BatteryStatus::NotPresent) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (batt_state->Status == Windows::System::Power::BatteryStatus::Charging) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_level = ((float)(batt_state->RemainingCapacityInMilliwattHours->Value / batt_state->FullChargeCapacityInMilliwattHours->Value) * 100.0f);
+
+    if (!(batt_level >= 0.0f && batt_level <= 100.0f)) batt_level = 0.0f;
+    batt_info->level = (unsigned) batt_level;
+
+    delete batt_state;
 
 #elif defined(ICE_BATT_MICROSOFT)
     SYSTEM_POWER_STATUS status;
@@ -674,18 +697,16 @@ goto finish:
     }
     
     batt_level = (unsigned) status.BatteryLifePercent;
-    
     if (batt_level == 255) batt_level = 0;
 
-    info.exists = (!(status.BatteryFlag & (1 << 7)) && status.BatteryFlag != 255) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info.charging = (status.BatteryFlag & (1 << 3)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info.level = batt_level;
+    batt_info->exists = (!(status.BatteryFlag & (1 << 7)) && status.BatteryFlag != 255) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (status.BatteryFlag & (1 << 3)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = batt_level;
     
 #elif defined(ICE_BATT_SWITCH)
     Result res;
-    u32 charge;
+    unsigned batt_level;
     ChargerType chtype;
-    ice_batt_bool batt_exist;
     
     res = psmInitialize();
     if (R_FAILED(res)) {
@@ -693,44 +714,53 @@ goto finish:
         goto failure;
     }
 
-    info->exists = ICE_BATT_TRUE;
+    batt_info->exists = ICE_BATT_TRUE;
     
     res = psmGetChargerType(&chtype);
     if (R_FAILED(res)) {
+        psmExit();
         error = ICE_BATT_ERROR_UNKNOWN_STATUS;
         goto failure;
     }
 
-    info->charging = (chtype > 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (chtype > 0) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     
-    res = psmGetBatteryChargePercentage(&charge);
+    res = psmGetBatteryChargePercentage(&batt_level);
     if (R_FAILED(res)) {
+        psmExit();
         error = ICE_BATT_ERROR_UNKNOWN_STATUS;
         goto failure;
     }
 
-    info->level = (unsigned) charge;
+    batt_info->level = batt_level;
     
     psmExit();
 
 #elif defined(ICE_BATT_PSP)
-    info->exists = (scePowerIsBatteryExist() == SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->charging = (scePowerIsBatteryCharging() SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->level = (unsigned) scePowerGetBatteryLifePercent();
+    int batt_level;
+
+    batt_info->exists = (scePowerIsBatteryExist() == SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (scePowerIsBatteryCharging() SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+
+    batt_level = scePowerGetBatteryLifePercent();
+    if (!(batt_level >= 0 && batt_level <= 100)) batt_level = 0;
+    
+    batt_info->level = (unsigned) batt_level;
 
 #elif defined(ICE_BATT_PSVITA)
-    int batt_level = kscePowerGetBatteryLifePercent();
-    SceBool batt_charging = kscePowerIsBatteryCharging();
-    ice_batt_bool batt_exist = (batt_level >= 0 && batt_level <= 100) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    int batt_level = scePowerGetBatteryLifePercent();
+    batt_info->exists = ICE_BATT_TRUE;
 
-    info->exists = batt_exist;
-    info->charging = (batt_charging == SCE_TRUE) ?  ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->level = (unsigned) batt_level;
+    if (!(batt_level >= 0 && batt_level <= 100)) {
+        batt_info->exists = ICE_BATT_FALSE;
+        batt_level = 0;
+    }
+
+    batt_info->level = (unsigned) batt_level;
+    batt_info->charging = (scePowerIsBatteryCharging() == SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
 
 #elif defined(ICE_BATT_BSD)
-    int nofail = 0;
-    int acpi_info[2];
-    int fd;
+    int acpi_info[2], fd, nofail = 0;
     unsigned i;
     
     const char* acpi_dev[2] = {
@@ -740,7 +770,15 @@ goto finish:
     
     fd = open("/dev/acpi", O_RDONLY);
 
-    if (fd == -1) goto failure;
+    if (fd == -1) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
+
+    if (close(fd) == -1) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
 
     for (i = 0; i < 2; i++) {
         int res = sysctlbyname(acpi_dev[i], &acpi_info[i], 0, 0);
@@ -751,17 +789,18 @@ goto finish:
         }
     }
     
-    if (nofail == -1) goto failure;
+    if (nofail == -1) {
+        error = ICE_BATT_ERROR_UNKNOWN_STATUS;
+        goto failure;
+    }
 
-    info->exists = (!(acpi_info[1] & 0x0007)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->charging = (acpi_info[1] & 0x0002) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    info->level = (unsigned) acpi_info[0];
+    batt_info->exists = (!(acpi_info[1] & 0x0007)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (acpi_info[1] & 0x0002) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = (unsigned) acpi_info[0];
     
 #elif defined(ICE_BATT_UNIX)
     int handle, res, readlen;
     char buf[513];
-    unsigned level;
-    ice_batt_bool charging;
     
     handle = open("/sys/class/power_supply/BAT0/capacity", O_RDONLY);
     if (handle == -1) {
@@ -773,10 +812,13 @@ goto finish:
     readlen = read(handle, buf, 512);
     buf[readlen < 0 ? 0 : readlen] = '\0';
     
-    level = (unsigned) atoi(buf);
+    batt_info->level = (unsigned) atoi(buf);
 
     res = close(handle);
-    if (res == -1) goto failure;
+    if (res == -1) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
 
     handle = open("/sys/class/power_supply/BAT0/status", O_RDONLY);
     if (handle == -1) {
@@ -788,22 +830,25 @@ goto finish:
     readlen = read(handle, buf, 512);
     buf[readlen < 0 ? 0 : readlen] = '\0';
     
-    charging = strstr(buf, "Discharging") ? ICE_BATT_FALSE : ICE_BATT_TRUE;
+    batt_info->exists = ICE_BATT_TRUE;
+    batt_info->charging = strstr(buf, "Discharging") ? ICE_BATT_FALSE : ICE_BATT_TRUE;
 
     res = close(handle);
-    if (res == -1) goto failure;
-
-    info->exists = ICE_BATT_TRUE;
-    info->charging = charging;
-    info->level = level;
+    if (res == -1) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
 #endif
 
+/* Android implementation returns result inside finish label, So we don't need this line... */
+#if !defined(ICE_BATT_ANDROID)
     return error;
+#endif
 
 failure:
-    info->exists = ICE_BATT_FALSE;
-    info->charging = ICE_BATT_FALSE;
-    info->level = 0;
+    batt_info->exists = ICE_BATT_FALSE;
+    batt_info->charging = ICE_BATT_FALSE;
+    batt_info->level = 0;
     
     return error;
 }

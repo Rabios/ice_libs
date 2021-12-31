@@ -1,5 +1,5 @@
 /* Define the implementation of the library then include it */
-#define ICE_BATT_IMPL
+#define ICE_BATT_IMPL 1
 #include "ice_batt.h"
 
 #include <stdio.h>

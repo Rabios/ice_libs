@@ -13,25 +13,57 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
-#define ICE_FFI_IMPL
+// Define the implementation of the library and include it
+#define ICE_FFI_IMPL 1
 #include "ice_ffi.h"
+
 #include <stdio.h>
 
-int main(int argc, char** argv) {
-    // Load shared library depending on detected platform
-#if ICE_FFI_MICROSOFT
-    ice_ffi_handle lib = ice_ffi_load("lib.dll");
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+
+int main(int argc, char **argv) {
+    ice_ffi_bool unload_res;
+    ice_ffi_handle lib;
+    unsigned (*F42)(void); // function from shared library/object
+    
+    // Define path of the shared library/object depending on platform
+#if defined(ICE_FFI_MICROSOFT)
+    const char *path = "lib42.dll";
 #else
-    ice_ffi_handle lib = ice_ffi_load("./lib.so");
+    const char *path = "./lib42.so";
 #endif
 
-    // Get the symbol "F42" from the shared library and cast it to function (Because F42 is C function)
-    unsigned int (*f42)(void) = (unsigned int(*)(void)) ice_ffi_get(lib, "F42");
+    // Load the shared library/object
+    lib = ice_ffi_load(path);
     
-    // Call the function, Then unload the library
-    printf("F42 Call: %d\n", f42());
+    // If the function failed to load the shared library/object, Trace error then terminate the program
+    if (lib == NULL) {
+        trace("ice_ffi_load", "ERROR: failed to load shared library/object!");
+        return -1;
+    }
     
-    ice_ffi_unload(lib);
+    // If the shared library/object loaded successfully, Get the function F42 symbol to call it!
+    *(unsigned**)(&F42) = ice_ffi_get(lib, "F42");
+    
+    // If the function failed to get symbol from shared library/object, Trace error then terminate the program
+    if (F42 == NULL) {
+        trace("ice_ffi_get", "ERROR: failed to get symbol from shared library/object!");
+        return -1;
+    }
+    
+    // Call the function and print the result!
+    printf("F42 call result: %u\n", F42());
+    
+    // When done, Unload symbols and the shared library/object
+    F42 = NULL;
+    unload_res = ice_ffi_unload(lib);
+    
+    // If the function failed to unload shared library/object, Trace error then terminate the program
+    if (unload_res == ICE_FFI_FALSE) {
+        trace("ice_ffi_unload", "ERROR: failed to unload shared library/object!");
+        return -1;
+    }
     
     return 0;
 }
@@ -49,13 +81,13 @@ typedef enum ice_ffi_bool {
 typedef void* ice_ffi_handle;
 
 // Loads shared library from path, Returns handle of loaded shared library on success or NULL on failure
-ice_ffi_handle ice_ffi_load(const char* path);
+ice_ffi_handle ice_ffi_load(const char *path);
 
 // Unloads shared library loaded via ice_ffi_load, Returns ICE_FFI_TRUE on success or ICE_FFI_FALSE on failure
 ice_ffi_bool ice_ffi_unload(ice_ffi_handle lib);
 
 // Loads symbol from shared library loaded via ice_ffi_load, Returns pointer to loaded symbol on success or NULL on failure
-ice_ffi_handle ice_ffi_get(ice_ffi_handle lib, const char* symbol);
+ice_ffi_handle ice_ffi_get(ice_ffi_handle lib, const char *symbol);
 
 
 ================================== Linking Flags ==================================
@@ -63,7 +95,7 @@ ice_ffi_handle ice_ffi_get(ice_ffi_handle lib, const char* symbol);
 1. Microsoft Windows    => -lkernel32
 2. Linux                => -ldl
 
-// NOTE: When using MSVC on Microsoft Windows, static libraries automatically linked via #pragmas
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
 
 ================================= Usable #define(s) ===============================
@@ -102,7 +134,14 @@ ice_ffi_handle ice_ffi_get(ice_ffi_handle lib, const char* symbol);
 #define ICE_FFI_EXTERN          // externs library functions
 #define ICE_FFI_STATIC          // statics library functions
 
-// NOTE: ICE_FFI_EXTERN and ICE_FFI_STATIC cannot be #defined together in the code...
+// NOTE: You cannot #define both ICE_FFI_EXTERN and ICE_FFI_STATIC together in the code...
+
+
+============================== Implementation Resources ===========================
+
+1. https://docs.microsoft.com/en-us/cpp/build/linking-an-executable-to-a-dll?view=msvc-170#linking-explicitly
+2. https://tldp.org/HOWTO/Program-Library-HOWTO/dl-libraries.html
+3. https://www.haiku-os.org/legacy-docs/bebook/TheKernelKit_Images.html
 
 
 ================================= Support ice_libs ================================
@@ -121,7 +160,7 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_FFI_H
+#if !defined(ICE_FFI_H)
 #define ICE_FFI_H 1
 
 /* Allow to use calling conventions if desired... */
@@ -265,7 +304,6 @@ ICE_FFI_API ice_ffi_handle ICE_FFI_CALLCONV ice_ffi_get(ice_ffi_handle lib, cons
 #elif defined(ICE_FFI_UNIX)
 #  include <dlfcn.h>
 #endif
-
 
 /* Loads shared library from path, Returns handle of loaded shared library on success or NULL on failure */
 ICE_FFI_API ice_ffi_handle ICE_FFI_CALLCONV ice_ffi_load(const char *path) {

@@ -13,19 +13,32 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
-#define ICE_CPU_IMPL
+// Define the implementation of the library and include it
+#define ICE_CPU_IMPL 1
 #include "ice_cpu.h"
+
 #include <stdio.h>
 
-int main(int argc, char** argv) {
-    // Fetch CPU information (Name, Cores, etc...)
-    ice_cpu_info status = ice_cpu_status();
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+
+int main(int argc, char **argv) {
+    // Struct that contains CPU information
+    ice_cpu_info cpu;
     
-    // Print the information
-    printf("CPU Model: %s\n", status.name);
-    printf("CPU Cores: %u\n", status.cores);
+    // Get CPU information
+    ice_cpu_bool res = ice_cpu_get_info(&cpu);
     
-    return 0;     
+    // If the function failed to retrieve CPU information, Trace error then terminate the program
+    if (res == ICE_CPU_FALSE) {
+        trace("ice_cpu_get_info", "ERROR: failed to retrieve CPU information!");
+        return -1;
+    }
+    
+    // Print CPU informations
+    printf("CPU Name: %s\nCPU Cores: %u\n", cpu.name, cpu.cores);
+    
+    return 0;
 }
 
 
@@ -39,12 +52,12 @@ typedef enum ice_cpu_bool {
 
 // Struct that contains informations about the CPU (Name, Cores, etc...)
 typedef struct ice_cpu_info {
-    const char* name;
+    const char *name;
     unsigned cores;
 } ice_cpu_info;
 
-// Fetches CPU information and stores result in cpu_info, Returns ICE_CPU_TRUE pn success or ICE_CPU_FALSE on failure
-ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_info);
+// Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure
+ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 
 
 ================================== Linking Flags ==================================
@@ -52,7 +65,7 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_i
 1. Microsoft Windows    =>  -lkernel32
 2. BlackBerry 10        =>  -lbbdevice
 
-// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragmas
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
 
 ================================= Usable #define(s) ===============================
@@ -95,7 +108,7 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_i
 #define ICE_CPU_EXTERN          // externs library functions
 #define ICE_CPU_STATIC          // statics library functions
 
-// NOTE: ICE_CPU_EXTERN and ICE_CPU_STATIC cannot be #defined together in the code...
+// NOTE: You cannot #define both ICE_CPU_EXTERN and ICE_CPU_STATIC together in the code...
 
 
 ============================== Implementation Resources ===========================
@@ -128,22 +141,6 @@ You could support or contribute to ice_libs project by possibly one of following
 
 #ifndef ICE_CPU_H
 #define ICE_CPU_H 1
-
-/* Disable security warnings for MSVC compiler, We don't want to force using C11! */
-#ifdef _MSC_VER
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE 1
-#  endif
-#  ifndef _CRT_SECURE_NO_WARNINGS
-#    define _CRT_SECURE_NO_WARNINGS 1
-#  endif
-#  pragma warning(disable:4996)
-#endif
-
-/* Define C interface for Windows libraries! ;) */
-#ifndef CINTERFACE
-#  define CINTERFACE 1
-#endif
 
 /* Allow to use calling conventions if desired... */
 #if defined(ICE_CPU_VECTORCALL)
@@ -268,14 +265,14 @@ typedef enum ice_cpu_bool {
 
 /* Struct that contains informations about the CPU (Name, Cores, etc...) */
 typedef struct ice_cpu_info {
-    const char* name;
+    const char *name;
     unsigned cores;
 } ice_cpu_info;
 
 /* ============================== Functions ============================== */
 
-/* Fetches CPU information and stores result in cpu_info, Returns ICE_CPU_TRUE pn success or ICE_CPU_FALSE on failure */
-ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_info);
+/* Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
+ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_info);
 
 #if defined(__cplusplus)
 }
@@ -291,7 +288,7 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_i
 #  elif defined(ICE_CPU_IRIX) || defined(ICE_CPU_UNIX)
 #    include <unistd.h>
 #  endif
-uint32_t ice_cpu_brand[12];
+unsigned ice_cpu_brand[12];
 #elif defined(ICE_CPU_APPLE)
 #  include <mach/mach.h>
 #  include <mach/mach_host.h>
@@ -307,7 +304,7 @@ uint32_t ice_cpu_brand[12];
 #    include <sysinfoapi.h>
 #    include <cpuid.h>
 #  endif
-const char ice_cpu_brand[0x40];
+unsigned ice_cpu_brand[12];
 #elif defined(ICE_CPU_BSD)
 #  include <sys/types.h>
 #  include <sys/sysctl.h>
@@ -318,8 +315,8 @@ const char ice_cpu_brand[0x40];
 using namespace bb;
 #endif
 
-/* Fetches CPU information and stores result in cpu_info, Returns ICE_CPU_TRUE pn success or ICE_CPU_FALSE on failure */
-ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_info) {
+/* Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
+ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_info) {
 #if defined(ICE_CPU_APPLE)
     size_t buflen = 128;
     char brand[128];
@@ -336,45 +333,10 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_i
 
     cpu_info->name = brand;
     cpu_info->cores = (unsigned) avail_cpus;
-    
-#elif defined(ICE_CPU_MICROSOFT)
-    SYSTEM_INFO sysinfo;
-    unsigned exts;
-    unsigned long cpuinf_size;
-    int i;
-    
-#if defined(_MSC_VER)
-    int cpuinf[4] = { -1 };
-#else
-    int cpuinf[4] = { 0, 0, 0, 0 };
-#endif
-
-    GetSystemInfo(&sysinfo);
-    __cpuid(cpuinf, 0x80000000);
-    
-    exts = cpuinf[0];
-    memset(ice_cpu_brand, 0, sizeof(ice_cpu_brand));
-    cpuinf_size = sizeof(cpuinf);
-    
-    for (i = 0x80000000; i <= exts; ++i) {
-        __cpuid(cpuinf, i);
-        
-        if  (i == 0x80000002) {
-            memcpy(ice_cpu_brand, cpuinf, cpuinf_size);
-        } else if  (i == 0x80000003) {
-            memcpy(ice_cpu_brand + 16, cpuinf, cpuinf_size);
-        } else if  (i == 0x80000004) {
-            memcpy(ice_cpu_brand + 32, cpuinf, cpuinf_size);
-        }
-    }
-
-    cpu_info->name = ice_cpu_brand;
-    cpu_info->cores = (unsigned) sysinfo.dwNumberOfProcessors;
 
 #elif defined(ICE_CPU_BSD)
     char brand[128];
-    unsigned cores;
-    int res;
+    unsigned cores, res;
 
     res = sysctlbyname("hw.model", &brand, &buflen, 0, 0);
     if (res != 0) goto failure;
@@ -385,11 +347,15 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_i
     cpu_info->name = brand;
     cpu_info->cores = (unsigned) cores;
     
-#elif defined(ICE_CPU_UNIX) || defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX)
-    unsigned cores = 0;
-    unsigned res;
+#elif defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX)
+    unsigned cores = 0; 
+    int res;
 
-#if defined(ICE_CPU_UNIX)
+#if defined(ICE_CPU_MICROSOFT)
+    SYSTEM_INFO sysinfo;
+    GetSystemInfo(&sysinfo);
+    cores = (unsigned) sysinfo.dwNumberOfProcessors;
+#elif defined(ICE_CPU_UNIX)
     cores = sysconf(_SC_NPROCESSORS_ONLN);
 #elif defined(ICE_CPU_HPUX)
     cores = mpctl(MPC_GETNUMSPUS, 0, 0);
@@ -404,7 +370,7 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_i
     __get_cpuid(0x80000003, ice_cpu_brand + 0x4, ice_cpu_brand + 0x5, ice_cpu_brand + 0x6, ice_cpu_brand + 0x7);
     __get_cpuid(0x80000004, ice_cpu_brand + 0x8, ice_cpu_brand + 0x9, ice_cpu_brand + 0xa, ice_cpu_brand + 0xb);
     
-    cpu_info->name = &ice_cpu_brand;
+    cpu_info->name = (const char*)(&ice_cpu_brand);
     cpu_info->cores = cores;
     
 #elif defined(ICE_CPU_BB10)
@@ -413,7 +379,7 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_status(ice_cpu_info* cpu_i
     unsigned cores = info.processorCount();
     QString model = info.processorModel(0);
     QByteArray model_utf8 = model.toUtf8();
-    const char* cpuname = model_utf8.constData();
+    const char *cpuname = model_utf8.constData();
     
     delete info;
     delete model;

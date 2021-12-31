@@ -11,19 +11,25 @@ To use it #define ICE_TEST_IMPL then #include "ice_test.h" in your C/C++ code!
 
 ================================== Usage Example ==================================
 
-#define ICE_TEST_IMPL
+// Define the implementation of the library and include it
+#define ICE_TEST_IMPL 1
 #include "ice_test.h"
 
-// Create a test example that can be called as function
-ICE_TEST_CREATE(sqrtest) {
-    // Do some test assertions
-    ICE_TEST_ASSERT_STR_EQU("ZIO", "ZIO");
-    ICE_TEST_ASSERT_EQU(6 * 6, 36);
+#include <stdio.h>
+
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+
+// Create a Test
+ICE_TEST_CREATE_EX(test1) {
+    ICE_TEST_ASSERT_TRUE(sizeof(void*) == 8);
 }
 
-int main(int argc, char** argv) {
-    // Call the test
-    sqrtest();
+int main(int argc, char **argv) {
+    trace("main", "Testing if program is 64-bit...");
+    test1(argc, argv); // test!
+    trace("main", "TEST SUCCESS!");
+
     return 0;
 }
 
@@ -39,13 +45,13 @@ int main(int argc, char** argv) {
 // Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU instead!
 #define ICE_TEST_ASSERT_EQU(a, b)
 
-// Tests equality between 2 strings.
+// Tests equality between 2 strings
 #define ICE_TEST_ASSERT_STR_EQU(a, b)
 
-// Tests if variable value is true or 1
+// Tests if variable value is true/1
 #define ICE_TEST_ASSERT_TRUE(a)
 
-// Tests if variable value is false or 0
+// Tests if variable value is false/0
 #define ICE_TEST_ASSERT_FALSE(a)
 
 // Tests if variable is NULL
@@ -77,7 +83,7 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_TEST_H
+#if !defined(ICE_TEST_H)
 #define ICE_TEST_H 1
 
 #if defined(ICE_TEST_IMPL)
@@ -107,15 +113,13 @@ Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU inst
 */
 #define ICE_TEST_ASSERT_EQU(a, b) assert(a == b);
 
-/* Tests equality between 2 strings. */
+/* Tests equality between 2 strings */
 #define ICE_TEST_ASSERT_STR_EQU(a, b) {         \
-    unsigned long lenstr1 = 0;                  \
-    unsigned long lenstr2 = 0;                  \
-    unsigned long matches = 0;                  \
-    unsigned long i;                            \
+    unsigned long lenstr1, lenstr2, matches, i; \
+    lenstr1 = lenstr2 = matches = 0;            \
                                                 \
-    while (a[lenstr1] != '\0') lenstr1++;       \
-    while (b[lenstr2] != '\0') lenstr2++;       \
+    while (a[lenstr1] != 0) lenstr1++;       \
+    while (b[lenstr2] != 0) lenstr2++;       \
                                                 \
     if (lenstr1 == lenstr2) {                   \
         for (i = 0; i < lenstr1; i++) {         \
@@ -126,11 +130,11 @@ Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU inst
     assert(matches == lenstr1);                 \
 }
 
-/* Tests if variable value is true or 1 */
-#define ICE_TEST_ASSERT_TRUE(a) assert(a == true || a == 1);
+/* Tests if variable value is true/1 */
+#define ICE_TEST_ASSERT_TRUE(a) assert((int)(a) == 1);
 
-/* Tests if variable value is false or 0 */
-#define ICE_TEST_ASSERT_FALSE(a) assert(a == false || a == 0);
+/* Tests if variable value is false/0 */
+#define ICE_TEST_ASSERT_FALSE(a) assert((int)(a) == 0);
 
 /* Tests if variable is NULL */
 #if defined(__OBJC__)

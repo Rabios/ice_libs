@@ -13,32 +13,33 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
-// Define the implementation and include the library
-#define ICE_RAM_IMPL
+// Define the implementation of the library and include it
+#define ICE_RAM_IMPL 1
 #include "ice_ram.h"
 
 #include <stdio.h>
 
 // Helper
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str)
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(int argc, char** argv) {
-    ice_ram_info info;
+    // Struct that contains RAM information
+    ice_ram_info ram;
 
     // Fetch RAM info
-    ice_ram_bool res = ice_ram_get_status(&info);
+    ice_ram_bool res = ice_ram_get_info(&ram);
 
-    // If function failed to fetch RAM info, Trace error then terminate the program
+    // If the function failed to fetch RAM info, Trace error then terminate the program
     if (res == ICE_RAM_FALSE) {
-        trace("ice_ram_get_status", "ERROR: failed to get RAM info!");
+        trace("ice_ram_get_info", "ERROR: failed to get RAM info!");
         return -1;
     }
     
-    // Print RAM info (free, used, total) in Bytes
+    // Print RAM info (free, used, total) in bytes
     printf("%s %llu bytes\n%s %llu bytes\n%s %llu bytes\n",
-            "Free RAM:", info.free,
-            "Used RAM:", info.used,
-            "Total RAM:", info.total);
+            "Free RAM:", ram.free,
+            "Used RAM:", ram.used,
+            "Total RAM:", ram.total);
 
     return 0;
 }
@@ -46,7 +47,7 @@ int main(int argc, char** argv) {
 
 =================================== Library API ===================================
 
-// Typedef for free and used and total Bytes of RAM
+// Typedef for free and used and total bytes of RAM
 typedef unsigned long long ice_ram_bytes;
 
 // Boolean Enum, To avoid including stdbool.h
@@ -55,15 +56,11 @@ typedef enum ice_ram_bool {
     ICE_RAM_TRUE = 0
 } ice_ram_bool;
 
-// RAM Information, Contains free and used and total RAM in Bytes
-typedef struct ice_ram_info {
-    ice_ram_bytes free;
-    ice_ram_bytes used;
-    ice_ram_bytes total;
-} ice_ram_info;
+// RAM Information, Contains free and used and total RAM in bytes
+typedef struct ice_ram_info { ice_ram_bytes free, used, total; } ice_ram_info;
 
-// Retrives info about RAM (free, used, total) in Bytes and stores information into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure
-ice_ram_bool ice_ram_get_status(ice_ram_info* info);
+// Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure
+ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 
 
 ================================== Linking Flags ==================================
@@ -71,7 +68,7 @@ ice_ram_bool ice_ram_get_status(ice_ram_info* info);
 1. Microsoft Windows    =>  -lkernel32
 2. BlackBerry 10        =>  -lbb
 
-// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragmas
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
 
 ================================= Usable #define(s) ===============================
@@ -114,7 +111,7 @@ ice_ram_bool ice_ram_get_status(ice_ram_info* info);
 #define ICE_RAM_EXTERN          // externs library functions
 #define ICE_RAM_STATIC          // statics library functions
 
-// NOTE: ICE_RAM_EXTERN and ICE_RAM_STATIC cannot be #defined together in the code...
+// NOTE: You cannot #define both ICE_RAM_EXTERN and ICE_RAM_STATIC together in the code...
 
 
 ============================== Implementation Resources ===========================
@@ -262,7 +259,7 @@ extern "C" {
 
 /* ============================== Data Types ============================== */
 
-/* Typedef for free and used and total Bytes of RAM */
+/* Typedef for free and used and total bytes of RAM */
 typedef unsigned long long ice_ram_bytes;
 
 /* Boolean Enum, To avoid including stdbool.h */
@@ -271,13 +268,13 @@ typedef enum ice_ram_bool {
     ICE_RAM_TRUE = 0
 } ice_ram_bool;
 
-/* RAM Information, Contains free and used and total RAM in Bytes */
+/* RAM Information, Contains free and used and total RAM in bytes */
 typedef struct ice_ram_info { ice_ram_bytes free, used, total; } ice_ram_info;
 
 /* ============================== Functions ============================== */
 
-/* Retrives info about RAM (free, used, total) in Bytes and stores information into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
-ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info);
+/* Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
+ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_info);
 
 #if defined(__cplusplus)
 }
@@ -310,12 +307,8 @@ using namespace bb;
 #  include <sys/sysinfo.h>
 #endif
 
-/* Retrives info about RAM (free, used, total) in bytes and stores information into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
-ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info) {
-    ice_ram_bytes mem_free;
-    ice_ram_bytes mem_used;
-    ice_ram_bytes mem_total;
-
+/* Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
+ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_info) {
 #if defined(ICE_RAM_MICROSOFT)
     MEMORYSTATUSEX status;
     int fetch_res;
@@ -325,9 +318,9 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info)
 
     if (fetch_res == 0) goto failure;
 
-    mem_free = (ice_ram_bytes) status.ullAvailPhys;
-    mem_used = (ice_ram_bytes) (status.ullTotalPhys - status.ullAvailPhys);
-    mem_total = (ice_ram_bytes) status.ullTotalPhys;
+    ram_info->free = status.ullAvailPhys;
+    ram_info->used = (status.ullTotalPhys - status.ullAvailPhys);
+    ram_info->total = status.ullTotalPhys;
 
 #elif defined(ICE_RAM_APPLE)
     mach_port_t host_port = mach_host_self();
@@ -342,9 +335,9 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info)
     fetch_res = host_statistics(host_port, HOST_VM_INFO, (host_info_t) &vm_stat, &host_size);
     if (fetch_res != 0) goto failure;
     
-    mem_free = (ice_ram_bytes) vm_stat.free_count * pagesize;
-    mem_used = (ice_ram_bytes) (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pagesize;
-    mem_total = (ice_ram_bytes) mem_used + mem_free;
+    ram_info->free = vm_stat.free_count * pagesize;
+    ram_info->used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pagesize;
+    ram_info->total = ram_info->used + ram_info->free;
     
 #elif defined(ICE_RAM_BSD)
     const char* sysctl_names[5] = {
@@ -370,12 +363,12 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info)
         }
     }
     
-    mem_total = (ice_ram_bytes) sysctl_res[1];
-    mem_free = (ice_ram_bytes) (sysctl_res[2] + sysctl_res[3] + sysctl_res[4]) * sysctl_res[0];
-    mem_used = (ice_ram_bytes) (mem_total - mem_free);
+    ram_info->total = sysctl_res[1];
+    ram_info->free = (sysctl_res[2] + sysctl_res[3] + sysctl_res[4]) * sysctl_res[0];
+    ram_info->used = ram_info->total - ram_info->free;
 
 #elif defined(ICE_RAM_WEB)
-    mem_free = (ice_ram_bytes) EM_ASM_INT({
+    ram_info->free = (ice_ram_bytes) EM_ASM_INT({
         if (!require) {
             return ((window.navigator.deviceMemory || 0) * 1024 * 1024 * 1024) - (window.performance.memory.usedJSHeapSize || 0);
         } else {
@@ -383,11 +376,11 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info)
         }
     });
 
-    mem_used = (ice_ram_bytes) EM_ASM_INT({
+    ram_info->used = (ice_ram_bytes) EM_ASM_INT({
         return (window.performance.memory.usedJSHeapSize || 0);
     });
 
-    mem_total = (ice_ram_bytes) EM_ASM_INT({
+    ram_info->total = (ice_ram_bytes) EM_ASM_INT({
         if (!require) {
             return (window.navigator.deviceMemory || 0) * 1024 * 1024 * 1024;
         } else {
@@ -401,16 +394,16 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info)
 
     if (fetch_res != 0) goto failure;
 
-    mem_free = (ice_ram_bytes) (inf.free * 1024);
-    mem_used = (ice_ram_bytes) (inf.used * 1024);
-    mem_total = (ice_ram_bytes) (inf.total * 1024);
+    ram_info->free = inf.free * 1024;
+    ram_info->used = inf.used * 1024;
+    ram_info->total = inf.total * 1024;
     
 #elif defined(ICE_RAM_BB10)
     bb::MemoryInfo info;
     
-    mem_free = (ice_ram_bytes) info.availableDeviceMemory();
-    mem_used = (ice_ram_bytes) info.memoryUsedByCurrentProcess();
-    mem_total = (ice_ram_bytes) info.totalDeviceMemory();
+    ram_info->free = info.availableDeviceMemory();
+    ram_info->used = info.memoryUsedByCurrentProcess();
+    ram_info->total = info.totalDeviceMemory();
     
     delete info;
     
@@ -420,21 +413,17 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_status(ice_ram_info* info)
 
    if (fetch_res != 0) goto failure;
 
-    mem_free = (ice_ram_bytes) si.freeram;
-    mem_used = (ice_ram_bytes) si.totalram - si.freeram;
-    mem_total = (ice_ram_bytes) si.totalram;
+    ram_info->free = si.freeram;
+    ram_info->used = si.totalram - si.freeram;
+    ram_info->total = si.totalram;
 #endif
-
-   info->free = mem_free;
-   info->used = mem_used;
-   info->total = mem_total;
-
-   return ICE_RAM_TRUE;
+    
+    return ICE_RAM_TRUE;
 
 failure:
-   info->free = 0;
-   info->used = 0;
-   info->total = 0;
+   ram_info->free = 0;
+   ram_info->used = 0;
+   ram_info->total = 0;
 
    return ICE_RAM_FALSE;
 }
