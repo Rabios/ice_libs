@@ -1,15 +1,13 @@
 ================= TODO =================
 
-[o] Remove memory allocation casts, and include <stdlib.h> or pico_malloc.h depending on platform...
 [o] Remove unnecessary definitions for libs
 [o] Do checks on how values are returned by libs (like if long long required), in that case libs needs C99!
 [o] Edit asterisks positions in pointer functions
-[ ] Use emscripten/emmalloc.h on Web
-[ ] Update docs
-[ ] Update and complete bindings!
-[ ] Continue working on the libs
-[ ] Test all
-[ ] Make bindings
+[o] Update docs
+[o] Update and complete bindings!
+[o] Continue working on the libs
+[o] Test all
+[o] Make bindings
 [o] Make site
 [ ] Publish All
 
