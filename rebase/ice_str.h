@@ -10,41 +10,33 @@ All strings returned are NULL-terminated and the library allows to use custom me
 
 To use it #define ICE_STR_IMPL then #include "ice_str.h" in your C/C++ code!
 
+Check out "Linking Flags" to know which libs required to link for compilation depending on each platform...
+
 
 ================================== Usage Example ==================================
 
-#define ICE_STR_IMPL
+// Define the implementation of the library and include it
+#define ICE_STR_IMPL 1
 #include "ice_str.h"
+
 #include <stdio.h>
 
-int main(int argc, char** argv) {
-    // define variables
-    char* str;
-    char** strs;
-    char* strs_joined;
-    unsigned len = 0;
-    unsigned i;
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-    // Create string to split it into array
-    str = "First\nSecond\nThird\nFourth";
+int main(int argc, char **argv) {
+    // Create a string repeated for multiple times
+    char *haha = ice_str_dup("HA", 8); // HAHAHAHAHAHAHAHA
 
-    // Split it and get length by using len as pointer to store length of created array
-    strs = ice_str_splitlines(str, &len);
-
-    // Iterate and print each string split-lined (via \n char)
-    for (i = 0; i < len; i++) {
-        printf("strs[%u] = %s\n", i, strs[i]);
+    // If the function failed to allocate string, Trace error then terminate the program
+    if (haha == 0) {
+        trace("ice_str_dup", "ERROR: failed to allocate string!");
+        return -1;
     }
 
-    // Join strings from array but with + mark (If you don't want to join with mark pass NULL instead of char)
-    strs_joined = ice_str_join(strs, len, '+');
-    
-    // Print the result
-    printf("strs_joined = %s\n", strs_joined);
-    
-    // Free allocated strings
-    ice_str_free(strs_joined);
-    ice_str_arr_free(strs, len);
+    // Print the string, Once we done we deallocate/free the string
+    printf("%s\n", haha);
+    ice_str_free(haha);
 
     return 0;
 }
@@ -53,6 +45,7 @@ int main(int argc, char** argv) {
 =================================== Library API ===================================
 
 // Custom Memory Allocators (Can be customized, Defaults to [malloc, calloc, realloc, free])
+// To change them: #define ICE_STR_CUSTOM_MEMORY_ALLOCATORS and #define each one to use desired function, Plus including header that declares those memory functions in your code...
 #define ICE_STR_MALLOC(sz)
 #define ICE_STR_CALLOC(n, sz)
 #define ICE_STR_REALLOC(ptr, sz)
@@ -65,80 +58,84 @@ typedef enum ice_str_bool {
 } ice_str_bool;
 
 // Returns string length
-unsigned ice_str_len(const char* str);
+unsigned long ice_str_len(const char *str);
 
 // Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure
-char* ice_str_sub(const char* str, unsigned from_idx, unsigned to_idx);
+char* ice_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx);
 
 // Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
-char* ice_str_concat(const char* str1, const char* str2);
+char* ice_str_concat(const char *str1, const char *str2);
 
 // Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
-char* ice_str_insert(const char* str1, const char* str2, unsigned idx);
+char* ice_str_insert(const char *str1, const char *str2, unsigned long idx);
 
-// Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned integers (To be Dynamically-Allocated) to store the matching indexes
-unsigned ice_str_matches(const char* str1, const char* str2, unsigned **idxs);
+// Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes
+unsigned long ice_str_matches(const char *str1, const char *str2, unsigned long **idxs);
 
 // Replaces string str1 in string str with string str2 and returns result string on allocation success or NULL on allocation failure
-char* ice_str_rep(const char* str, const char* str1, const char* str2);
+char* ice_str_rep(const char *str, const char *str1, const char *str2);
 
 // Returns string repeated multiple times on allocation success or NULL on allocation failure
-char* ice_str_dup(const char* str, unsigned times);
+char* ice_str_dup(const char *str, unsigned long times);
 
 // Returns copy of string but malloc-ed on allocation success or NULL on allocation failure
-char* ice_str_copy(const char* str);
+char* ice_str_copy(const char *str);
 
 // Returns reverse of string on allocation success or NULL on allocation failure
-char* ice_str_rev(const char* str);
+char* ice_str_rev(const char *str);
 
 // Converts char to string and returns result on allocation success or NULL on allocation failure
 char* ice_str_char_to_str(char ch);
 
 // Returns ICE_STR_TRUE if str1 is same as str2, Else returns ICE_STR_FALSE
-ice_str_bool ice_str_same(const char* str1, const char* str2);
+ice_str_bool ice_str_same(const char *str1, const char *str2);
 
 // Returns uppercased version of string on allocation success or NULL on allocation failure
-char* ice_str_upper(const char* str);
+char* ice_str_upper(const char *str);
 
 // Returns lowercased version of string on allocation success or NULL on allocation failure
-char* ice_str_lower(const char* str);
+char* ice_str_lower(const char *str);
 
 // Returns capital case version of string on allocation success or NULL on allocation failure
-char* ice_str_cap(const char* str);
+char* ice_str_cap(const char *str);
 
-// Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned integer to store length of resulted array
-char** ice_str_split(const char* str, char delim, unsigned *arrlen);
+// Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of resulted array
+char** ice_str_split(const char *str, char delim, unsigned long *arrlen);
 
 // Same like ice_str_split but uses new line character '\n' as delimiter
-char** ice_str_splitlines(const char* str, unsigned *arrlen);
+char** ice_str_splitlines(const char *str, unsigned long *arrlen);
 
 // Returns string which is concat of all strings from array strs on allocation success or NULL on allocation failure, arrlen should be defined for the iteration over the array and delimiter can be used to join each string with (Though it can be NULL as optional parameter)
-char* ice_str_join(const char** strs, unsigned arrlen, char delim);
+char* ice_str_join(const char **strs, unsigned long arrlen, char delim);
 
 // Returns ICE_STR_TRUE if string str1 starts with string str2, Else returns ICE_STR_FALSE
-ice_str_bool ice_str_begins(const char* str1, const char* str2);
+ice_str_bool ice_str_begins(const char *str1, const char *str2);
 
 // Returns ICE_STR_TRUE if string str1 ends with string str2, Else returns ICE_STR_FALSE
-ice_str_bool ice_str_ends(const char* str1, const char* str2);
+ice_str_bool ice_str_ends(const char *str1, const char *str2);
 
 // Returns ICE_STR_TRUE if string str ends with char ch, Else returns ICE_STR_FALSE
-ice_str_bool ice_str_last_char(const char* str, char ch);
+ice_str_bool ice_str_last_char(const char *str, char ch);
 
-// Returns char codes of the string as allocated array on allocation success or NULL on allocation failure, arrlen is pointer to unsigned integer to store length of integer array (Though you can NULL it if you know the length)
-int* ice_str_to_bytes(const char* str, unsigned *arrlen);
+// Returns char codes of the string as allocated array on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of integer array (Though you can NULL it if you know the length)
+int* ice_str_to_bytes(const char *str, unsigned long *arrlen);
 
 // Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length
-char* ice_str_from_bytes(const int* chars, unsigned arrlen);
+char* ice_str_from_bytes(const int *chars, unsigned long arrlen);
 
 // Frees a String
-void ice_str_free(char* str);
+void ice_str_free(char *str);
 
 // Frees array of char codes
-void ice_str_free_bytes(int* bytes);
+void ice_str_free_bytes(int *bytes);
 
 // Frees array of strings, arrlen should be set to array length
-void ice_str_arr_free(char** arr, unsigned arrlen);
+void ice_str_arr_free(char **arr, unsigned long arrlen);
 
+
+================================== Linking Flags ==================================
+
+Everywhere: `-lc` (Most times automatically linked...)
 
 ================================= Usable #define(s) ===============================
 
@@ -156,8 +153,8 @@ void ice_str_arr_free(char** arr, unsigned arrlen);
 
 // #### Define one of these to set implementation platform (Optional) #### //
 
-#define ICE_STR_MICROSOFT       // Microsoft platforms
-#define ICE_STR_NON_MICROSOFT   // Non-Microsoft platforms
+#define ICE_STR_MICROSOFT               // Microsoft platforms
+#define ICE_STR_NON_MICROSOFT           // Non-Microsoft platforms
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
 #define ICE_STR_PLATFORM_AUTODETECTED
@@ -177,6 +174,9 @@ void ice_str_arr_free(char** arr, unsigned arrlen);
 
 // NOTE: ICE_STR_EXTERN and ICE_STR_STATIC cannot be #defined together in the code...
 
+// Define this to customize ICE_STR_MALLOC, ICE_STR_CALLOC, ICE_STR_REALLOC, ICE_STR_FREE
+#define ICE_STR_CUSTOM_MEMORY_ALLOCATORS
+
 
 ================================= Support ice_libs ================================
 
@@ -194,7 +194,7 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_STR_H
+#if !defined(ICE_STR_H)
 #define ICE_STR_H 1
 
 /* Allow to use calling conventions if desired... */
@@ -290,18 +290,24 @@ Else, Just define API as extern C code!
 #  define ICE_STR_API ICE_STR_APIDEF ICE_STR_INLINEDEF
 #endif
 
-/* Custom Memory Allocators */
-#ifndef ICE_STR_MALLOC
-#  define ICE_STR_MALLOC(sz) malloc(sz)
-#endif
-#ifndef ICE_STR_CALLOC
-#  define ICE_STR_CALLOC(n, sz) calloc(n, sz)
-#endif
-#ifndef ICE_STR_REALLOC
-#  define ICE_STR_REALLOC(ptr, sz) realloc(ptr, sz)
-#endif
-#ifndef ICE_STR_FREE
-#  define ICE_STR_FREE(ptr) free(ptr)
+/*
+Custom Memory Allocators (Can be customized, Defaults to [malloc, calloc, realloc, free])
+
+To change them: #define ICE_STR_CUSTOM_MEMORY_ALLOCATORS and #define each one to use desired function, Plus including header that declares those memory functions in your code...
+*/
+#if !defined(ICE_STR_CUSTOM_MEMORY_ALLOCATORS)
+#  if !defined(ICE_STR_MALLOC)
+#    define ICE_STR_MALLOC(sz) malloc(sz)
+#  endif
+#  if !defined(ICE_STR_CALLOC)
+#    define ICE_STR_CALLOC(n, sz) calloc(n, sz)
+#  endif
+#  if !defined(ICE_STR_REALLOC)
+#    define ICE_STR_REALLOC(ptr, sz) realloc(ptr, sz)
+#  endif
+#  if !defined(ICE_STR_FREE)
+#    define ICE_STR_FREE(ptr) free(ptr)
+#  endif
 #endif
 
 #if defined(__cplusplus)
@@ -319,79 +325,79 @@ typedef enum ice_str_bool {
 /* ============================== Functions ============================== */
 
 /* Returns string length */
-ICE_STR_API unsigned ICE_STR_CALLCONV ice_str_len(const char* str);
+ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_len(const char *str);
 
 /* Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char* str, unsigned from_idx, unsigned to_idx);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx);
 
 /* Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char* str1, const char* str2);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char *str1, const char *str2);
 
 /* Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_insert(const char* str1, const char* str2, unsigned idx);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_insert(const char *str1, const char *str2, unsigned long idx);
 
-/* Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned integers (To be Dynamically-Allocated) to store the matching indexes */
-ICE_STR_API unsigned ICE_STR_CALLCONV ice_str_matches(const char* str1, const char* str2, unsigned **idxs);
+/* Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes */
+ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_matches(const char *str1, const char *str2, unsigned long **idxs);
 
 /* Replaces string str1 in string str with string str2 and returns result string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char* str, const char* str1, const char* str2);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char *str, const char *str1, const char *str2);
 
 /* Returns string repeated multiple times on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_dup(const char* str, unsigned times);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_dup(const char *str, unsigned long times);
 
 /* Returns copy of string but malloc-ed on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_copy(const char* str);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_copy(const char *str);
 
 /* Returns reverse of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(const char* str);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(const char *str);
 
 /* Converts char to string and returns result on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_char_to_str(char ch);
 
 /* Returns ICE_STR_TRUE if str1 is same as str2, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_same(const char* str1, const char* str2);
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_same(const char *str1, const char *str2);
 
 /* Returns uppercased version of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(const char* str);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(const char *str);
 
 /* Returns lowercased version of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(const char* str);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(const char *str);
 
 /* Returns capital case version of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_cap(const char* str);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_cap(const char *str);
 
-/* Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned integer to store length of resulted array */
-ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char* str, char delim, unsigned *arrlen);
+/* Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of resulted array */
+ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char *str, char delim, unsigned long *arrlen);
 
 /* Same like ice_str_split but uses new line character '\n' as delimiter */
-ICE_STR_API char** ICE_STR_CALLCONV ice_str_splitlines(const char* str, unsigned *arrlen);
+ICE_STR_API char** ICE_STR_CALLCONV ice_str_splitlines(const char *str, unsigned long *arrlen);
 
 /* Returns string which is concat of all strings from array strs on allocation success or NULL on allocation failure, arrlen should be defined for the iteration over the array and delimiter can be used to join each string with (Though it can be NULL as optional parameter) */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char** strs, unsigned arrlen, char delim);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char **strs, unsigned long arrlen, char delim);
 
 /* Returns ICE_STR_TRUE if string str1 starts with string str2, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char* str1, const char* str2);
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char *str1, const char *str2);
 
 /* Returns ICE_STR_TRUE if string str1 ends with string str2, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char* str1, const char* str2);
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char *str1, const char *str2);
 
 /* Returns ICE_STR_TRUE if string str ends with char ch, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_last_char(const char* str, char ch);
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_last_char(const char *str, char ch);
 
-/* Returns char codes of the string as allocated array on allocation success or NULL on allocation failure, arrlen is pointer to unsigned integer to store length of integer array (Though you can NULL it if you know the length) */
-ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char* str, unsigned *arrlen);
+/* Returns char codes of the string as allocated array on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of integer array (Though you can NULL it if you know the length) */
+ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char *str, unsigned long *arrlen);
 
 /* Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int* chars, unsigned arrlen);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int *chars, unsigned long arrlen);
 
 /* Frees a String */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_free(char* str);
+ICE_STR_API void ICE_STR_CALLCONV ice_str_free(char *str);
 
 /* Frees array of char codes */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_free_bytes(int* bytes);
+ICE_STR_API void ICE_STR_CALLCONV ice_str_free_bytes(int *bytes);
 
 /* Frees array of strings, arrlen should be set to array length */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char** arr, unsigned arrlen);
+ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char **arr, unsigned long arrlen);
 
 #if defined(__cplusplus)
 }
@@ -399,31 +405,35 @@ ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char** arr, unsigned arrlen);
 
 #if defined(ICE_STR_IMPL)
 
+#if !defined(ICE_STR_CUSTOM_MEMORY_ALLOCATORS)
+#  include <stdlib.h>
+#endif
+
 /* Returns string length */
-ICE_STR_API unsigned ICE_STR_CALLCONV ice_str_len(const char* str) {
-    unsigned res = 0;
+ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_len(const char *str) {
+    unsigned long res = 0;
     while (str[res] != 0) res++;   
     return res;
 }
 
 /* Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char* str, unsigned from_idx, unsigned to_idx) {
-    int i = 0;
-    unsigned count = 0;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx) {
+    long i = 0;
+    unsigned long count = 0;
     ice_str_bool backwards = (to_idx < from_idx) ? ICE_STR_TRUE : ICE_STR_FALSE;
-    unsigned len = (backwards == ICE_STR_TRUE) ? ((from_idx - to_idx) + 2) : ((to_idx - from_idx) + 2);
-    unsigned alloc_size = (len * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
+    unsigned long len = (backwards == ICE_STR_TRUE) ? ((from_idx - to_idx) + 2) : ((to_idx - from_idx) + 2);
+    unsigned long alloc_size = (len * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
     
     if (res == 0) return 0;
     
     if (backwards == ICE_STR_TRUE) {
-        for (i = ((int) from_idx); i >= ((int) to_idx); i--) {
+        for (i = ((long) from_idx); i >= ((long) to_idx); i--) {
             res[count] = str[i];
             count++;
         }
     } else {
-        for (i = ((int) from_idx); i <= ((int) to_idx); i++) {
+        for (i = ((long) from_idx); i <= ((long) to_idx); i++) {
             res[count] = str[i];
             count++;
         }
@@ -435,13 +445,13 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char* str, unsigned from_id
 }
 
 /* Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char* str1, const char* str2) {
-    unsigned len1 = ice_str_len(str1);
-    unsigned len2 = ice_str_len(str2);
-    unsigned count = 0;
-    unsigned alloc_size = ((len1 + len2 + 1) * sizeof(char));
-    unsigned i;
-    char* res = ICE_STR_MALLOC(alloc_size);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char *str1, const char *str2) {
+    unsigned long len1 = ice_str_len(str1);
+    unsigned long len2 = ice_str_len(str2);
+    unsigned long count = 0;
+    unsigned long alloc_size = ((len1 + len2 + 1) * sizeof(char));
+    unsigned long i;
+    char *res = ICE_STR_MALLOC(alloc_size);
     
     if (res == 0) return 0;
     
@@ -461,14 +471,14 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char* str1, const char* 
 }
 
 /* Inserts string str2 into string str1 at specified index and returns result string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_insert(const char* str1, const char* str2, unsigned idx) {
-    unsigned len1 = ice_str_len(str1);
-    unsigned len2 = ice_str_len(str2);
-    unsigned count = 0;
-    unsigned alloc_size = ((len1 + len2 + 1) * sizeof(char));
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_insert(const char *str1, const char *str2, unsigned long idx) {
+    unsigned long len1 = ice_str_len(str1);
+    unsigned long len2 = ice_str_len(str2);
+    unsigned long count = 0;
+    unsigned long alloc_size = ((len1 + len2 + 1) * sizeof(char));
+    unsigned long i;
     
-    char* res = ICE_STR_MALLOC(alloc_size);
+    char *res = ICE_STR_MALLOC(alloc_size);
     
     if (res == 0) return 0;
     
@@ -492,18 +502,18 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_insert(const char* str1, const char* 
     return res;
 }
 
-/* Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned integers (To be Dynamically-Allocated) to store the matching indexes */
-ICE_STR_API unsigned ICE_STR_CALLCONV ice_str_matches(const char* str1, const char* str2, unsigned **idxs) {
-    unsigned len1 = ice_str_len(str1);
-    unsigned len2 = ice_str_len(str2);
-    unsigned char_matches = 0;
-    unsigned matches = 0;
-    unsigned alloc_size;
-    unsigned i;
+/* Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes */
+ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_matches(const char *str1, const char *str2, unsigned long **idxs) {
+    unsigned long len1 = ice_str_len(str1);
+    unsigned long len2 = ice_str_len(str2);
+    unsigned long char_matches = 0;
+    unsigned long matches = 0;
+    unsigned long alloc_size;
+    unsigned long i;
 
     for (i = 0; i < len1; i++) {
         if ((str1[i] == str2[0]) && ((i + (len2 - 1)) < len1)) {
-            unsigned j;
+            unsigned long j;
 
             for (j = 0; j < len2; j++) {
                 if (str1[i + j] == str2[j]) {
@@ -519,10 +529,10 @@ ICE_STR_API unsigned ICE_STR_CALLCONV ice_str_matches(const char* str1, const ch
     }
     
     if (idxs != 0) {
-        unsigned* matches_idxs;
-        unsigned count = 0;
+        unsigned long *matches_idxs;
+        unsigned long count = 0;
 
-        alloc_size = (matches * sizeof(unsigned));
+        alloc_size = (matches * sizeof(unsigned long));
         matches_idxs = ICE_STR_MALLOC(alloc_size);
 
         if (matches_idxs == 0) return 0;
@@ -541,25 +551,25 @@ ICE_STR_API unsigned ICE_STR_CALLCONV ice_str_matches(const char* str1, const ch
 }
 
 /* Replaces string str1 in string str with string str2 and returns result string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char* str, const char* str1, const char* str2) {
-    char* res;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char *str, const char *str1, const char *str2) {
+    char *res;
 
-    unsigned len1 = ice_str_len(str);
-    unsigned len2 = ice_str_len(str1);
-    unsigned len3 = ice_str_len(str2);
+    unsigned long len1 = ice_str_len(str);
+    unsigned long len2 = ice_str_len(str1);
+    unsigned long len3 = ice_str_len(str2);
     
-    unsigned* matches_idxs;
-    unsigned char_matches = 0;
-    unsigned matches = 0;
-    unsigned count = 0;
-    unsigned count2 = 0;
-    unsigned matches_alloc_size;
-    unsigned alloc_size;
-    unsigned i;
+    unsigned long *matches_idxs;
+    unsigned long char_matches = 0;
+    unsigned long matches = 0;
+    unsigned long count = 0;
+    unsigned long count2 = 0;
+    unsigned long matches_alloc_size;
+    unsigned long alloc_size;
+    unsigned long i;
 
     for (i = 0; i < len1; i++) {
         if ((str[i] == str1[0]) && ((i + (len2 - 1)) < len1)) {
-            unsigned j;
+            unsigned long j;
 
             for (j = 0; j < len2; j++) {
                 if (str[i + j] == str1[j]) {
@@ -574,7 +584,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char* str, const char* str1
         }
     }
 
-    matches_alloc_size = (matches * sizeof(unsigned));
+    matches_alloc_size = (matches * sizeof(unsigned long));
     alloc_size = ((len1 + ((len3 - len2) * matches) + 1) * sizeof(char));
 
     matches_idxs = ICE_STR_MALLOC(matches_alloc_size);
@@ -592,11 +602,11 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char* str, const char* str1
     if (res == 0) return 0;
 
     for (i = 0; i < len1; i++) {
-        unsigned j;
+        unsigned long j;
 
         for (j = 0; j < count; j++) {
             if (i == matches_idxs[j]) {
-                unsigned k;
+                unsigned long k;
 
                 for (k = 0; k < len3; k++) {
                     res[count2] = str2[k];
@@ -625,17 +635,17 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char* str, const char* str1
 }
 
 /* Returns string repeated multiple times on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_dup(const char* str, unsigned times) {
-    unsigned len = ice_str_len(str);
-    unsigned count = 0;
-    unsigned alloc_size = (((len * times) + 1) * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_dup(const char *str, unsigned long times) {
+    unsigned long len = ice_str_len(str);
+    unsigned long count = 0;
+    unsigned long alloc_size = (((len * times) + 1) * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
+    unsigned long i;
     
     if (res == 0) return 0;
 
     for (i = 0; i < times; i++) {
-        unsigned j;
+        unsigned long j;
 
         for (j = 0; j < len; j++) {
             res[count] = str[j];
@@ -649,11 +659,11 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_dup(const char* str, unsigned times) 
 }
 
 /* Returns copy of string but malloc-ed on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_copy(const char* str) {
-    unsigned len = ice_str_len(str);
-    unsigned alloc_size = ((len + 1) * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_copy(const char *str) {
+    unsigned long len = ice_str_len(str);
+    unsigned long alloc_size = ((len + 1) * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
+    unsigned long i;
 
     if (res == 0) return 0;
 
@@ -665,12 +675,12 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_copy(const char* str) {
 }
 
 /* Returns reverse of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(const char* str) {
-    unsigned len = ice_str_len(str);
-    unsigned count = 0;
-    unsigned alloc_size = ((len + 1) * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(const char *str) {
+    unsigned long len = ice_str_len(str);
+    unsigned long count = 0;
+    unsigned long alloc_size = ((len + 1) * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
+    unsigned long i;
 
     if (res == 0) return 0;
 
@@ -687,7 +697,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(const char* str) {
 /* Converts char to string and returns result on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_char_to_str(char ch) {
     unsigned alloc_size = (2 * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
+    char *res = ICE_STR_MALLOC(alloc_size);
 
     if (res == 0) return 0;
     
@@ -698,11 +708,11 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_char_to_str(char ch) {
 }
 
 /* Returns ICE_STR_TRUE if str1 is same as str2, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_same(const char* str1, const char* str2) {
-    unsigned len1 = ice_str_len(str1);
-    unsigned len2 = ice_str_len(str2);
-    unsigned count = 0;
-    unsigned i;
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_same(const char *str1, const char *str2) {
+    unsigned long len1 = ice_str_len(str1);
+    unsigned long len2 = ice_str_len(str2);
+    unsigned long count = 0;
+    unsigned long i;
     
     if (len1 != len2) return ICE_STR_FALSE;
 
@@ -714,11 +724,11 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_same(const char* str1, const c
 }
 
 /* Returns uppercased version of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(const char* str) {
-    unsigned len = ice_str_len(str);
-    unsigned alloc_size = ((len + 1) * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(const char *str) {
+    unsigned long len = ice_str_len(str);
+    unsigned long alloc_size = ((len + 1) * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
+    unsigned long i;
 
     if (res == 0) return 0;
 
@@ -738,11 +748,11 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(const char* str) {
 }
 
 /* Returns lowercased version of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(const char* str) {
-    unsigned len = ice_str_len(str);
-    unsigned alloc_size = ((len + 1) * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(const char *str) {
+    unsigned long len = ice_str_len(str);
+    unsigned long alloc_size = ((len + 1) * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
+    unsigned long i;
 
     if (res == 0) return 0;
 
@@ -762,12 +772,12 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(const char* str) {
 }
 
 /* Returns capital case version of string on allocation success or NULL on allocation failure */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_cap(const char* str) {
-    unsigned len = ice_str_len(str);
-    unsigned alloc_size = ((len + 1) * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_cap(const char *str) {
+    unsigned long len = ice_str_len(str);
+    unsigned long alloc_size = ((len + 1) * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
     int c = (int) str[0];
-    unsigned i;
+    unsigned long i;
     
     if (res == 0) return 0;
 
@@ -786,15 +796,15 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_cap(const char* str) {
     return res;
 }
 
-/* Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned integer to store length of resulted array */
-ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char* str, char delim, unsigned *arrlen) {
-    unsigned len = ice_str_len(str);
-    unsigned arr_len = 0;
-    unsigned arr_idx = 0;
-    unsigned sz = 0;
-    char** res;
-    unsigned alloc_size;
-    unsigned i;
+/* Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of resulted array */
+ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char *str, char delim, unsigned long *arrlen) {
+    unsigned long len = ice_str_len(str);
+    unsigned long arr_len = 0;
+    unsigned long arr_idx = 0;
+    unsigned long sz = 0;
+    char **res;
+    unsigned long alloc_size;
+    unsigned long i;
 
     if (str[len - 1] != delim) arr_len++;
 
@@ -828,17 +838,17 @@ ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char* str, char delim, u
 }
 
 /* Same like ice_str_split but uses new line character '\n' as delimiter */
-ICE_STR_API char** ICE_STR_CALLCONV ice_str_splitlines(const char* str, unsigned *arrlen) {
+ICE_STR_API char** ICE_STR_CALLCONV ice_str_splitlines(const char *str, unsigned long *arrlen) {
     return ice_str_split(str, '\n', arrlen);
 }
 
 /* Returns string which is concat of all strings from array strs on allocation success or NULL on allocation failure, arrlen should be defined for the iteration over the array and delimiter can be used to join each string with (Though it can be NULL as optional parameter) */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char** strs, unsigned arrlen, char delim) {
-    char* res;
-    unsigned len = 0;
-    unsigned alloc_size = ((len + 1) * sizeof(char));
-    unsigned count = 0;
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char **strs, unsigned long arrlen, char delim) {
+    char *res;
+    unsigned long len = 0;
+    unsigned long count = 0;
+    unsigned long alloc_size = ((len + 1) * sizeof(char));
+    unsigned long i;
 
     if (delim != 0) {
         len += arrlen - 1;
@@ -853,8 +863,8 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char** strs, unsigned arrl
     if (res == 0) return 0;
 
     for (i = 0; i < arrlen; i++) {
-        unsigned lenstr = ice_str_len(strs[i]);
-        unsigned j;
+        unsigned long lenstr = ice_str_len(strs[i]);
+        unsigned long j;
 
         for (j = 0; j < lenstr; j++) {
             res[count] = strs[i][j];
@@ -873,9 +883,9 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char** strs, unsigned arrl
 }
 
 /* Returns ICE_STR_TRUE if string str1 starts with string str2, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char* str1, const char* str2) {
-    unsigned len = ice_str_len(str2);
-    char* sub = ice_str_sub(str1, 0, len - 1);
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char *str1, const char *str2) {
+    unsigned long len = ice_str_len(str2);
+    char *sub = ice_str_sub(str1, 0, len - 1);
     ice_str_bool res = ice_str_same(sub, str2);
     
     ice_str_free(sub);
@@ -884,10 +894,10 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char* str1, const
 }
 
 /* Returns ICE_STR_TRUE if string str1 ends with string str2, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char* str1, const char* str2) {
-    unsigned len1 = ice_str_len(str1);
-    unsigned len2 = ice_str_len(str2);
-    char* sub = ice_str_sub(str1, (len1 - len2), len1 - 1);
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char *str1, const char *str2) {
+    unsigned long len1 = ice_str_len(str1);
+    unsigned long len2 = ice_str_len(str2);
+    char *sub = ice_str_sub(str1, (len1 - len2), len1 - 1);
     ice_str_bool res = ice_str_same(sub, str2);
     
     ice_str_free(sub);
@@ -896,18 +906,18 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char* str1, const c
 }
 
 /* Returns ICE_STR_TRUE if string str ends with char ch, Else returns ICE_STR_FALSE */
-ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_last_char(const char* str, char ch) {
-    unsigned len = ice_str_len(str);
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_last_char(const char *str, char ch) {
+    unsigned long len = ice_str_len(str);
 
     return (str[len - 1] == ch) ? ICE_STR_TRUE : ICE_STR_FALSE;
 }
 
-/* Returns char codes of the string as allocated array on allocation success or NULL on allocation failure, arrlen is pointer to unsigned integer to store length of integer array (Though you can NULL it if you know the length) */
-ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char* str, unsigned *arrlen) {
-    unsigned len = ice_str_len(str);
-    unsigned alloc_size = (len * sizeof(int));
-    int* res = ICE_STR_MALLOC(alloc_size);
-    unsigned i;
+/* Returns char codes of the string as allocated array on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of integer array (Though you can NULL it if you know the length) */
+ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char *str, unsigned long *arrlen) {
+    unsigned long len = ice_str_len(str);
+    unsigned long alloc_size = (len * sizeof(int));
+    int *res = ICE_STR_MALLOC(alloc_size);
+    unsigned long i;
     
     if (res == 0) return 0;
     
@@ -921,10 +931,10 @@ ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char* str, unsigned *ar
 }
 
 /* Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length */
-ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int* chars, unsigned arrlen) {
-    unsigned alloc_size = ((arrlen + 1) * sizeof(char));
-    char* res = ICE_STR_MALLOC(alloc_size);
-    unsigned i;
+ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int *chars, unsigned long arrlen) {
+    unsigned long alloc_size = ((arrlen + 1) * sizeof(char));
+    char *res = ICE_STR_MALLOC(alloc_size);
+    unsigned long i;
     
     if (res == 0) return 0;
     
@@ -938,20 +948,20 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int* chars, unsigned
 }
 
 /* Frees a String */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_free(char* str) {
+ICE_STR_API void ICE_STR_CALLCONV ice_str_free(char *str) {
     ICE_STR_FREE(str);
     str = 0;
 }
 
 /* Frees array of char codes */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_free_bytes(int* bytes) {
+ICE_STR_API void ICE_STR_CALLCONV ice_str_free_bytes(int *bytes) {
     ICE_STR_FREE(bytes);
     bytes = 0;
 }
 
 /* Frees array of strings, arrlen should be set to array length */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char** arr, unsigned arrlen) {
-    unsigned i;
+ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char **arr, unsigned long arrlen) {
+    unsigned long i;
     
     for (i = 0; i < arrlen; i++) {
         ICE_STR_FREE(arr[i]);
