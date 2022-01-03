@@ -177,7 +177,6 @@ You could support or contribute to ice_libs project by possibly one of following
 #endif
 
 /* Platform Detection */
-/* The implementation of BlackBerry 10 written in C++ instead of C because his native APIs uses C++ :( */
 #if defined(ICE_CPU_PLATFORM_AUTODETECTED)
 #  if defined(__HPUX__)
 #    define ICE_CPU_HPUX 1
