@@ -86,11 +86,12 @@ ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 
 #define ICE_CPU_APPLE           // Apple Platforms
 #define ICE_CPU_MICROSOFT       // Microsoft Platforms
-#define ICE_CPU_BSD             // BSD (FreeBSD, OpenBSD, NetBSD, DragonFly BSD)
+#define ICE_CPU_BSD             // BSD (FreeBSD, DragonFly BSD, NetBSD, OpenBSD)
 #define ICE_CPU_HPUX            // HP-UX
 #define ICE_CPU_IRIX            // IRIX
 #define ICE_CPU_UNIX            // Unix and Unix-Like
 #define ICE_CPU_BB10            // BlackBerry 10
+#define ICE_CPU_QNX             // BlackBerry QNX (QNX, QNX Neutrino, BlackBerry PlayBook)
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
 #define ICE_CPU_PLATFORM_AUTODETECTED
@@ -114,13 +115,10 @@ ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 ============================== Implementation Resources ===========================
 
 1. https://en.wikipedia.org/wiki/CPUID
-2. https://developer.apple.com/documentation/kernel/1387446-sysctlbyname
-3. https://developer.apple.com/documentation/kernel/1502514-host_info
-4. https://www.freebsd.org/cgi/man.cgi?query=sysctlbyname
-5. https://docstore.mik.ua/manuals/hp-ux/en/B2355-60130/mpctl.2.html
-6. https://man7.org/linux/man-pages/man3/sysconf.3.html
-7. https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
-8. http://developer.blackberry.com/native/reference/cascades/bb__device__hardwareinfo.html
+2. https://www.linux.it/~rubini/docs/sysctl
+3. https://docstore.mik.ua/manuals/hp-ux/en/B2355-60130/mpctl.2.html
+4. https://man7.org/linux/man-pages/man3/sysconf.3.html
+5. https://docs.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getsysteminfo
 
 
 ================================= Support ice_libs ================================
@@ -174,7 +172,7 @@ You could support or contribute to ice_libs project by possibly one of following
 #endif
 
 /* If no platform defined, This definition will define itself! */
-#if !(defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_BSD) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_BB10))
+#if !(defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_BSD) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_BB10) || defined(ICE_CPU_QNX))
 #  define ICE_CPU_PLATFORM_AUTODETECTED 1
 #endif
 
@@ -189,12 +187,11 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_CPU_APPLE 1
 #  elif defined(__BLACKBERRY10__) || defined(__BB10__)
 #    define ICE_CPU_BB10 1
-#    if !defined(__cplusplus)
-#      error "BlackBerry 10 implementation for ice_cpu.h cannot be used with C code, Only C++ :("
-#    endif
+#  elif defined(__QNX__) || defined(__QNXNTO__) || defined(__PLAYBOOK__)
+#    define ICE_CPU_QNX 1
 #  elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(_X360) || defined(__XBOX360__) || defined(_XBOX) || defined(_XBOX_ONE) || defined(_DURANGO)
 #    define ICE_CPU_MICROSOFT 1
-#  elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+#  elif defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__)
 #    define ICE_CPU_BSD 1
 #  elif defined(__unix__) || defined(__unix)
 #    define ICE_CPU_UNIX 1
@@ -289,11 +286,6 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_inf
 #    include <unistd.h>
 #  endif
 unsigned ice_cpu_brand[12];
-#elif defined(ICE_CPU_APPLE)
-#  include <mach/mach.h>
-#  include <mach/mach_host.h>
-#  include <sys/types.h>
-#  include <sys/sysctl.h>
 #elif defined(ICE_CPU_MICROSOFT)
 #  include <string.h>
 #  if defined(_MSC_VER)
@@ -305,50 +297,40 @@ unsigned ice_cpu_brand[12];
 #    include <cpuid.h>
 #  endif
 unsigned ice_cpu_brand[12];
-#elif defined(ICE_CPU_BSD)
-#  include <sys/types.h>
+#elif defined(ICE_CPU_BSD) || defined(ICE_CPU_QNX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BB10)
+#  include <stddef.h>
+#  if defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_CPU_APPLE)
+#    include <sys/types.h>
+#  elif defined(__NetBSD__) || defined(__OpenBSD__) || defined(ICE_CPU_QNX) || defined(ICE_CPU_BB10)
+#    include <sys/param.h>
+#  endif
 #  include <sys/sysctl.h>
-#elif defined(ICE_CPU_BB10)
-#  include <QtCore/QString>
-#  include <QtCore/QByteArray>
-#  include <bb/device/HardwareInfo>
-using namespace bb;
 #endif
 
 /* Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
 ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_info) {
-#if defined(ICE_CPU_APPLE)
-    size_t buflen = 128;
+#if defined(ICE_CPU_BSD) || defined(ICE_CPU_QNX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BB10)
     char brand[128];
-    mach_port_t host_port = mach_host_self();
-    host_basic_info_data_t info;
-    mach_msg_type_number_t info_count = HOST_BASIC_INFO_COUNT;
-    int res = host_info(host_port, HOST_BASIC_INFO, (host_info_t) &info, &info_count);
-
-    if (res != 0) goto failure;
-
-    res = sysctlbyname("machdep.cpu.brand_string", &brand, &buflen, 0, 0);
-
-    if (res != 0) goto failure;
-
-    cpu_info->name = brand;
-    cpu_info->cores = (unsigned) avail_cpus;
-
-#elif defined(ICE_CPU_BSD)
-    char brand[128];
-    unsigned cores, res;
-
-    res = sysctlbyname("hw.model", &brand, &buflen, 0, 0);
-    if (res != 0) goto failure;
-
-    res = sysctlbyname("hw.ncpu", &cores, 0, 0, 0);
-    if (res != 0) goto failure;
-
-    cpu_info->name = brand;
-    cpu_info->cores = (unsigned) cores;
+    unsigned cores;
+    int res, mibs[2][2] = {
+        { CTL_HW, HW_MODEL },
+        { CTL_HW, HW_NCPU }
+    };
+    size_t len;
     
+    len = sizeof(brand);
+    res = sysctl(mibs[0], 2, &brand, &len, 0, 0);
+    if (res != 0) goto failure;
+    
+    len = sizeof(cores);
+    res = sysctl(mibs[1], 2, &cores, &len, 0, 0);
+    if (res != 0) goto failure;
+
+    cpu_info->name = (const char*) brand;
+    cpu_info->cores = cores;
+
 #elif defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX)
-    unsigned cores = 0; 
+    unsigned cores = 0;
     int res;
 
 #if defined(ICE_CPU_MICROSOFT)
@@ -371,21 +353,6 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_inf
     __get_cpuid(0x80000004, ice_cpu_brand + 0x8, ice_cpu_brand + 0x9, ice_cpu_brand + 0xa, ice_cpu_brand + 0xb);
     
     cpu_info->name = (const char*)(&ice_cpu_brand);
-    cpu_info->cores = cores;
-    
-#elif defined(ICE_CPU_BB10)
-    bb::HardwareInfo info;
-    
-    unsigned cores = info.processorCount();
-    QString model = info.processorModel(0);
-    QByteArray model_utf8 = model.toUtf8();
-    const char *cpuname = model_utf8.constData();
-    
-    delete info;
-    delete model;
-    delete model_utf8;
-
-    cpu_info->name = cpuname;
     cpu_info->cores = cores;
 #endif
 
