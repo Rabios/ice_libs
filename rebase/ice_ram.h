@@ -89,10 +89,10 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 
 #define ICE_RAM_MICROSOFT       // Microsoft platforms
 #define ICE_RAM_APPLE           // Apple (MacOS, iOS, etc...)
-#define ICE_RAM_BSD             // BSD (FreeBSD, OpenBSD, NetBSD, DragonFly BSD)
-#define ICE_RAM_WEB             // Web (Emscripten)
+#define ICE_RAM_BSD             // BSD (FreeBSD, DragonFly BSD, NetBSD, OpenBSD)
+#define ICE_RAM_WEB             // Web (Emscripten, Only for Node.js)
 #define ICE_RAM_TIZEN           // Tizen
-#define ICE_RAM_BB10            // BlackBerry 10
+#define ICE_RAM_BLACKBERRY      // BlackBerry (QNX, QNX Neutrino, BlackBerry PlayBook, BlackBerry 10)
 #define ICE_RAM_LINUX           // Linux (This includes Android, Consoles, etc...)
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
@@ -117,12 +117,10 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 ============================== Implementation Resources ===========================
 
 1. https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/aa965225(v=vs.85)
-2. https://web.mit.edu/darwin/src/modules/xnu/osfmk/man/host_info.html
-3. https://developer.mozilla.org/en-US/docs/Web/API/Performance/memory
-4. https://docs.tizen.org/application/native/api/mobile/6.0/group__CAPI__SYSTEM__RUNTIME__INFO__MODULE.html
-5. https://nodejs.org/api/os.html
-6. https://developer.blackberry.com/native/reference/cascades/bb__memoryinfo.html
-7. https://man7.org/linux/man-pages/man2/sysinfo.2.html
+2. https://www.linux.it/~rubini/docs/sysctl
+3. https://docs.tizen.org/application/native/api/mobile/6.0/group__CAPI__SYSTEM__RUNTIME__INFO__MODULE.html
+4. https://nodejs.org/api/os.html
+5. https://man7.org/linux/man-pages/man2/sysinfo.2.html
 
 
 ================================= Support ice_libs ================================
@@ -176,12 +174,11 @@ You could support or contribute to ice_libs project by possibly one of following
 #endif
 
 /* If no platform defined, This definition will define itself! */
-#if !(defined(ICE_RAM_MICROSOFT) || defined(ICE_RAM_APPLE) || defined(ICE_RAM_WEB) || defined(ICE_RAM_TIZEN) || defined(ICE_RAM_BB10) || defined(ICE_RAM_LINUX))
+#if !(defined(ICE_RAM_MICROSOFT) || defined(ICE_RAM_APPLE) || defined(ICE_RAM_WEB) || defined(ICE_RAM_TIZEN) || defined(ICE_RAM_BLACKBERRY) || defined(ICE_RAM_LINUX))
 #  define ICE_RAM_PLATFORM_AUTODETECTED 1
 #endif
 
 /* Platform Detection */
-/* The implementation of BlackBerry 10 written in C++ instead of C, because his native API uses C++ :( */
 #if defined(ICE_RAM_PLATFORM_AUTODETECTED)
 #  if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(_X360) || defined(__XBOX360__) || defined(_XBOX) || defined(_XBOX_ONE) || defined(_DURANGO)
 #    define ICE_RAM_MICROSOFT 1
@@ -193,11 +190,8 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_RAM_WEB 1
 #  elif defined(__TIZEN__)
 #    define ICE_RAM_TIZEN 1
-#  elif defined(__BLACKBERRY10__) || defined(__BB10__)
-#    define ICE_RAM_BB10 1
-#    if !defined(__cplusplus)
-#      error "BlackBerry 10 implementation cannot be used with C code, Only C++ :("
-#    endif
+#  elif (defined(__BLACKBERRY10__) || defined(__BB10__)) || (defined(__QNX__) || defined(__QNXNTO__) || defined(__PLAYBOOK__))
+#    define ICE_RAM_BLACKBERRY 1
 #  elif defined(__linux__) || defined(__linux)
 #    define ICE_RAM_LINUX 1
 #  else
@@ -289,20 +283,23 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
 #  else
 #    include <sysinfoapi.h>
 #  endif
-#elif defined(ICE_RAM_APPLE)
-#  include <mach/mach.h>
-#  include <mach/mach_host.h>
-#elif defined(ICE_RAM_BSD)
-#  include <sys/types.h>
+#
+#elif defined(ICE_RAM_BSD) || defined(ICE_RAM_APPLE) || defined(ICE_RAM_BLACKBERRY)
+#  if defined(__OpenBSD__) || defined(__NetBSD__) || defined(ICE_RAM_BLACKBERRY)
+#    include <sys/param.h>
+#    include <uvm/uvmexp.h>
+#  elif defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_RAM_APPLE)
+#    include <sys/types.h>
+#    if !defined(ICE_RAM_APPLE)
+#      include <vm/vm_param.h>
+#    endif
+#  endif
+#  include <sys/vmmeter.h>
 #  include <sys/sysctl.h>
 #elif defined(ICE_RAM_WEB)
-#  include <emscripten/emscripten.h>
+#  include <emscripten/em_asm.h>
 #elif defined(ICE_RAM_TIZEN)
 #  include <runtime_info.h>
-#elif defined(ICE_RAM_BB10)
-#  include <QtGlobal>
-#  include <bb/MemoryInfo>
-using namespace bb;
 #elif defined(ICE_RAM_LINUX)
 #  include <sys/sysinfo.h>
 #endif
@@ -322,70 +319,39 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     ram_info->used = (status.ullTotalPhys - status.ullAvailPhys);
     ram_info->total = status.ullTotalPhys;
 
-#elif defined(ICE_RAM_APPLE)
-    mach_port_t host_port = mach_host_self();
-    mach_msg_type_number_t host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
-    vm_size_t pagesize;
-    vm_statistics_data_t vm_stat;
-    int fetch_res;
-    
-    fetch_res = host_page_size(host_port, &pagesize);
-    if (fetch_res != 0) goto failure;
-
-    fetch_res = host_statistics(host_port, HOST_VM_INFO, (host_info_t) &vm_stat, &host_size);
-    if (fetch_res != 0) goto failure;
-    
-    ram_info->free = vm_stat.free_count * pagesize;
-    ram_info->used = (vm_stat.active_count + vm_stat.inactive_count + vm_stat.wire_count) * pagesize;
-    ram_info->total = ram_info->used + ram_info->free;
-    
-#elif defined(ICE_RAM_BSD)
-    const char* sysctl_names[5] = {
-        "hw.pagesize",
-        "hw.physmem",
-        "vm.stats.vm.v_inactive_count",
-        "vm.stats.vm.v_cache_count",
-        "vm.stats.vm.v_free_count"
+#elif defined(ICE_RAM_BSD) || defined(ICE_RAM_APPLE) || defined(ICE_RAM_BLACKBERRY)
+    size_t len;
+    int pagesize, res, mibs[2][2] = {
+        { CTL_HW, HW_PAGESIZE },
+#if defined(VM_TOTAL)
+        { CTL_VM, VM_TOTAL }
+#elif defined(VM_METER)
+        { CTL_VM, VM_METER }
+#endif
     };
-    
-    ice_ram_bytes sysctl_res[5] = { 0, 0, 0, 0, 0 };
-    
-    unsigned sysctls_done = 0;
-    int i;
-    
-    for (i = 0; i < 5; i++) {
-        int res = sysctlbyname(sysctl_names[i], &sysctl_res[i], 0, 0, 0);
-        
-        if (res != 0) {
-            goto failure;
-        } else {
-            sysctls_done++;
-        }
-    }
-    
-    ram_info->total = sysctl_res[1];
-    ram_info->free = (sysctl_res[2] + sysctl_res[3] + sysctl_res[4]) * sysctl_res[0];
-    ram_info->used = ram_info->total - ram_info->free;
+    struct vmtotal vm_status;
+
+    len = sizeof(pagesize);
+    res = sysctl(mibs[0], 2, &pagesize, &len, 0, 0);
+    if (res != 0) goto failure;
+
+    len = sizeof(vm_status);
+    res = sysctl(mibs[1], 2, &vm_status, &len, 0, 0);
+    if (res != 0) goto failure;
+
+    ram_info->free = (ice_ram_bytes) (vm_status.t_free * pagesize);
+    ram_info->used = (ice_ram_bytes) (vm_status.t_rm * pagesize);
+    ram_info->total = ram_info->free + ram_info->used;
 
 #elif defined(ICE_RAM_WEB)
     ram_info->free = (ice_ram_bytes) EM_ASM_INT({
-        if (!require) {
-            return ((window.navigator.deviceMemory || 0) * 1024 * 1024 * 1024) - (window.performance.memory.usedJSHeapSize || 0);
-        } else {
-            return (require("os").freemem() || 0);
-        }
+        return (os.freemem() || 0);
     });
-
     ram_info->used = (ice_ram_bytes) EM_ASM_INT({
-        return (window.performance.memory.usedJSHeapSize || 0);
+        return ((os.totalmem() - os.freemem()) || 0);
     });
-
     ram_info->total = (ice_ram_bytes) EM_ASM_INT({
-        if (!require) {
-            return (window.navigator.deviceMemory || 0) * 1024 * 1024 * 1024;
-        } else {
-            return (require("os").totalmem() || 0);
-        }
+        return (os.totalmem() || 0);
     });
 
 #elif defined(ICE_RAM_TIZEN)
@@ -397,15 +363,6 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     ram_info->free = inf.free * 1024;
     ram_info->used = inf.used * 1024;
     ram_info->total = inf.total * 1024;
-    
-#elif defined(ICE_RAM_BB10)
-    bb::MemoryInfo info;
-    
-    ram_info->free = info.availableDeviceMemory();
-    ram_info->used = info.memoryUsedByCurrentProcess();
-    ram_info->total = info.totalDeviceMemory();
-    
-    delete info;
     
 #elif defined(ICE_RAM_LINUX)
     struct sysinfo si;
