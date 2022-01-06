@@ -283,7 +283,6 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
 #  else
 #    include <sysinfoapi.h>
 #  endif
-#
 #elif defined(ICE_RAM_BSD) || defined(ICE_RAM_APPLE) || defined(ICE_RAM_BLACKBERRY)
 #  if defined(__OpenBSD__) || defined(__NetBSD__) || defined(ICE_RAM_BLACKBERRY)
 #    include <sys/param.h>
