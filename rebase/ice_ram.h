@@ -66,7 +66,6 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 ================================== Linking Flags ==================================
 
 1. Microsoft Windows    =>  -lkernel32
-2. BlackBerry 10        =>  -lbb
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -93,7 +92,7 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 #define ICE_RAM_WEB             // Web (Emscripten, Only for Node.js)
 #define ICE_RAM_TIZEN           // Tizen
 #define ICE_RAM_BLACKBERRY      // BlackBerry (QNX, QNX Neutrino, BlackBerry PlayBook, BlackBerry 10)
-#define ICE_RAM_LINUX           // Linux (This includes Android, Consoles, etc...)
+#define ICE_RAM_LINUX           // Linux (This includes Android, Linux-based platforms, etc...)
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
 #define ICE_RAM_PLATFORM_AUTODETECTED
@@ -139,7 +138,7 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_RAM_H
+#if !defined(ICE_RAM_H)
 #define ICE_RAM_H 1
 
 /* Allow to use calling conventions if desired... */
@@ -190,7 +189,7 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_RAM_WEB 1
 #  elif defined(__TIZEN__)
 #    define ICE_RAM_TIZEN 1
-#  elif (defined(__BLACKBERRY10__) || defined(__BB10__)) || (defined(__QNX__) || defined(__QNXNTO__) || defined(__PLAYBOOK__))
+#  elif defined(__BLACKBERRY10__) || defined(__BB10__) || defined(__QNX__) || defined(__QNXNTO__) || defined(__PLAYBOOK__)
 #    define ICE_RAM_BLACKBERRY 1
 #  elif defined(__linux__) || defined(__linux)
 #    define ICE_RAM_LINUX 1
@@ -283,18 +282,21 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
 #  else
 #    include <sysinfoapi.h>
 #  endif
-#elif defined(ICE_RAM_BSD) || defined(ICE_RAM_APPLE) || defined(ICE_RAM_BLACKBERRY)
+#elif defined(ICE_RAM_BSD) || defined(ICE_RAM_BLACKBERRY)
 #  if defined(__OpenBSD__) || defined(__NetBSD__) || defined(ICE_RAM_BLACKBERRY)
 #    include <sys/param.h>
 #    include <uvm/uvmexp.h>
-#  elif defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_RAM_APPLE)
+#  elif defined(__FreeBSD__) || defined(__DragonFly__)
 #    include <sys/types.h>
-#    if !defined(ICE_RAM_APPLE)
-#      include <vm/vm_param.h>
-#    endif
+#    include <vm/vm_param.h>
+#    include <sys/vmmeter.h>
 #  endif
-#  include <sys/vmmeter.h>
 #  include <sys/sysctl.h>
+#elif defined(ICE_RAM_APPLE)
+#  include <mach/vm_statistics.h>
+#  include <mach/mach_types.h>
+#  include <mach/mach_init.h>
+#  include <mach/mach_host.h>
 #elif defined(ICE_RAM_WEB)
 #  include <emscripten/em_asm.h>
 #elif defined(ICE_RAM_TIZEN)
@@ -318,7 +320,24 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     ram_info->used = (status.ullTotalPhys - status.ullAvailPhys);
     ram_info->total = status.ullTotalPhys;
 
-#elif defined(ICE_RAM_BSD) || defined(ICE_RAM_APPLE) || defined(ICE_RAM_BLACKBERRY)
+#elif defined(ICE_RAM_APPLE)
+    vm_statistics64_data_t vm_status;
+    vm_size_t pagesize;
+    mach_port_t host_port = mach_host_self();
+    mach_msg_type_number_t host_size = sizeof(vm_status) / sizeof(natural_t);
+    int res;
+    
+    res = host_page_size(host_port, &pagesize);
+    if (res != 0) goto failure;
+
+    res = host_statistics64(host_port, HOST_VM_INFO, (host_info64_t) &vm_status, &host_size);
+    if (res != 0) goto failure;
+    
+    ram_info->free = (ice_ram_bytes)(vm_status.free_count * pagesize);
+    ram_info->used = (ice_ram_bytes)((vm_status.active_count + vm_status.inactive_count + vm_status.wire_count) * pagesize);
+    ram_info->total = ram_info->used + ram_info->free;
+    
+#elif defined(ICE_RAM_BSD) || defined(ICE_RAM_BLACKBERRY)
     size_t len;
     int pagesize, res, mibs[2][2] = {
         { CTL_HW, HW_PAGESIZE },
