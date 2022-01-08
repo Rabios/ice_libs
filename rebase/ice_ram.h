@@ -289,8 +289,8 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
 #  elif defined(__FreeBSD__) || defined(__DragonFly__)
 #    include <sys/types.h>
 #    include <vm/vm_param.h>
-#    include <sys/vmmeter.h>
 #  endif
+#  include <sys/vmmeter.h>
 #  include <sys/sysctl.h>
 #elif defined(ICE_RAM_APPLE)
 #  include <mach/vm_statistics.h>
@@ -336,7 +336,7 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     ram_info->free = (ice_ram_bytes)(vm_status.free_count * pagesize);
     ram_info->used = (ice_ram_bytes)((vm_status.active_count + vm_status.inactive_count + vm_status.wire_count) * pagesize);
     ram_info->total = ram_info->used + ram_info->free;
-    
+
 #elif defined(ICE_RAM_BSD) || defined(ICE_RAM_BLACKBERRY)
     size_t len;
     int pagesize, res, mibs[2][2] = {
