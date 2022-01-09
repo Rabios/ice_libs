@@ -13,16 +13,30 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 ================================== Usage Example ==================================
 
+// Define the implementation of the library and include it
 #define ICE_TIME_IMPL
 #include "ice_time.h"
+
 #include <stdio.h>
 
-int main(int argc, char** argv) {
-    // Fetch time info
-    ice_time_info curr_time = ice_time_status();
+// Helper
+#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-    // Print time fetched as string
-    printf("Current Time: %s\n", curr_time.string);
+int main(int argc, char** argv) {
+    // Struct that contains Time information
+    ice_time_info current_time;
+    
+    // Fetch time information and store it in the struct
+    ice_time_error res = ice_time_get_info(&current_time);
+
+    // If the function failed to fetch time information, Trace error then terminate the program!
+    if (res != ICE_TIME_ERROR_OK) {
+        trace("ice_time_get_info", "ERROR: failed to get time info!");
+        return -1;
+    }
+
+    // Print current time!
+    printf("Current Time: %s\n", current_time.string);
 
     return 0;
 }
@@ -30,12 +44,13 @@ int main(int argc, char** argv) {
 
 =================================== Library API ===================================
 
-// Typedef for very long integers
-typedef unsigned long int ice_time_ulong;
+// Typedef for very unsigned long integers
+typedef unsigned long ice_time_ulong;
 
 // Enumeration for week days
 typedef enum ice_time_day {
-    ICE_TIME_DAY_SUNDAY = 1,
+    ICE_TIME_DAY_UNKNOWN = 0,
+    ICE_TIME_DAY_SUNDAY,
     ICE_TIME_DAY_MONDAY,
     ICE_TIME_DAY_TUESDAY,
     ICE_TIME_DAY_WEDNESDAY,
@@ -46,7 +61,8 @@ typedef enum ice_time_day {
 
 // Enumeration for year months
 typedef enum ice_time_month {
-    ICE_TIME_MONTH_JANUARY = 1,
+    ICE_TIME_MONTH_UNKNOWN = 0,
+    ICE_TIME_MONTH_JANUARY,
     ICE_TIME_MONTH_FEBRUARY,
     ICE_TIME_MONTH_MARCH,
     ICE_TIME_MONTH_APRIL,
@@ -60,9 +76,10 @@ typedef enum ice_time_month {
     ICE_TIME_MONTH_DECEMBER
 } ice_time_month;
 
-// Enumeration for seasons (helpful?)
+// Enumeration for seasons
 typedef enum ice_time_season {
-    ICE_TIME_SEASON_WINTER = 1,
+    ICE_TIME_SEASON_UNKNOWN = 0,
+    ICE_TIME_SEASON_WINTER,
     ICE_TIME_SEASON_SPRING,
     ICE_TIME_SEASON_SUMMER,
     ICE_TIME_SEASON_AUTUMN
@@ -70,35 +87,103 @@ typedef enum ice_time_season {
 
 // Struct that contains patched current time info, Including ticks
 typedef struct ice_time_info {
-    char* string;                   // Time as string
+    const char* str;                // Time as string
     ice_time_ulong clock_ticks;     // Clock Ticks (Nanoseconds)
-    ice_time_ulong system_ticks;    // Ticks since system started (Milliseconds)
+    ice_time_ulong uptime;          // Ticks since system started (Milliseconds)
     ice_time_ulong epoch;           // Unix timestamp
-    ice_time_ulong nanoseconds;
-    ice_time_ulong microseconds;
-    ice_time_ulong milliseconds;
     unsigned second;
     unsigned minute;
     unsigned hour;
     ice_time_day week_day;          // (ICE_TIME_DAY_SUNDAY - ICE_TIME_DAY_SATURDAY)
     unsigned month_day;             // (1 - Month last day number)
-    unsigned year_day;              // (1 - 365
+    unsigned year_day;              // (1 - 365)
     ice_time_month month;
     ice_time_season season;         // (ICE_TIME_SEASON_WINTER - ICE_TIME_SEASON_AUTUMN)
     unsigned year;
 } ice_time_info;
 
-// Returns difference between 2 ticks, The 2 ticks are acquired by via clock_ticks from 2 times
+// Enumeration for errors that may occur
+typedef enum ice_time_error {
+    ICE_TIME_ERROR_OK = 0,          // OK - no errors
+    ICE_TIME_ERROR_UNKNOWN_TIME,    // Occurs when time() function fails
+    ICE_TIME_ERROR_UNKNOWN_CLOCK,   // Occurs when clock_gettime() function fails (Linux/Unix only)
+    ICE_TIME_ERROR_SYSCALL_FAILURE  // Occurs when platform-specific call fails
+} ice_time_error;
+
+// Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
 ice_time_ulong ice_time_diff(ice_time_info t1, ice_time_info t2);
 
-// Returns Delta Time between 2 ticks, The 2 ticks are acquired by via clock_ticks from 2 times
+// Returns difference between clock tick of current time and clock time of specific time
+ice_time_ulong ice_time_since(ice_time_info t);
+
+// Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
 double ice_time_dt(ice_time_info t1, ice_time_info t2);
 
-// Returns current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...)
-ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info* time_info);
+// Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure!
+ice_time_error ice_time_get_info(ice_time_info *time_info);
 
-// Sleeps thread/program for milliseconds
+// Sleeps thread/program for Milliseconds
 void ice_time_sleep(ice_time_ulong ms);
+
+// Converts: Attoseconds -> Nanoseconds
+double ice_time_as_to_ns(ice_time_ulong as);
+
+// Converts: Attoseconds -> Microseconds
+double ice_time_as_to_us(ice_time_ulong as);
+
+// Converts: Attoseconds -> Milliseconds
+double ice_time_as_to_ms(ice_time_ulong as);
+
+// Converts: Attoseconds -> Seconds
+double ice_time_as_to_sec(ice_time_ulong as);
+
+// Converts: Nanoseconds -> Attoseconds
+double ice_time_ns_to_as(ice_time_ulong ns);
+
+// Converts: Nanoseconds -> Microseconds
+double ice_time_ns_to_us(ice_time_ulong ns);
+
+// Converts: Nanoseconds -> Milliseconds
+double ice_time_ns_to_ms(ice_time_ulong ns);
+
+// Converts: Nanoseconds -> Seconds
+double ice_time_ns_to_sec(ice_time_ulong ns);
+
+// Converts: Microseconds -> Attoseconds
+double ice_time_us_to_as(ice_time_ulong us);
+
+// Converts: Microseconds -> Nanoseconds
+double ice_time_us_to_ns(ice_time_ulong us);
+
+/* Converts: Microseconds -> Milliseconds
+double ice_time_us_to_ms(ice_time_ulong us);
+
+/* Converts: Microseconds -> Seconds
+double ice_time_us_to_sec(ice_time_ulong us);
+
+/* Converts: Milliseconds -> Attoseconds
+double ice_time_ms_to_as(ice_time_ulong ms);
+
+// Converts: Milliseconds -> Nanoseconds
+double ice_time_ms_to_ns(ice_time_ulong ms);
+
+// Converts: Milliseconds -> Microseconds
+double ice_time_ms_to_us(ice_time_ulong ms);
+
+// Converts: Milliseconds -> Seconds
+double ice_time_ms_to_sec(ice_time_ulong ms);
+
+// Converts: Seconds -> Attoseconds
+double ice_time_sec_to_as(ice_time_ulong sec);
+
+// Converts: Seconds -> Nanoseconds
+double ice_time_sec_to_ns(ice_time_ulong sec);
+
+// Converts: Seconds -> Microseconds
+double ice_time_sec_to_us(ice_time_ulong sec);
+
+// Converts: Seconds -> Milliseconds
+double ice_time_sec_to_ms(ice_time_ulong sec);
 
 
 ================================== Linking Flags ==================================
@@ -107,7 +192,7 @@ void ice_time_sleep(ice_time_ulong ms);
 2. Nintendo 3DS (libctru)   =>  -lctru
 3. Raspberry Pi Pico        =>  -lpico_time -lpico_util -lhardware_timer -lhardware_rtc
 
-// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma(s)
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
 
 ================================= Usable #define(s) ===============================
@@ -131,7 +216,8 @@ void ice_time_sleep(ice_time_ulong ms);
 #define ICE_TIME_UNIX           // Unix and Unix-like
 #define ICE_TIME_RPI_PICO       // Raspberry Pi Pico
 #define ICE_TIME_3DS            // Nintendo 3DS (libctru)
-#define ICE_TIME_WEB            // Web (Emscripten)
+#define ICE_TIME_BSD            // BSD (FreeBSD, DragonFly BSD, NetBSD, OpenBSD)
+#define ICE_TIME_BLACKBERRY     // BlackBerry (QNX, QNX Neutrino, BlackBerry PlayBook, BlackBerry 10)
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
 #define ICE_TIME_PLATFORM_AUTODETECTED
@@ -149,15 +235,15 @@ void ice_time_sleep(ice_time_ulong ms);
 #define ICE_TIME_EXTERN         // externs library functions
 #define ICE_TIME_STATIC         // statics library functions
 
-// NOTE: ICE_TIME_EXTERN and ICE_TIME_STATIC cannot be #define(d) together in the code...
+// NOTE: You cannot #define both ICE_TIME_EXTERN and ICE_TIME_STATIC together in the code...
 
 
 ============================== Implementation Resources ===========================
 
 1. https://docs.microsoft.com/en-us/windows/win32/sysinfo/time-functions
-2. https://libctru.devkitpro.org/svc_8h.html
-3. https://en.cppreference.com/w/c/chrono
-4. https://emscripten.org/docs/api_reference/emscripten.h.html#sleeping
+2. https://www.linux.it/~rubini/docs/sysctl
+3. https://libctru.devkitpro.org/svc_8h.html
+4. https://en.cppreference.com/w/c/chrono
 5. https://raspberrypi.github.io/pico-sdk-doxygen/group__hardware__rtc.html
 6. https://raspberrypi.github.io/pico-sdk-doxygen/group__hardware__timer.html
 7. https://raspberrypi.github.io/pico-sdk-doxygen/group__pico__time.html
@@ -180,24 +266,8 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_TIME_H
+#if !defined(ICE_TIME_H)
 #define ICE_TIME_H 1
-
-/* Disable security warnings for MSVC compiler, We don't want to force using C11! */
-#ifdef _MSC_VER
-#  ifndef _CRT_SECURE_NO_DEPRECATE
-#    define _CRT_SECURE_NO_DEPRECATE 1
-#  endif
-#  ifndef _CRT_SECURE_NO_WARNINGS
-#    define _CRT_SECURE_NO_WARNINGS 1
-#  endif
-#  pragma warning(disable:4996)
-#endif
-
-/* Define C interface for Windows libraries! ;) */
-#ifndef CINTERFACE
-#  define CINTERFACE 1
-#endif
 
 /* Allow to use calling convention if desired... */
 #if defined(ICE_TIME_VECTORCALL)
@@ -230,7 +300,7 @@ You could support or contribute to ice_libs project by possibly one of following
 #  define ICE_TIME_CALLCONV
 #endif
 
-#if !(defined(ICE_TIME_MICROSOFT) || defined(ICE_TIME_3DS) || defined(ICE_TIME_UNIX))
+#if !(defined(ICE_TIME_MICROSOFT) || defined(ICE_TIME_3DS) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_UNIX) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY) || defined(ICE_TIME_RPI_PICO))
 #  define ICE_TIME_AUTODETECT_PLATFORM 1
 #endif
 
@@ -240,6 +310,10 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_TIME_MICROSOFT 1
 #  elif defined(__APPLE__) || defined(__DARWIN__) || defined(__MACH__)
 #    define ICE_TIME_APPLE 1
+#  elif defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__)
+#    define ICE_TIME_BSD 1
+#  elif defined(__BLACKBERRY10__) || defined(__BB10__) || defined(__QNX__) || defined(__QNXNTO__) || defined(__PLAYBOOK__)
+#    define ICE_TIME_BLACKBERRY 1
 #  elif defined(_3DS) || defined(__3DS__)
 #    define ICE_TIME_3DS 1
 #  elif defined(RASPBERRYPI_PICO)               ||  defined(RASPBERRYPI_VGABOARD)           ||
@@ -257,8 +331,6 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_TIME_RPI_PICO 1
 #  elif defined(__unix__) || defined(__unix)
 #    define ICE_TIME_UNIX 1
-#  elif defined(__EMSCRIPTEN__)
-#    define ICE_TIME_WEB 1
 #  else
 #    error "ice_time.h does not support this platform yet! :("
 #  endif
@@ -316,15 +388,9 @@ Else, Just define API as extern C code!
 extern "C" {
 #endif
 
-/* =============================== Macros =============================== */
-
-#ifndef CLOCKS_PER_SEC
-#  define CLOCKS_PER_SEC 1000000
-#endif
-
 /* ============================== Data Types ============================== */
 
-/* Typedef for very long integers */
+/* Typedef for very unsigned long integers */
 typedef unsigned long ice_time_ulong;
 
 /* Enumeration for week days */
@@ -356,7 +422,7 @@ typedef enum ice_time_month {
     ICE_TIME_MONTH_DECEMBER
 } ice_time_month;
 
-/* Enumeration for seasons (helpful?) */
+/* Enumeration for seasons */
 typedef enum ice_time_season {
     ICE_TIME_SEASON_UNKNOWN = 0,
     ICE_TIME_SEASON_WINTER,
@@ -369,11 +435,8 @@ typedef enum ice_time_season {
 typedef struct ice_time_info {
     const char* str;                /* Time as string */
     ice_time_ulong clock_ticks;     /* Clock Ticks (Nanoseconds) */
-    ice_time_ulong system_ticks;    /* Ticks since system started (Milliseconds) */
+    ice_time_ulong uptime;          /* Ticks since system started (Milliseconds) */
     ice_time_ulong epoch;           /* Unix timestamp */
-    ice_time_ulong nanoseconds;
-    ice_time_ulong microseconds;
-    ice_time_ulong milliseconds;
     unsigned second;
     unsigned minute;
     unsigned hour;
@@ -389,22 +452,86 @@ typedef struct ice_time_info {
 typedef enum ice_time_error {
     ICE_TIME_ERROR_OK = 0,          /* OK - no errors */
     ICE_TIME_ERROR_UNKNOWN_TIME,    /* Occurs when time() function fails */
-    ICE_TIME_ERROR_UNKNOWN_CLOCK    /* Occurs when clock_gettime() function fails (Linux/Unix only) */
+    ICE_TIME_ERROR_UNKNOWN_CLOCK,   /* Occurs when clock_gettime() function fails (Linux/Unix only) */
+    ICE_TIME_ERROR_SYSCALL_FAILURE  /* Occurs when platform-specific call fails */
 } ice_time_error;
 
 /* ============================== Functions ============================== */
 
-/* Returns difference between 2 ticks, The 2 ticks are acquired by via clock_ticks from 2 times */
+/* Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
 ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_diff(ice_time_info t1, ice_time_info t2);
 
-/* Returns Delta Time between 2 ticks, The 2 ticks are acquired by via clock_ticks from 2 times */
+/* Returns difference between clock tick of current time and clock time of specific time */
+ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_since(ice_time_info t);
+
+/* Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
 ICE_TIME_API double ICE_TIME_CALLCONV ice_time_dt(ice_time_info t1, ice_time_info t2);
 
-/* Returns current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) */
-ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info* time_info);
+/* Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure! */
+ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *time_info);
 
-/* Sleeps thread/program for milliseconds */
+/* Sleeps thread/program for Milliseconds */
 ICE_TIME_API void ICE_TIME_CALLCONV ice_time_sleep(ice_time_ulong ms);
+
+/* Converts: Attoseconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_ns(ice_time_ulong as);
+
+/* Converts: Attoseconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_us(ice_time_ulong as);
+
+/* Converts: Attoseconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_ms(ice_time_ulong as);
+
+/* Converts: Attoseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_sec(ice_time_ulong as);
+
+/* Converts: Nanoseconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_as(ice_time_ulong ns);
+
+/* Converts: Nanoseconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_us(ice_time_ulong ns);
+
+/* Converts: Nanoseconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_ms(ice_time_ulong ns);
+
+/* Converts: Nanoseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_sec(ice_time_ulong ns);
+
+/* Converts: Microseconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_as(ice_time_ulong us);
+
+/* Converts: Microseconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_ns(ice_time_ulong us);
+
+/* Converts: Microseconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_ms(ice_time_ulong us);
+
+/* Converts: Microseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_sec(ice_time_ulong us);
+
+/* Converts: Milliseconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_as(ice_time_ulong ms);
+
+/* Converts: Milliseconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_ns(ice_time_ulong ms);
+
+/* Converts: Milliseconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_us(ice_time_ulong ms);
+
+/* Converts: Milliseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_sec(ice_time_ulong ms);
+
+/* Converts: Seconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_as(ice_time_ulong sec);
+
+/* Converts: Seconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_ns(ice_time_ulong sec);
+
+/* Converts: Seconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_us(ice_time_ulong sec);
+
+/* Converts: Seconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_ms(ice_time_ulong sec);
 
 #if defined(__cplusplus)
 }
@@ -435,10 +562,17 @@ typedef enum bool { false, true } bool;
 #    include <sysinfoapi.h>
 #    include <synchapi.h>
 #  endif
-#elif defined(ICE_TIME_APPLE)
-#  include <mach/mach.h>
-#  if _POSIX_C_SOURCE < 199309L
-#    include <unistd.h>
+#elif defined(ICE_TIME_BSD) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BLACKBERRY) || defined(ICE_TIME_UNIX)
+#  include <sys/time.h>
+#  include <sys/resource.h>
+#  if !defined(ICE_TIME_UNIX)
+#    include <stddef.h>
+#    if defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_TIME_APPLE)
+#      include <sys/types.h>
+#    elif defined(__NetBSD__) || defined(__OpenBSD__) || defined(ICE_TIME_BLACKBERRY)
+#      include <sys/param.h>
+#    endif
+#    include <sys/sysctl.h>
 #  endif
 #elif defined(ICE_TIME_RPI_PICO)
 #  include "pico/types.h"
@@ -446,30 +580,37 @@ typedef enum bool { false, true } bool;
 #  include "hardware/timer.h"
 #  include "hardware/rtc.h"
 #  include "pico/util/datetime.h"
-#elif defined(ICE_TIME_UNIX)
-#  if _POSIX_C_SOURCE < 199309L
-#    include <unistd.h>
-#  endif
 #elif defined(ICE_TIME_3DS)
 #  include <3ds.h>
-#elif defined(ICE_TIME_WEB)
-#  include <emscripten/emscripten.h>
 #endif
 
-/* Returns difference between 2 ticks, The 2 ticks are acquired by via clock_ticks from 2 times */
+/* Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
 ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_diff(ice_time_info t1, ice_time_info t2) {
-    return (t1.clock_ticks - t2.clock_ticks);
+    long diff = t1.clock_ticks - t2.clock_ticks
+    return (ice_time_ulong)((diff < 0) ? 1 : diff);
 }
 
-/* Returns Delta Time between 2 ticks, The 2 ticks are acquired by via clock_ticks from 2 times */
+/* Returns difference between clock tick of current time and clock time of specific time */
+ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_since(ice_time_info t) {
+    ice_time_get_info current_time;
+    ice_time_error error = ice_time_get_info(&current_time);
+    long diff;
+
+    if (error != ICE_TIME_ERROR_OK) return 0;
+    diff = t.clock_ticks - current_time.clock_ticks;
+    
+    return (ice_time_ulong)((diff < 0) ? 1 : diff);
+}
+
+/* Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
 ICE_TIME_API double ICE_TIME_CALLCONV ice_time_dt(ice_time_info t1, ice_time_info t2) {
-    return (double)((t1.clock_ticks - t2.clock_ticks) / CLOCKS_PER_SEC);
+    return (double)((t1.clock_ticks - t2.clock_ticks) / 1000000.0);
 }
 
-/* Returns current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) */
-ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info* time_info) {
-    ice_time_error err = ICE_TIME_ERROR_OK;
-    ice_time_ulong systicks = 0;
+/* Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure! */
+ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *time_info) {
+    ice_time_error error = ICE_TIME_ERROR_OK;
+    ice_time_ulong systicks;
     ice_time_season season;
     ice_time_month month;
 
@@ -479,52 +620,57 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info*
     char* tm_str;
 #else
     datetime_t t;
-    char tm_str_buf[128];
-    char* tm_str = &tm_str[0];
-
-    /* todo: change 28 to 29 if modulo of number is 0 */
-    unsigned year_days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-    unsigned year_day = 0;
-    unsigned i;
+    char tm_str_buf[128], *tm_str = &tm_str_buf[0];
+    unsigned i, year_day = 0, year_days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 #endif
-    
+
 #if defined(ICE_TIME_MICROSOFT)
-
-#if defined(_WIN64)
-    systicks = (ice_time_ulong) GetTickCount64();
-#else
+#if defined(_WIN32)
     systicks = (ice_time_ulong) GetTickCount();
+#elif defined(_WIN64)
+    systicks = (ice_time_ulong) GetTickCount64();
 #endif
+#elif defined(ICE_TIME_BSD) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BLACKBERRY)
+    struct timeval tv;
+    size_t len;
+    int res, mib[2] = { CTL_KERN, KERN_BOOTTIME };
 
-#elif defined(ICE_TIME_APPLE)
-    systicks = (ice_time_ulong) (mach_continuous_approximate_time() / 1000);
+    len = sizeof(tv);
+    res = sysctl(mib, 2, &tv, &len, 0, 0);
+    if (res != 0) {
+        error = ICE_TIME_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
+
+    systicks = (ice_time_ulong) ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 #elif defined(ICE_TIME_3DS)
     systicks = (ice_time_ulong) (svcGetSystemTick() / 1000);
 #elif defined(ICE_TIME_UNIX)
     struct timespec ts;
-    int clockres = clock_gettime(CLOCK_MONOTONIC, &ts);
-    
+
+#if defined(CLOCK_MONOTONIC_RAW)
+    int clockres = clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
+#elif defined(CLOCK_REALTIME)
+    int clockres = clock_gettime(CLOCK_REALTIME, &ts);
+#endif
+
     if (clockres != 0) {
-        err = ICE_TIME_ERROR_UNKNOWN_CLOCK;
+        error = ICE_TIME_ERROR_UNKNOWN_CLOCK;
         goto failure;
     }
 
-    systicks = (ice_time_ulong) (ts.tv_nsec / 1000);
+    systicks = (ice_time_ulong)((ts.tv_sec * 1000) + (ts.tv_nsec / 1000000));
+
 #elif defined(ICE_TIME_RPI_PICO)
     absolute_time_t pico_time = get_absolute_time();
-
     systicks = (ice_time_ulong) to_ms_since_boot(pico_time);
-#elif defined(ICE_TIME_WEB)
-    systicks = (ice_time_ulong) EM_ASM_INT({
-        return (new Date().getTime());
-    });
 #endif
 
 #if !defined(ICE_TIME_RPI_PICO)
     t = time(0);
     
     if (t == (time_t)(-1)) {
-        err = ICE_TIME_ERROR_UNKNOWN_TIME;
+        error = ICE_TIME_ERROR_UNKNOWN_TIME;
         goto failure;
     }
 
@@ -547,11 +693,8 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info*
 
     time_info->str = tm_str;
     time_info->clock_ticks = (ice_time_ulong) clock();
-    time_info->system_ticks = systicks;
+    time_info->uptime = systicks;
     time_info->epoch = (ice_time_ulong) t;
-    time_info->nanoseconds = (ice_time_ulong) (systicks * 1000);
-    time_info->microseconds = (ice_time_ulong) systicks;
-    time_info->milliseconds = (ice_time_ulong) (systicks / 1000);
     time_info->second = pt->tm_sec;
     time_info->minute = pt->tm_min;
     time_info->hour = pt->tm_hour;
@@ -563,7 +706,10 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info*
     time_info->year = (pt->tm_year + 1900);
 #else
     if (!rtc_running()) rtc_init();
-    if (!rtc_get_datetime(&t)) goto failure;
+    if (!rtc_get_datetime(&t)) {
+        error = ICE_TIME_ERROR_UNKNOWN_TIME;
+        goto failure;
+    }
 
     datetime_to_str(tm_str, sizeof(tm_str_buf), &t);
 
@@ -580,18 +726,15 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info*
     } else {
         season = ICE_TIME_SEASON_UNKNOWN;
     }
-
+    
     if ((t.year % 4) == 0) year_days[1] = 29;
 
     for (i = 0; i < (month - 1); i++) year_day += year_days[i];
 
     time_info->str = tm_str;
     time_info->clock_ticks = (ice_time_ulong) (time_us_64() * 1000);
-    time_info->system_ticks = systicks;
+    time_info->uptime = systicks;
     time_info->epoch = (ice_time_ulong) pico_time;
-    time_info->nanoseconds = (ice_time_ulong) (systicks * 1000);
-    time_info->microseconds = (ice_time_ulong) systicks;
-    time_info->milliseconds = (ice_time_ulong) (systicks / 1000);
     time_info->second = (ice_time_ulong) t.sec;
     time_info->minute =(ice_time_ulong) t.min;
     time_info->hour = (ice_time_ulong) t.hour;
@@ -600,19 +743,16 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_status(ice_time_info*
     time_info->year_day = year_day;
     time_info->month = month;
     time_info->season = season;
-    time_info->year = (pt->tm_year + 1900);
+    time_info->year = t->year;
 #endif
 
-    return err;
+    return error;
 
 failure:
     time_info->str = 0;
     time_info->clock_ticks = 0;
-    time_info->system_ticks = 0;
+    time_info->uptime = 0;
     time_info->epoch = 0;
-    time_info->nanoseconds = 0;
-    time_info->microseconds = 0;
-    time_info->milliseconds = 0;
     time_info->second = 0;
     time_info->minute = 0;
     time_info->hour = 0;
@@ -623,33 +763,125 @@ failure:
     time_info->season = ICE_TIME_SEASON_UNKNOWN;
     time_info->year = 0;
 
-    return err;
+    return error;
 }
 
-/* Sleeps thread/program for milliseconds */
+/* Sleeps thread/program for Milliseconds */
 ICE_TIME_API void ICE_TIME_CALLCONV ice_time_sleep(ice_time_ulong ms) {
 #if defined(ICE_TIME_MICROSOFT)
     Sleep(ms);
 #elif defined(ICE_TIME_3DS)
     svcSleepThread(ms * 1000000);
-#elif defined(ICE_TIME_UNIX) || defined(ICE_TIME_APPLE)
+#elif defined(ICE_TIME_UNIX) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY)
+    struct timeval tv;
 
-#if _POSIX_C_SOURCE < 199309L
-    usleep(ms * 1000);
-#else
-    struct timespec t;
-
-    t.tv_sec = ms / 1000;
-    t.tv_nsec = (ms % 1000) * 1000000;
-
-    nanosleep(&t, &t);
-#endif
-
+    tv.tv_sec = (time_t)(ms / 1000);
+    tv.tv_usec = (long)((ms % 1000) * 1000);
+    
+    select(0, 0, 0, 0, &t);
 #elif defined(ICE_TIME_RPI_PICO)
     sleep_ms(ms);
-#elif defined(ICE_TIME_WEB)
-    emscripten_sleep(ms);
 #endif
+}
+
+/* Converts: Attoseconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_ns(ice_time_ulong as) {
+    return ((double)(as / 1000000000.0));
+}
+
+/* Converts: Attoseconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_us(ice_time_ulong as) {
+    return ((double)(as / 1000000000000.0));
+}
+
+/* Converts: Attoseconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_ms(ice_time_ulong as) {
+    return ((double)(as / 1000000000000000.0));
+}
+
+/* Converts: Attoseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_as_to_sec(ice_time_ulong as) {
+    return ((double)(as / 1000000000000000000.0));
+}
+
+/* Converts: Nanoseconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_as(ice_time_ulong ns) {
+    return ((double)(ns * 1000000000.0));
+}
+
+/* Converts: Nanoseconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_us(ice_time_ulong ns) {
+    return ((double)(ns / 1000.0));
+}
+
+/* Converts: Nanoseconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_ms(ice_time_ulong ns) {
+    return ((double)(ns / 1000000.0));
+}
+
+/* Converts: Nanoseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ns_to_sec(ice_time_ulong ns) {
+    return ((double)(ns / 1000000000.0));
+}
+
+/* Converts: Microseconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_as(ice_time_ulong us) {
+    return ((double)(us * 1000000000000.0));
+}
+
+/* Converts: Microseconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_ns(ice_time_ulong us) {
+    return ((double)(us * 1000.0));
+}
+
+/* Converts: Microseconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_ms(ice_time_ulong us) {
+    return ((double)(us / 1000.0));
+}
+
+/* Converts: Microseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_us_to_sec(ice_time_ulong us) {
+    return ((double)(us / 1000000.0));
+}
+
+/* Converts: Milliseconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_as(ice_time_ulong ms) {
+    return ((double)(ms * 1000000000000000.0));
+}
+
+/* Converts: Milliseconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_ns(ice_time_ulong ms) {
+    return ((double)(ms * 1000000.0));
+}
+
+/* Converts: Milliseconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_us(ice_time_ulong ms) {
+    return ((double)(ms * 1000.0));
+}
+
+/* Converts: Milliseconds -> Seconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_ms_to_sec(ice_time_ulong ms) {
+    return ((double)(ms / 1000.0));
+}
+
+/* Converts: Seconds -> Attoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_as(ice_time_ulong sec) {
+    return ((double)(sec * 1000000000000000000.0));
+}
+
+/* Converts: Seconds -> Nanoseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_ns(ice_time_ulong sec) {
+    return ((double)(sec * 1000000000.0));
+}
+
+/* Converts: Seconds -> Microseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_us(ice_time_ulong sec) {
+    return ((double)(sec * 1000000.0));
+}
+
+/* Converts: Seconds -> Milliseconds */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_sec_to_ms(ice_time_ulong sec) {
+    return ((double)(sec * 1000.0));
 }
 
 #endif  /* ICE_TIME_IMPL */

@@ -1,13 +1,15 @@
 ================= TODO =================
 
 [o] Remove unnecessary definitions for libs
-[o] Do checks on how values are returned by libs (like if long long required), in that case libs needs C99!
-[o] Edit asterisks positions in pointer functions
+[ ] Create a macro to ease definition of the APIs
+[o] Fix documentation for libs that returns error values...
+[ ] Edit required static libraries to fully cover standard ones...
 [o] Update docs
+[o] sokol-style for private functions
 [o] Update and complete bindings!
 [o] Continue working on the libs
-[o] Test all
-[o] Make bindings
+[ ] Test all
+[ ] Make bindings
 [o] Make site
 [ ] Publish All
 
@@ -26,9 +28,7 @@ testfile2.c:40:6: warning: dereferencing type-punned pointer will break strict-a
 
 ==== ice_batt.h ====
 
-1. Maybe add BeOS/Haiku support?
-2. Complete error system
-3. Fix documentation and examples
+Maybe add BeOS/Haiku support?
 
 ==== ice_clip.h ====
 
@@ -60,5 +60,4 @@ ice_arr.h (Complete the lib)
 
 ================= CHECKING COMPLETED LIBRARIES =================
 
-ice_str.h
-ice_time.h
+ice_batt.h (Check compatibility for BlackBerry, NetBSD, FreeBSD, DragonFly BSD)
