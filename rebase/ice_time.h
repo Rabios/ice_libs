@@ -155,13 +155,13 @@ double ice_time_us_to_as(ice_time_ulong us);
 // Converts: Microseconds -> Nanoseconds
 double ice_time_us_to_ns(ice_time_ulong us);
 
-/* Converts: Microseconds -> Milliseconds
+// Converts: Microseconds -> Milliseconds
 double ice_time_us_to_ms(ice_time_ulong us);
 
-/* Converts: Microseconds -> Seconds
+// Converts: Microseconds -> Seconds
 double ice_time_us_to_sec(ice_time_ulong us);
 
-/* Converts: Milliseconds -> Attoseconds
+// Converts: Milliseconds -> Attoseconds
 double ice_time_ms_to_as(ice_time_ulong ms);
 
 // Converts: Milliseconds -> Nanoseconds
