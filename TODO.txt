@@ -4,6 +4,7 @@
 [ ] Create a macro to ease definition of the APIs
 [o] Fix documentation for libs that returns error values...
 [ ] Edit required static libraries to fully cover standard ones...
+[ ] Test and fix the GitHub Action if it doesn't build...
 [o] Update docs
 [o] sokol-style for private functions
 [o] Update and complete bindings!
@@ -57,6 +58,10 @@ ice_vecmath.h (Complete the lib)
 ice_steam.h (Complete the lib)
 ice_hashmap.h (Fix the implementation)
 ice_arr.h (Complete the lib)
+
+ice_joy.h
+ice_mouse.h
+ice_kbd.h
 
 ================= CHECKING COMPLETED LIBRARIES =================
 
