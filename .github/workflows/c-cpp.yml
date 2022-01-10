@@ -44,7 +44,7 @@ jobs:
         mkdir -p downloads
         yes | cp -r build/${{ matrix.lib }}${{ matrix.ext }} downloads/${{ matrix.lib }}${{ matrix.ext }}
    
-    - name: Artifacts #2 - ${{ matrix.os }}
+    - name: Artifacts - ${{ matrix.os }}
       uses: actions/upload-artifact@v2
       with: 
           name: assets-for-download
