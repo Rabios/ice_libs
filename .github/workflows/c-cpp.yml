@@ -28,3 +28,24 @@ jobs:
         echo '#define ${{ matrix.def }}\n#include ${{ matrix.lib }}\n' > build/${{ matrix.lib }}.c
         gcc build/${{ matrix.lib }}.c -o build/${{ matrix.lib }}${{ matrix.ext }}
         rm -f build/*.c build/*.h
+  
+  archive-build-artifacts:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macOS-latest ]
+        ext: [ .so, .dll, .dylib ]
+        lib: [ ice_cpu ]
+        def: [ ICE_CPU_IMPL ]
+    
+    steps:
+    - name: Artifacts Setup & Update - ${{ matrix.os }}
+      run: |
+        mkdir -p downloads
+        yes | cp -r build/${{ matrix.lib }}${{ matrix.ext }} downloads/${{ matrix.lib }}${{ matrix.ext }}
+   
+    - name: Artifacts #2 - ${{ matrix.os }}
+      uses: actions/upload-artifact@v2
+      with: 
+          name: assets-for-download
+          path: downloads
