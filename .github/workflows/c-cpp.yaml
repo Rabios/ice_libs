@@ -15,17 +15,12 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macOS-latest ]
         lib: [ ice_cpu ]
         def: [ ICE_CPU_IMPL ]
-  
-  - uses: actions/checkout@v2
-      with:
-        ref: dev
 
     steps:
-    - name: Test Branch
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    - name: Check the Branch
       with:
         ref: dev
-
     - name: Build - Microsoft Windows
       if: matrix.os == 'windows-latest'
       run: |
