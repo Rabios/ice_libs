@@ -90,8 +90,7 @@ ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 #define ICE_CPU_HPUX            // HP-UX
 #define ICE_CPU_IRIX            // IRIX
 #define ICE_CPU_UNIX            // Unix and Unix-Like
-#define ICE_CPU_BB10            // BlackBerry 10
-#define ICE_CPU_QNX             // BlackBerry QNX (QNX, QNX Neutrino, BlackBerry PlayBook)
+#define ICE_CPU_BLACKBERRY      // BlackBerry (QNX, QNX Neutrino, BlackBerry PlayBook, BlackBerry 10)
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
 #define ICE_CPU_PLATFORM_AUTODETECTED
@@ -137,7 +136,7 @@ You could support or contribute to ice_libs project by possibly one of following
 
 */
 
-#ifndef ICE_CPU_H
+#if !defined(ICE_CPU_H)
 #define ICE_CPU_H 1
 
 /* Allow to use calling conventions if desired... */
@@ -172,7 +171,7 @@ You could support or contribute to ice_libs project by possibly one of following
 #endif
 
 /* If no platform defined, This definition will define itself! */
-#if !(defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_BSD) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_BB10) || defined(ICE_CPU_QNX))
+#if !(defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_BSD) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_BLACKBERRY))
 #  define ICE_CPU_PLATFORM_AUTODETECTED 1
 #endif
 
@@ -184,10 +183,8 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_CPU_IRIX 1
 #  elif defined(__APPLE__) || defined(__MACH__) || defined(__DARWIN__)
 #    define ICE_CPU_APPLE 1
-#  elif defined(__BLACKBERRY10__) || defined(__BB10__)
-#    define ICE_CPU_BB10 1
-#  elif defined(__QNX__) || defined(__QNXNTO__) || defined(__PLAYBOOK__)
-#    define ICE_CPU_QNX 1
+#  elif (defined(__BLACKBERRY10__) || defined(__BB10__)) || (defined(__QNX__) || defined(__QNXNTO__) || defined(__PLAYBOOK__))
+#    define ICE_CPU_BLACKBERRY 1
 #  elif defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(_X360) || defined(__XBOX360__) || defined(_XBOX) || defined(_XBOX_ONE) || defined(_DURANGO)
 #    define ICE_CPU_MICROSOFT 1
 #  elif defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__)
@@ -277,7 +274,6 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_inf
 #if defined(ICE_CPU_IMPL)
 
 #if defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX) || defined(ICE_CPU_UNIX)
-#  include <string.h>
 #  include <cpuid.h>
 #  if defined(ICE_CPU_HPUX)
 #    include <sys/mpctl.h>
@@ -286,7 +282,6 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_inf
 #  endif
 unsigned ice_cpu_brand[12];
 #elif defined(ICE_CPU_MICROSOFT)
-#  include <string.h>
 #  if defined(_MSC_VER)
 #    include <windows.h>
 #    include <intrin.h>
@@ -296,11 +291,11 @@ unsigned ice_cpu_brand[12];
 #    include <cpuid.h>
 #  endif
 unsigned ice_cpu_brand[12];
-#elif defined(ICE_CPU_BSD) || defined(ICE_CPU_QNX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BB10)
+#elif defined(ICE_CPU_BSD) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BLACKBERRY)
 #  include <stddef.h>
 #  if defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_CPU_APPLE)
 #    include <sys/types.h>
-#  elif defined(__NetBSD__) || defined(__OpenBSD__) || defined(ICE_CPU_QNX) || defined(ICE_CPU_BB10)
+#  elif defined(__NetBSD__) || defined(__OpenBSD__) || defined(ICE_CPU_BLACKBERRY)
 #    include <sys/param.h>
 #  endif
 #  include <sys/sysctl.h>
@@ -308,7 +303,7 @@ unsigned ice_cpu_brand[12];
 
 /* Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
 ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_info) {
-#if defined(ICE_CPU_BSD) || defined(ICE_CPU_QNX) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BB10)
+#if defined(ICE_CPU_BSD) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BLACKBERRY)
     char brand[128];
     unsigned cores;
     int res, mibs[2][2] = {
