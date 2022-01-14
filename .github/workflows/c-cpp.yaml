@@ -25,7 +25,7 @@ jobs:
       if: matrix.os == 'windows-latest'
       run: |
         mkdir -p build
-        yes | cp -r ${{ github.workspace }}/rebase/${{ matrix.lib }}.h ${{ github.workspace }}/build/${{ matrix.lib }}.h
+        cp -rf ${{ github.workspace }}/rebase/${{ matrix.lib }}.h ${{ github.workspace }}/build/${{ matrix.lib }}.h
         echo '#define ${{ matrix.def }}\n#include "${{ matrix.lib }}.h"\n' > ${{ github.workspace }}/build/${{ matrix.lib }}.c
         gcc -shared ${{ github.workspace }}/build/${{ matrix.lib }}.c -o ${{ github.workspace }}/build/${{ matrix.lib }}.dll
         rm -f ${{ github.workspace }}/build/*.c ${{ github.workspace }}/build/*.h
@@ -35,7 +35,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         mkdir -p build
-        yes | cp -r ${{ github.workspace }}/rebase/${{ matrix.lib }}.h ${{ github.workspace }}/build/${{ matrix.lib }}.h
+        cp -rf ${{ github.workspace }}/rebase/${{ matrix.lib }}.h ${{ github.workspace }}/build/${{ matrix.lib }}.h
         echo '#define ${{ matrix.def }}\n#include "${{ matrix.lib }}.h"\n' > ${{ github.workspace }}/build/${{ matrix.lib }}.c
         gcc -shared ${{ github.workspace }}/build/${{ matrix.lib }}.c -o ${{ github.workspace }}/build/${{ matrix.lib }}.so
         rm -f ${{ github.workspace }}/build/*.c ${{ github.workspace }}/build/*.h
@@ -45,7 +45,7 @@ jobs:
       if: matrix.os == 'macOS-latest'
       run: |
         mkdir -p build
-        yes | cp -r ${{ github.workspace }}/rebase/${{ matrix.lib }}.h ${{ github.workspace }}/build/${{ matrix.lib }}.h
+        cp -rf ${{ github.workspace }}/rebase/${{ matrix.lib }}.h ${{ github.workspace }}/build/${{ matrix.lib }}.h
         echo '#define ${{ matrix.def }}\n#include "${{ matrix.lib }}.h"\n' > ${{ github.workspace }}/build/${{ matrix.lib }}.c
         gcc -dynamiclib ${{ github.workspace }}/build/${{ matrix.lib }}.c -o ${{ github.workspace }}/build/${{ matrix.lib }}.dylib
         rm -f ${{ github.workspace }}/build/*.c ${{ github.workspace }}/build/*.h
@@ -64,21 +64,21 @@ jobs:
       shell: bash
       run: |
         mkdir -p downloads
-        yes | cp -r ${{ github.workspace }}/build/${{ matrix.lib }}.dll downloads/${{ matrix.lib }}.dll
+        cp -rf ${{ github.workspace }}/build/${{ matrix.lib }}.dll downloads/${{ matrix.lib }}.dll
     
     - name: Artifacts Setup & Update - Linux (Ubuntu)
       shell: bash
       if: matrix.os == 'ubuntu-latest'
       run: |
         mkdir -p downloads
-        yes | cp -r ${{ github.workspace }}/build/${{ matrix.lib }}.so downloads/${{ matrix.lib }}.so
+        cp -rf ${{ github.workspace }}/build/${{ matrix.lib }}.so downloads/${{ matrix.lib }}.so
     
     - name: Artifacts Setup & Update - macOS/OSX
       shell: bash
       if: matrix.os == 'macOS-latest'
       run: |
         mkdir -p downloads
-        yes | cp -r ${{ github.workspace }}/build/${{ matrix.lib }}.dylib downloads/${{ matrix.lib }}.dylib
+        cp -rf ${{ github.workspace }}/build/${{ matrix.lib }}.dylib downloads/${{ matrix.lib }}.dylib
   
     - name: Artifacts - ${{ matrix.os }}
       uses: actions/upload-artifact@v2
