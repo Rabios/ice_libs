@@ -1,7 +1,17 @@
-#[[
+##[[
   cdefine "ICE_RAM_IMPL"
-  cinclude "\"ice_ram.h\""
+  cinclude "ice_ram.h"
 ]]
+
+-- Typedef for free and used and total Bytes of RAM
 global ice_ram_bytes: type <cimport, nodecl> = @culonglong
-global function ice_ram_total(): ice_ram_bytes <cimport, nodecl> end
-global function ice_ram_free(): ice_ram_bytes <cimport, nodecl> end
+
+-- RAM Information, Contains free and used and total RAM in Bytes
+global ice_ram_info: type <cimport, nodecl> = @record {
+  free: ice_ram_bytes,
+  used: ice_ram_bytes,
+  total: ice_ram_bytes
+}
+
+-- Retrives RAM info (Free RAM, Used RAM, Total RAM) in Bytes
+global function ice_ram_status(): ice_ram_info <cimport, nodecl> end

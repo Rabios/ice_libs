@@ -1,6 +1,6 @@
 # ice_libs
 
-> NOTE: This project is still work in progress, Development of the project is still continuous in `dev` branch and everyone is welcome to join development, Thanks for your patience...
+> NOTE: This project is still work in progress, Development of the project is still continuous in [`dev`](https://github.com/Rabios/ice_libs/tree/dev) branch and everyone is welcome to join development, Thanks for your patience...
 
 <div align="center">
   <img src="img/icon1.png" width="256", height="256"><br><br>
@@ -8,63 +8,42 @@
 </div>
 <br>
 
-### Brief
+### Brief and Goals
 
-ice_libs is collection of Single-Header C libraries, Designed to introduce stuff that sokol and some single-header libs didn't offered, In addition to more stuff offered by these libs.
+ice_libs is collection of Cross-Platform Single-Header C libraries for doing a lot of stuff...
 
-Since months, I (Rabia) was working on something called "fegame", Universal game framework that uses [rxi](https://github.com/rxi)'s [fe](https://github.com/rxi/fe) as scripting language that can run on all platforms as possible...
+Libraries were originally designed to cover what other Single-Header libraries miss (ex. `sokol_time.h` does not have Sleep function...) and in the same time it tries to provide backward compatibility with oldest standard ANSI C (C89) as best as possible, Except if libraries where in need to do implementation in C99, C++ (BeOS/Haiku, BlackBerry 10, UWP), or even Objective-C (Apple Platforms)
 
-However things didn't came with success and stuck with a lot of things so i decided to make `ice_libs` which you see right now, But in same time this born as standalone project away of "fegame" which stopped to work on this amazing thing! :)
+The libraries can detect the platform automatically to provide the suitable implementation, As they are able to run on any platform possible to implement like Mobile, Desktop, Web, Embeddable Platforms, and even Game Consoles (via Homebrew SDKs) with goal of keeping the portability and abstraction of them, Empowering softwares with high-level and user-friendly optimized API that does the same job without any changes required
 
-Oh and also, Come join us at discord from [here!](https://discord.gg/DruPBE5m2C)
+Also, The libraries are designed to be bindings-friendly so the developer can write/generate bindings for his favourite programming language with ease and no pain, And allows developers to do some customizations on their own like changing the call convention or changing default memory allocation functions, Giving the developers a full power to write softwares the way they like...
 
-### Goals
+The libraries are Dual-Licensed, The developer can choose between MIT and Public Domain depending on his preferences, See license [here](#license)
 
-1. Portability: ice libraries always trying to use ANSI C when possible, Except if in need to use C++ (Haiku, BeOS, UWP) or Objective-C (Apple).
-2. Cross-Platform: One of goals ice libraries provide is to be implemented on every platform if possible, Including Game Consoles.
-3. Customizable: ice libraries offers ability to use call conventions, Custom memory allocators, And a lot of things that makes it possible to use and build the libraries on every platform supported by ice libraries.
-4. Platform-Detectable: ice libraries can detect platform that program runs on, So you are not forced to define implementation platform and backend used.
-5. Bindings-Friendly: Designed to make bindings much easier!
-6. Easy to code.
-7. Optimizable.
-8. Easy to license: ice libraries allows you to choose between 2 licenses: Public Domain and MIT!
+For more info check out the [Documentation](https://github.com/Rabios/ice_libs/wiki)
+
+### Story
+
+ice_libs originally started by [Rabia Alhaffar](https://github.com/Rabios) in March 2021 when he was working on gamepad input support for a project called fegame, Which would be a Cross-Platform game framework that leverages a lisp-like scripting language called [fe](https://github.com/rxi/fe)
+
+At that time Rabia saw a project called [gainput](https://gainput.johanneskuhlmann.de) which represents his idea, But it's written in C++ and had bit of bugs and doesn't even support some platforms! (like BSD)
+
+So at that time he started with library called crosspad.h that designed to be a cross-platform gamepad input library, Which later evolved into ice_joy.h as the first ice_libs library being in development, Then in April he decided to stop working on fegame in order to extend the project workspace to have more libs and form ice_libs!
 
 ### Libraries
 
-| Name                                                                                  | Description                                                      | platforms                                                                                                                                               | Languages     | Lines         |
-|---------------------------------------------------------------------------------------|------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------|
-| [ice_ffi.h](https://github.com/Rabios/ice_libs/raw/master/ice_ffi.h)                  | Cross-Platform Single-Header library to work with shared libs    | Microsoft platforms, Unix, Unix-like                                                                                                                    | C             | 309           |
-| [ice_fs.h](https://github.com/Rabios/ice_libs/raw/master/ice_fs.h)                    | Cross-Platform Single-Header library for filesystem functions    | Anywhere                                                                                                                                                | C             | 1898          |
-| [ice_clipboard.h](https://github.com/Rabios/ice_libs/raw/master/ice_clipboard.h)      | Cross-Platform Single-Header Clipboard library                   | Anywhere                                                                                                                                                | C, C++, Obj-C | 716           |
-| [ice_ram.h](https://github.com/Rabios/ice_libs/raw/master/ice_ram.h)                  | Cross-Platform Single-Header library to get RAM info             | Microsoft platforms, Unix, Unix-like, Web, PSP, Tizen                                                                                                   | C             | 414           |
-| [ice_time.h](https://github.com/Rabios/ice_libs/raw/master/ice_time.h)                | Cross-Platform Single-Header Time library                        | Anywhere                                                                                                                                                | C             | 927           |
-| [ice_easings.h](https://github.com/Rabios/ice_libs/raw/master/ice_easings.h)          | Cross-Platform Single-Header Easings library                     | Anywhere                                                                                                                                                | C             | 454           |
-| [ice_math.h](https://github.com/Rabios/ice_libs/raw/master/ice_math.h)                | Cross-Platform Single-Header Math library                        | Anywhere                                                                                                                                                | C             | 3619          |
-| [ice_al.h](https://github.com/Rabios/ice_libs/raw/master/ice_al.h)                    | Cross-Platform Single-Header OpenAL API loader                   | OpenAL API supported platforms                                                                                                                          | C             | 678           |
-| [ice_steam.h](https://github.com/Rabios/ice_libs/raw/master/ice_steam.h)              | Cross-Platform Single-Header Steamworks API loader               | Steamworks API supported platforms                                                                                                                      | C             | 4780          |
-| [ice_test.h](https://github.com/Rabios/ice_libs/raw/master/ice_test.h)                | Cross-Platform Single-Header Tiny unit testing lib               | Anywhere                                                                                                                                                | C             | 165           |
-| [ice_str.h](https://github.com/Rabios/ice_libs/raw/master/ice_str.h)                  | Cross-Platform Single-Header for working with strings            | Anywhere                                                                                                                                                | C             | 652           |
-| [ice_arr.h](https://github.com/Rabios/ice_libs/raw/master/ice_arr.h)                  | Cross-Platform Single-Header for working with numeric arrays     | Anywhere                                                                                                                                                | C             | 783           |
-| [ice_battery.h](https://github.com/Rabios/ice_libs/raw/master/ice_battery.h)          | Cross-Platform Single-Header for getting battery info            | Microsoft platforms, Unix, Unix-like, Web, Nintendo Switch, PSP, PSVita, Tizen                                                                          | C             | 888           |
-| [ice_cpu.h](https://github.com/Rabios/ice_libs/raw/master/ice_cpu.h)                  | Cross-Platform Single-Header for getting basic CPU info          | Microsoft platforms, Unix, Unix-like, Web, Nintendo Switch, PSP, PSVita, PS1, PS2, PS3, PS4, PS5, NDS, 3DS, HP-UX, IRIX, GameCube, Wii, WiiU, GBA, Tizen| C             | 754           |
-| [ice_joy.h](https://github.com/Rabios/ice_libs/raw/master/ice_joy.h)                  | Cross-Platform Single-Header for Joystick input                  | Microsoft platforms, Unix-like (No old BSD support), Web, Nintendo Switch, PSP, PSVita, PS1, PS2, PS3, PS4, NDS, 3DS, GameCube, Wii, WiiU, Haiku, BeOS  | C, C++, Obj-C | 4502          |
-| [ice_mouse.h](https://github.com/Rabios/ice_libs/raw/master/ice_mouse.h)              | Cross-Platform Single-Header for Mouse input                     | Microsoft platforms, Unix-Like, macOS/OSX, Android, Web                                                                                                 | C, Obj-C      | 1078          |
-
-> More libs incoming, Get prepared for!
-
-> NOTE: Unix and Unix-like platforms means Linux, iOS, OSX, Haiku, BeOS, and Android.
-
-> For docs of ice_libs see [here!](https://github.com/Rabios/ice_libs/blob/master/docs/README.md)
+For the list of libraries see [here](https://github.com/Rabios/ice_libs/wiki/Libraries)
 
 ### License
 
-All libraries in ice_libs are "Dual-Licensed" (MIT and Public Domain), Choose the one you prefer!
-
 ```
+ice_libs is dual-licensed, Choose the one you prefer!
+
 ------------------------------------------------------------------------
 LICENSE A - PUBLIC DOMAIN LICENSE
 ------------------------------------------------------------------------
 This is free and unencumbered software released into the public domain.
+
 Anyone is free to copy, modify, publish, use, compile, sell, or
 distribute this software, either in source code form or as a compiled
 binary, for any purpose, commercial or non-commercial, and by any
@@ -87,13 +66,11 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org/>
-```
 
-```
 ------------------------------------------------------------------------
 LICENSE B - MIT LICENSE
 ------------------------------------------------------------------------
-Copyright (c) 2021 - 2022 Rabia Alhaffar
+Copyright (c) 2021 - <Present> Rabia Alhaffar
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -101,6 +78,7 @@ in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
+
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 
