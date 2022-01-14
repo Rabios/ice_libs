@@ -1,10 +1,10 @@
 ================= TODO =================
 
 [o] Remove unnecessary definitions for libs
-[ ] Create a macro to ease definition of the APIs
+[ ] Macro to ease definition of the APIs
 [o] Fix documentation for libs that returns error values...
 [ ] Edit required static libraries to fully cover standard ones...
-[ ] Test and fix the GitHub Action if it doesn't build...
+[o] Test and fix the GitHub Action if it doesn't build...
 [o] Update docs
 [o] sokol-style for private functions
 [o] Update and complete bindings!
@@ -26,6 +26,11 @@ testfile2.c: In function 'main':
 testfile2.c:40:6: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
    40 |     *(unsigned**)(&F42) = sym;
       |      ^~~~~~~~~~~~~~~~~~
+
+==== ice_str.h ====
+
+1. ice_str_is_one_of_chars/ice_str_has_one_of_chars to indicate if character belongs to collection of chars from string...
+2. Embedded mode option? To use char buffers instead of dynamic memory management...
 
 ==== ice_batt.h ====
 
@@ -62,7 +67,3 @@ ice_arr.h (Complete the lib)
 ice_joy.h
 ice_mouse.h
 ice_kbd.h
-
-================= CHECKING COMPLETED LIBRARIES =================
-
-ice_batt.h (Check compatibility for BlackBerry, NetBSD, FreeBSD, DragonFly BSD)
