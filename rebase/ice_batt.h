@@ -63,7 +63,7 @@ typedef struct ice_batt_info {
 // [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
 void ice_batt_use_native_activity(void *activity);
 
-// Returns curreny battery status
+// Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure!
 ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
 
 
@@ -106,7 +106,7 @@ ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
 #define ICE_BATT_BB10           // BlackBerry 10
 #define ICE_BATT_UWP            // UWP (Univeral Windows Platform)
 #define ICE_BATT_MICROSOFT      // Microsoft platforms (Non-UWP)
-#define ICE_BATT_BSD            // BSD (FreeBSD, OpenBSD, NetBSD, DragonFly BSD)
+#define ICE_BATT_BSD            // BSD (FreeBSD, DragonFly BSD, NetBSD, OpenBSD)
 #define ICE_BATT_UNIX           // Unix and Unix-Like
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
@@ -209,9 +209,9 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_BATT_TIZEN 1
 #  elif defined(__APPLE__) || defined(__DARWIN__) || defined(__MACH__)
 #    include <TargetConditionals.h>
-#    if defined(TARGET_OS_IOS) || defined(TARGET_OS_IPHONE) || defined(TARGET_OS_MACCATALYST) || defined(TARGET_IPHONE_SIMULATOR)
+#    if defined(TARGET_OS_EMBEDDED) || defined(TARGET_OS_MACCATALYST) || defined(TARGET_IPHONE_SIMULATOR) || defined(TARGET_OS_SIMULATOR)
 #      define ICE_BATT_IOS 1
-#    elif defined(TARGET_OS_MAC)
+#    else
 #      define ICE_BATT_OSX 1
 #    endif
 #  elif defined(__BLACKBERRY10__) || defined(__BB10__)
@@ -236,7 +236,7 @@ You could support or contribute to ice_libs project by possibly one of following
 #    define ICE_BATT_PSP 1
 #  elif defined(_PSVITA) || defined(__VITA__) || defined(SN_TARGET_PSP2)
 #    define ICE_BATT_PSVITA 1
-#  elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+#  elif defined(__FreeBSD__) || defined(__DragonFly__) || defined(__NetBSD__) || defined(__OpenBSD__)
 #    define ICE_BATT_BSD 1
 #  elif defined(__unix__) || defined(__unix)
 #    define ICE_BATT_UNIX 1
@@ -325,7 +325,7 @@ typedef enum ice_batt_error {
 ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(void *activity);
 #endif
 
-/* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_TRUE on success or ICE_BATT_FALSE on failure */
+/* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure! */
 ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_info(ice_batt_info *batt_info);
 
 #if defined(__cplusplus)
@@ -333,6 +333,9 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_info(ice_batt_info *b
 #endif
 
 #if defined(ICE_BATT_IMPL)
+
+/* [INTERNAL] Check if bitmask contains bit, Returns true if contains or false if does not contain */
+#define ICE_BATT_BITFLAG_EXIST(a, b) ((a & b) == b)
 
 /* Implementation of bool */
 #if !defined(__STDC_VERSION__)
@@ -381,9 +384,16 @@ using namespace Windows::System::Power;
 #elif defined(ICE_BATT_PSVITA)
 #  include <psp2/power.h>
 #elif defined(ICE_BATT_BSD)
-#  include <unistd.h>
-#  include <sys/types.h>
-#  include <sys/sysctl.h>
+#  if defined(__FreeBSD__) || defined(__DragonFly__)
+#    include <stddef.h>
+#    include <sys/types.h>
+#    include <sys/sysctl.h>
+#  elif defined(__OpenBSD__) || defined(__NetBSD__)
+#    include <machine/apmvar.h>
+#    include <sys/ioctl.h>
+#    include <unistd.h>
+#    include <string.h>
+#  endif
 #elif defined(ICE_BATT_UNIX)
 #  include <unistd.h>
 #  include <string.h>
@@ -415,7 +425,7 @@ ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(void *activity)
 }
 #endif
 
-/* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_TRUE on success or ICE_BATT_FALSE on failure */
+/* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure! */
 ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info *batt_info) {
     ice_batt_error error = ICE_BATT_ERROR_OK;
 #if defined(ICE_BATT_ANDROID)
@@ -699,8 +709,8 @@ goto finish:
     batt_level = (unsigned) status.BatteryLifePercent;
     if (batt_level == 255) batt_level = 0;
 
-    batt_info->exists = (!(status.BatteryFlag & (1 << 7)) && status.BatteryFlag != 255) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    batt_info->charging = (status.BatteryFlag & (1 << 3)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->exists = !(ICE_BATT_BITFLAG_EXIST(status.BatteryFlag, 128) || ICE_BATT_BITFLAG_EXIST(status.BatteryFlag, 255)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = ICE_BATT_BITFLAG_EXIST(status.BatteryFlag, 8) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_info->level = batt_level;
     
 #elif defined(ICE_BATT_SWITCH)
@@ -760,44 +770,55 @@ goto finish:
     batt_info->charging = (scePowerIsBatteryCharging() == SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
 
 #elif defined(ICE_BATT_BSD)
-    int acpi_info[2], fd, nofail = 0;
-    unsigned i;
-    
-    const char* acpi_dev[2] = {
-        "hw.acpi.battery.life",
-        "hw.acpi.battery.state"
-    };
-    
-    fd = open("/dev/acpi", O_RDONLY);
+#if defined(__FreeBSD__) || defined(__DragonFly__)
+    int batt_life, batt_state, fd, res = 0;
+    size_t len;
 
-    if (fd == -1) {
-        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
-        goto failure;
-    }
-
-    if (close(fd) == -1) {
-        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
-        goto failure;
-    }
-
-    for (i = 0; i < 2; i++) {
-        int res = sysctlbyname(acpi_dev[i], &acpi_info[i], 0, 0);
-        
-        if (res == -1) {
-            nofail = -1;
-            break;
-        }
-    }
-    
-    if (nofail == -1) {
+    len = sizeof(batt_life);
+    res = sysctlbyname("hw.acpi.battery.life", &batt_life, &len, 0, 0);
+    if (res != 0) {
         error = ICE_BATT_ERROR_UNKNOWN_STATUS;
         goto failure;
     }
 
-    batt_info->exists = (!(acpi_info[1] & 0x0007)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    batt_info->charging = (acpi_info[1] & 0x0002) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
-    batt_info->level = (unsigned) acpi_info[0];
+    len = sizeof(batt_state);
+    res = sysctlbyname("hw.acpi.battery.state", &batt_state, &len, 0, 0);
+    if (res != 0) {
+        error = ICE_BATT_ERROR_UNKNOWN_STATUS;
+        goto failure;
+    }
+
+    batt_info->exists = !ICE_BATT_BITFLAG_EXIST(batt_state, (0x0001 | 0x0002 | 0x0004)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = ICE_BATT_BITFLAG_EXIST(batt_state, 0x0002)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = (unsigned) batt_level;
+#elif defined(__OpenBSD__) || defined(__NetBSD__)
+    struct apm_power_info info;
+    int fd, res;
+
+    fd = open("/dev/apm", O_RDONLY);
+    if (fd != 0) {
+        error = ICE_BATT_ERROR_UNKNOWN_STATUS;
+        goto failure;
+    }
+
+    memset(apm_info, 0, sizeof(struct apm_power_info));
     
+    res = ioctl(fd, APM_IOC_GETPOWER, &info);
+    if (res != 0) {
+        error = ICE_BATT_ERROR_UNKNOWN_STATUS;
+        goto failure;
+    }
+
+    res = close(fd);
+    if (res != 0) {
+        error = ICE_BATT_ERROR_SYSCALL_FAILURE;
+        goto failure;
+    }
+
+    batt_info->exists = !((info.battery_state == APM_BATT_UNKNOWN) || (info.battery_state == APM_BATT_ABSENT)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->charging = (info.battery_state == APM_BATT_CHARGING) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
+    batt_info->level = (unsigned) info.battery_life;
+#endif
 #elif defined(ICE_BATT_UNIX)
     int handle, res, readlen;
     char buf[513];
