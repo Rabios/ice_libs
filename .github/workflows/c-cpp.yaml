@@ -18,6 +18,8 @@ jobs:
         def: [ ICE_CPU_IMPL ]
     
     steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Build - Microsoft Windows
       shell: bash
       if: matrix.os == 'windows-latest'
