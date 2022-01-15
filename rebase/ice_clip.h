@@ -368,7 +368,7 @@ using namespace bb::system;
 #    include <winuser.h>
 #  endif
 #elif defined(ICE_CLIP_UWP)
-#  include <string.h>
+#  include <cstring>
 #  include <wchar.h>
 #  include <iostream>
 #  include <string>
