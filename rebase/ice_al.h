@@ -160,7 +160,7 @@ You can support or contribute to ice_libs project by possibly one of following t
 
 */
 
-#ifndef ICE_AL_H
+#if !defined(ICE_AL_H)
 #define ICE_AL_H 1
 
 /* Allow to use calling conventions if desired... */
