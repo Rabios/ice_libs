@@ -1,16 +1,17 @@
-================= TODO =================
+====================== TODO [IMPORTANT] ======================
 
-[ ] Macro to ease definition of the APIs
-[ ] Test and fix the GitHub Action if it doesn't build...
-[o] Update and Complete docs
-[o] sokol-style for private functions
 [o] Update and complete bindings!
-[o] Continue working on the libs
-[o] Tests
-[o] Complete bindings
-[o] Complete the website
+[o] Update and Complete docs
+[ ] Test and fix the GitHub Action if it doesn't build...
+[ ] Continue working on the libs
+[ ] Complete the website
 
-================= TODO LIST FROM LIBRARIES =================
+====================== TODO [UNIMPORTANT] ====================
+
+[ ] sokol-style for private functions
+[ ] Macro to ease definition of the APIs
+
+====================== TODO [LIBRARIES] ======================
 
 ==== ice_ffi.h ====
 
@@ -59,7 +60,6 @@ ice_vecmath.h (Complete the lib)
 ice_steam.h (Complete the lib)
 ice_hashmap.h (Fix the implementation)
 ice_arr.h (Complete the lib)
-
 ice_joy.h
 ice_mouse.h
 ice_kbd.h
