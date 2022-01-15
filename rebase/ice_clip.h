@@ -725,7 +725,7 @@ goto failure:
     [pasteboard clearContents];
     
     BOOL res = [pasteboard setString:txt forType:NSStringPboardType];
-    if (pasteboard == NO) return ICE_CLIP_FALSE;
+    if (res == NO) return ICE_CLIP_FALSE;
         
 #if !defined(ICE_CLIP_OBJC_ARC_ENABLED)
     [pool release];
