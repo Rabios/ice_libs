@@ -18,9 +18,9 @@ The libraries can detect the platform automatically to provide the suitable impl
 
 Also, The libraries are designed to be bindings-friendly so the developer can write/generate bindings for his favourite programming language with ease and no pain, And allows developers to do some customizations on their own like changing the call convention or changing default memory allocation functions, Giving the developers a full power to write softwares the way they like...
 
-The libraries are Dual-Licensed, The developer can choose between MIT and Public Domain depending on his preferences, See license [here](#license)
+The libraries are Dual-Licensed, The developer can choose between MIT and Public Domain depending on his preferences, See license [here](#license) and if you are interested in more info check out the docs [here](https://github.com/Rabios/ice_libs/wiki)
 
-For more info check out the [Documentation](https://github.com/Rabios/ice_libs/wiki)
+Also you can join the Discord Server [here](https://discord.gg/KfkwXjCW) to share your interests with the community!
 
 ### Story
 
