@@ -148,14 +148,16 @@ ice_ffi_handle ice_ffi_get(ice_ffi_handle lib, const char *symbol);
 
 ice_ffi.h is one of libraries that ice_libs project provide...
 
-You could support or contribute to ice_libs project by possibly one of following things:
+You could can or contribute to ice_libs project by possibly one of following things:
 
 1. Test libraries on each platform and provide feedback!
 2. Add support to more platforms and backends!
 3. Request to add more possible features!
 4. Fix bugs/problems in the library!
 5. Use it in one of your projects!
-6. Star the repo on GitHub -> https://github.com/Rabios/ice_libs
+6. Star (and/or fork) the repo on GitHub: https://github.com/Rabios/ice_libs
+7. Share ice_libs Everywhere!
+8. Join the Discord Server: https://discord.gg/KfkwXjCW
 
 
 */
