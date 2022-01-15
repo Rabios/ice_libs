@@ -188,11 +188,14 @@ double ice_time_sec_to_ms(ice_time_ulong sec);
 
 ================================== Linking Flags ==================================
 
-1. Microsoft Windows        =>  -lkernel32
-2. Nintendo 3DS (libctru)   =>  -lctru
-3. Raspberry Pi Pico        =>  -lpico_time -lpico_util -lhardware_timer -lhardware_rtc
+1. Microsoft Windows        =>  -lkernel32 -lc
+2. Microsoft Windows Phone  =>  -lWindowsPhoneCore -lc
+2. Nintendo 3DS (libctru)   =>  -lctru -lc
+3. Raspberry Pi Pico        =>  -lpico_time -lpico_util -lhardware_timer -lhardware_rtc -lc
 
-// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
+// NOTES:
+// 1. When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
+// 2. Linking against "Standard C library" using flag -lc in most times automatically done...
 
 
 ================================= Usable #define(s) ===============================
@@ -211,8 +214,8 @@ double ice_time_sec_to_ms(ice_time_ulong sec);
 
 // #### Define one of these to set implementation platform (Optional) #### //
 
-#define ICE_TIME_MICROSOFT      // Microsoft platforms
-#define ICE_TIME_APPLE          // Apple platforms
+#define ICE_TIME_MICROSOFT      // Microsoft Platforms
+#define ICE_TIME_APPLE          // Apple Platforms
 #define ICE_TIME_UNIX           // Unix and Unix-like
 #define ICE_TIME_RPI_PICO       // Raspberry Pi Pico
 #define ICE_TIME_3DS            // Nintendo 3DS (libctru)

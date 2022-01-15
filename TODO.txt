@@ -1,18 +1,14 @@
 ================= TODO =================
 
-[o] Remove unnecessary definitions for libs
 [ ] Macro to ease definition of the APIs
-[o] Fix documentation for libs that returns error values...
-[ ] Edit required static libraries to fully cover standard ones...
-[o] Test and fix the GitHub Action if it doesn't build...
-[o] Update docs
+[ ] Test and fix the GitHub Action if it doesn't build...
+[o] Update and Complete docs
 [o] sokol-style for private functions
 [o] Update and complete bindings!
 [o] Continue working on the libs
-[ ] Test all
-[ ] Make bindings
-[o] Make site
-[ ] Publish All
+[o] Tests
+[o] Complete bindings
+[o] Complete the website
 
 ================= TODO LIST FROM LIBRARIES =================
 

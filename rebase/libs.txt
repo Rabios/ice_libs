@@ -1,13 +1,12 @@
-WIP:
-
-[o] ice_steam.h
-[o] ice_vecmath.h
-[o] ice_math.h
-[o] ice_hashmap.h
-[o] ice_arr.h
-
 NEXT:
 
+[ ] ice_steam.h
+[ ] ice_vecmath.h
+[ ] ice_math.h
+[ ] ice_hashmap.h
+[ ] ice_arr.h
+[ ] ice_joy.h
+[ ] ice_kbd.h
 [ ] ice_app.h
 [ ] ice_arc.h
 [ ] ice_audio.h
@@ -20,8 +19,6 @@ NEXT:
 [ ] ice_gui.h
 [ ] ice_hardware.h
 [ ] ice_img.h
-[ ] ice_joy.h
-[ ] ice_kbd.h
 [ ] ice_mem.h
 [ ] ice_model.h
 [ ] ice_mouse.h

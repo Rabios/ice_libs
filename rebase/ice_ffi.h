@@ -114,7 +114,7 @@ ice_ffi_handle ice_ffi_get(ice_ffi_handle lib, const char *symbol);
 
 // #### Define one of these to set implementation platform (Optional) #### //
 
-#define ICE_FFI_MICROSOFT       // Microsoft platforms
+#define ICE_FFI_MICROSOFT       // Microsoft Platforms
 #define ICE_FFI_BEOS            // BeOS and Haiku
 #define ICE_FFI_UNIX            // Unix and Unix-like (Unix/Linux and anything else based on these)
 

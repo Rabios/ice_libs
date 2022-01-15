@@ -65,7 +65,8 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 
 ================================== Linking Flags ==================================
 
-1. Microsoft Windows    =>  -lkernel32
+1. Microsoft Windows        =>  -lkernel32
+2. BSD, BlackBerry, Linux   =>  -lc (-lc Most times automatically linked...)
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -86,8 +87,8 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 
 // #### Define one of these to set implementation platform (Optional) #### //
 
-#define ICE_RAM_MICROSOFT       // Microsoft platforms
-#define ICE_RAM_APPLE           // Apple (MacOS, iOS, etc...)
+#define ICE_RAM_MICROSOFT       // Microsoft Platforms
+#define ICE_RAM_APPLE           // Apple Platforms
 #define ICE_RAM_BSD             // BSD (FreeBSD, DragonFly BSD, NetBSD, OpenBSD)
 #define ICE_RAM_WEB             // Web (Emscripten, Only for Node.js)
 #define ICE_RAM_TIZEN           // Tizen

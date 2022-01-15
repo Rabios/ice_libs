@@ -135,7 +135,10 @@ void ice_str_arr_free(char **arr, unsigned long arrlen);
 
 ================================== Linking Flags ==================================
 
-Everywhere: `-lc` (Most times automatically linked...)
+1. Everywhere   => -lc (-lc Most times automatically linked...)
+
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
+
 
 ================================= Usable #define(s) ===============================
 
@@ -153,8 +156,8 @@ Everywhere: `-lc` (Most times automatically linked...)
 
 // #### Define one of these to set implementation platform (Optional) #### //
 
-#define ICE_STR_MICROSOFT               // Microsoft platforms
-#define ICE_STR_NON_MICROSOFT           // Non-Microsoft platforms
+#define ICE_STR_MICROSOFT       // Microsoft Platforms
+#define ICE_STR_NON_MICROSOFT   // Non-Microsoft Platforms
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
 #define ICE_STR_PLATFORM_AUTODETECTED

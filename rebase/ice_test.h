@@ -34,6 +34,13 @@ int main(int argc, char **argv) {
 }
 
 
+================================== Linking Flags ==================================
+
+1. Everywhere   =>  -lc (-lc Most times automatically linked...)
+
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
+
+
 =================================== Library API ===================================
 
 // Creates test with a name, This test can be called as name();
