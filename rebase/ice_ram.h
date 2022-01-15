@@ -127,15 +127,16 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 
 ice_ram.h is one of libraries that ice_libs project provide...
 
-You could support or contribute to ice_libs project by possibly one of following things:
+You can support or contribute to ice_libs project by possibly one of following things:
 
 1. Test libraries on each platform and provide feedback!
 2. Add support to more platforms and backends!
 3. Request to add more possible features!
 4. Fix bugs/problems in the library!
 5. Use it in one of your projects!
-6. Star the repo on GitHub -> https://github.com/Rabios/ice_libs
-7. Share ice_libs everywhere!
+6. Star (and/or fork) the repo on GitHub: https://github.com/Rabios/ice_libs
+7. Share ice_libs Everywhere!
+8. Join the Discord Server: https://discord.gg/KfkwXjCW
 
 
 */
