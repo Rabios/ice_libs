@@ -193,6 +193,7 @@ You could support or contribute to ice_libs project by possibly one of following
 4. Fix bugs/problems in the library!
 5. Use it in one of your projects!
 6. Star the repo on GitHub -> https://github.com/Rabios/ice_libs
+7. Share ice_libs everywhere!
 
 
 */
