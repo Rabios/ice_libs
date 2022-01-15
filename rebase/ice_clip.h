@@ -119,7 +119,7 @@ ice_clip_bool ice_clip_clear(void);
 #define ICE_CLIP_OSX            // MacOS/OSX
 #define ICE_CLIP_BB10           // BlackBerry 10
 #define ICE_CLIP_UWP            // UWP (Univeral Windows Platform)
-#define ICE_CLIP_MICROSOFT      // Microsoft platforms
+#define ICE_CLIP_MICROSOFT      // Microsoft Platforms
 #define ICE_CLIP_BEOS           // BeOS and Haiku
 
 // Automatically defined when no platform is set manually, When this defined it detects platform automatically...
@@ -338,11 +338,10 @@ typedef enum bool { false, true } bool;
 #  endif
 #endif
 
-#include <string.h>
-
 #if defined(ICE_CLIP_ANDROID)
 #  include <jni.h>
 #  include <android/native_activity.h>
+#  include <string.h>
 #elif defined(ICE_CLIP_IOS)
 #  import <Foundation/Foundation.h>
 #  import <UIKit/UIPasteboard.h>
@@ -356,7 +355,9 @@ typedef enum bool { false, true } bool;
 using namespace bb::system;
 #elif defined(ICE_CLIP_BEOS)
 #  include <be/app/Clipboard.h>
+#  include <string.h>
 #elif defined(ICE_CLIP_MICROSOFT)
+#  include <string.h>
 #  if defined(_MSC_VER)
 #    include <windows.h>
 #    pragma comment(lib, "kernel32.lib")
@@ -367,6 +368,7 @@ using namespace bb::system;
 #    include <winuser.h>
 #  endif
 #elif defined(ICE_CLIP_UWP)
+#  include <string.h>
 #  include <wchar.h>
 #  include <iostream>
 #  include <string>
@@ -610,9 +612,13 @@ deinit:
         delete text_data;
         
         std::string txt2(txt1.begin(), txt1.end());
+        delete txt1;
         delete datapackview;
+
+        const char *res = txt2.c_str();
+        delete txt2;
         
-        return txt2.c_str();
+        return res;
     }
     
     delete datapackview;

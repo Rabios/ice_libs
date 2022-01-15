@@ -55,10 +55,16 @@ typedef enum ice_batt_bool {
 
 // Struct that contains battery status (Exists?, Charging?, Battery Level)
 typedef struct ice_batt_info {
-    ice_batt_bool exists;
-    ice_batt_bool charging;
+    ice_batt_bool exists, charging;
     unsigned level;
 } ice_batt_info;
+
+// Enumeration for errors that may occur
+typedef enum ice_batt_error {
+    ICE_BATT_ERROR_OK = 0,          // OK - no errors
+    ICE_BATT_ERROR_UNKNOWN_STATUS,  // Occurs when failed to get battery status, Or if battery status is undefined, Or device doesn't have battery
+    ICE_BATT_ERROR_SYSCALL_FAILURE  // Occurs when platform-specific function fails
+} ice_batt_error;
 
 // [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
 void ice_batt_use_native_activity(void *activity);
@@ -75,6 +81,7 @@ ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
 4. MacOS/OSX                    =>  -framework Foundation -framework CoreFoundation -framework IOKit
 5. Nintendo Switch (libnx)      =>  -lnx
 6. PlayStation Vita (vitasdk)   =>  -lScePower_stub
+7. BSD and Unix and Linux       =>  -lc (-lc Most times automatically linked...)
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -105,7 +112,7 @@ ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
 #define ICE_BATT_PSVITA         // PlayStation Vita (vitasdk)
 #define ICE_BATT_BB10           // BlackBerry 10
 #define ICE_BATT_UWP            // UWP (Univeral Windows Platform)
-#define ICE_BATT_MICROSOFT      // Microsoft platforms (Non-UWP)
+#define ICE_BATT_MICROSOFT      // Microsoft Platforms (Non-UWP)
 #define ICE_BATT_BSD            // BSD (FreeBSD, DragonFly BSD, NetBSD, OpenBSD)
 #define ICE_BATT_UNIX           // Unix and Unix-Like
 

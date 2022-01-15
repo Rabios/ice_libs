@@ -109,7 +109,10 @@ double ice_ease_bounce_in_out(ice_ease_type ease_type, ...);
 
 ================================== Linking Flags ==================================
 
-1. Linux    => -lm
+1. Everywhere    => -lc -lm (-lc Most times automatically linked...)
+
+// NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
+
 
 ================================= Usable #define(s) ===============================
 

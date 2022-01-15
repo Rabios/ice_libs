@@ -81,7 +81,7 @@ typedef enum ice_al_bool {
 // [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call
 ice_al_handle ice_al_proc(const char *symbol);
 
-// Loads OpenAL API from shared library path (eg. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure
+// Loads OpenAL API from shared library path (ex. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure
 ice_al_bool ice_al_load(const char *path);
 
 // Unloads OpenAL API, Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure
@@ -116,7 +116,7 @@ ice_al_bool ice_al_unload(void);
 
 // #### Define one of these to set implementation platform (Optional) #### //
 
-#define ICE_AL_MICROSOFT       // Microsoft platforms
+#define ICE_AL_MICROSOFT       // Microsoft Platforms
 #define ICE_AL_BEOS            // BeOS and Haiku
 #define ICE_AL_UNIX            // Unix and Unix-like (Unix/Linux and anything else based on these)
 
@@ -518,7 +518,7 @@ typedef enum ice_al_bool {
 /* [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call */
 ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char *symbol);
 
-/* Loads OpenAL API from shared library path (eg. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
+/* Loads OpenAL API from shared library path (ex. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
 ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char *path);
 
 /* Unloads OpenAL API, Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
@@ -567,7 +567,7 @@ ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char *symbol) {
 #endif
 }
 
-/* Loads OpenAL API from shared library path (eg. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
+/* Loads OpenAL API from shared library path (ex. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
 ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char* path) {
 #if defined(ICE_AL_MICROSOFT)
     ice_al_lib = LoadLibraryA(path);
