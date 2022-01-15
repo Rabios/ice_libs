@@ -28,7 +28,7 @@ ice_libs originally started by [Rabia Alhaffar](https://github.com/Rabios) in Ma
 
 At that time Rabia saw a project called [gainput](https://gainput.johanneskuhlmann.de) which represents his idea, But it's written in C++ and had bit of bugs and doesn't even support some platforms! (like BSD)
 
-So at that time he started with library called crosspad.h that designed to be a cross-platform gamepad input library, Which later evolved into ice_joy.h as the first ice_libs library being in development, Then in April he decided to stop working on fegame in order to extend the project workspace to have more libs and form ice_libs!
+So at that time he started with library called `crosspad.h` that designed to be a cross-platform gamepad input library, Which later evolved into `ice_joy.h` as the first ice_libs library being in development, Then in April he decided to stop working on fegame in order to extend the project workspace to have more libs and form ice_libs!
 
 ### Libraries
 
