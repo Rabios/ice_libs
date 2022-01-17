@@ -8,8 +8,8 @@ ffi_cdef([[
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_ffi_bool {
-    ICE_FFI_FALSE = -1,
-    ICE_FFI_TRUE = 0
+    ICE_FFI_FALSE   = -1,
+    ICE_FFI_TRUE    = 0
 } ice_ffi_bool;
 
 /* Handle, Represents pointer to loaded shared library or symbol loaded from shared library */

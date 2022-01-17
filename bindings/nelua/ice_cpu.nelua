@@ -1,0 +1,29 @@
+##[[
+  cdefine "ICE_CPU_IMPL"
+  cinclude "ice_cpu.h"
+
+  if ccinfo.is_windows and not ccinfo.is_msc then
+    linklib "kernel32"
+  elseif ccinfo.is_linux or ccinfo.is_bsd then
+    linklib "c"
+  end
+]]
+
+-- ============================== Data Types ============================== --
+
+-- Boolean Enum, To avoid including stdbool.h
+global ice_cpu_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_CPU_FALSE = -1,
+  ICE_CPU_TRUE = 0
+}
+
+-- Struct that contains informations about the CPU (Name, Cores, etc...)
+global ice_cpu_info: type <cimport, nodecl> = @record {
+  name: cstring,
+  cores: cuint
+}
+
+-- ============================== Functions ============================== --
+
+-- Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure
+global function ice_cpu_get_info(cpu_info: *ice_cpu_info): ice_cpu_bool <cimport, nodecl> end

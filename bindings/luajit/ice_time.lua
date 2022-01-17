@@ -59,7 +59,7 @@ typedef struct ice_time_info {
     ice_time_day week_day;          /* (ICE_TIME_DAY_SUNDAY - ICE_TIME_DAY_SATURDAY) */
     unsigned month_day;             /* (1 - Month last day number) */
     unsigned year_day;              /* (1 - 365) */
-    ice_time_month month;
+    ice_time_month month;           /* (ICE_TIME_MONTH_JANUARY - ICE_TIME_MONTH_DECEMBER) */
     ice_time_season season;         /* (ICE_TIME_SEASON_WINTER - ICE_TIME_SEASON_AUTUMN) */
     unsigned year;
 } ice_time_info;

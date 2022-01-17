@@ -1,27 +1,42 @@
 ##[[
   cdefine "ICE_CLIP_IMPL"
   cinclude "ice_clip.h"
+  
+  cemit "#if defined(ICE_CLIP_MICROSOFT)"
+    if not ccinfo.is_msc then
+      linklib "kernel32"
+      linklib "user32"
+    end
+  cemit "#elif defined(ICE_CLIP_IOS)"
+    cflags "-framework Foundation -framework UIKit"
+  cemit "#elif defined(ICE_CLIP_OSX)"
+    cflags "-framework Foundation -framework AppKit"
+  cemit "#elif defined(ICE_CLIP_BB10)"
+    linklib "bbsystem"
+  cemit "#endif"
 ]]
 
+-- ============================== Data Types ============================== --
+
 -- Boolean Enum, To avoid including stdbool.h
-global ice_clip_bool: type <cimport, nodecl, using> = @enum(cint) {
+global ice_clip_bool: type <cimport, nodecl, using> = @record(cint) {
   ICE_CLIP_FALSE = -1,
   ICE_CLIP_TRUE  = 0
 }
 
-## if ccinfo.is_android then
+-- ============================== Functions ============================== --
 
+## cemit "#if defined(ICE_CLIP_ANDROID)"
 -- [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_clip on Android, This Should be called first before other ice_clip.h functions
 global function ice_clip_use_native_activity(activity: pointer): void <cimport, nodecl> end
+## cemit "#endif"
 
-## elseif ccinfo.is_windows then
-
+## cemit "#if defined(ICE_CLIP_MICROSOFT)"
 -- [WINDOWS-ONLY, OPTIONAL] Sets the Window to be used with ice_clip, This is optional feature as the Windows implementation do not need Window by default
 global function ice_clip_use_window(window: pointer): void <cimport, nodecl> end
+## cemit "#endif"
 
-## end
-
--- Retrieves the text from Clipboard
+-- Retrieves the text from Clipboard, Returns the text on success or NULL on failure
 global function ice_clip_get(): cstring <cimport, nodecl> end
 
 -- Sets the Clipboard text, Returns ICE_CLIP_TRUE on success or ICE_CLIP_FALSE on failure

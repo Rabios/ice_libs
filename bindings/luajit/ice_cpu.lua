@@ -8,8 +8,8 @@ ffi_cdef([[
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_cpu_bool {
-    ICE_CPU_FALSE = -1,
-    ICE_CPU_TRUE = 0
+    ICE_CPU_FALSE   = -1,
+    ICE_CPU_TRUE    = 0
 } ice_cpu_bool;
 
 /* Struct that contains informations about the CPU (Name, Cores, etc...) */

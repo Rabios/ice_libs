@@ -8,8 +8,8 @@ ffi_cdef([[
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_batt_bool {
-    ICE_BATT_FALSE = -1,
-    ICE_BATT_TRUE = 0
+    ICE_BATT_FALSE  = -1,
+    ICE_BATT_TRUE   = 0
 } ice_batt_bool;
     
 /* Struct that contains battery status (Exists?, Charging?, Battery Level) */

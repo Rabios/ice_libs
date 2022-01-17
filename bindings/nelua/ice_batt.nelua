@@ -1,7 +1,34 @@
 ##[[
   cdefine "ICE_BATT_IMPL"
   cinclude "ice_batt.h"
+  
+  cemit "#if defined(ICE_BATT_MICROSOFT)"
+    if not ccinfo.is_msc then
+      linklib "kernel32"
+    end
+  cemit "#elif defined(ICE_BATT_OSX)"
+    cflags "-framework Foundation -framework CoreFoundation -framework IOKit"
+  cemit "#elif defined(ICE_BATT_IOS)"
+    cflags "-framework Foundation -framework UIKit"
+  cemit "#elif defined(ICE_BATT_UNIX)"
+    if ccinfo.is_linux then
+      linklib "c"
+    end
+  cemit "#elif defined(ICE_BATT_BSD)"
+    linklib "c"
+  cemit "#elif defined(ICE_BATT_BB10)"
+    linklib "bbdevice"
+  cemit "#elif defined(ICE_BATT_SWITCH)"
+    linklib "nx"
+  cemit "#elif defined(ICE_BATT_PSP)"
+    linklib "psppower"
+    linklib "psppower_driver"
+  cemit "#elif defined(ICE_BATT_PSVITA)"
+    linklib "ScePower_stub"
+  cemit "#endif"
 ]]
+
+-- ============================== Data Types ============================== --
 
 -- Boolean Enum, To avoid including stdbool.h
 global ice_batt_bool: type <cimport, nodecl, using> = @enum(cint) {
@@ -16,10 +43,19 @@ global ice_batt_info: type <cimport, nodecl> = @record {
   level: cuint
 }
 
-## if ccinfo.is_android then
+-- Enumeration for errors that may occur
+global ice_batt_error: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_BATT_ERROR_OK = 0,            -- OK - no errors
+  ICE_BATT_ERROR_UNKNOWN_STATUS,    -- Occurs when failed to get battery status, Or if battery status is undefined, Or device doesn't have battery
+  ICE_BATT_ERROR_SYSCALL_FAILURE    -- Occurs when platform-specific function fails
+}
+
+-- ============================== Functions ============================== --
+
+## cemit "#if defined(ICE_BATT_ANDROID)"
 -- [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
 global function ice_batt_use_native_activity(activity: pointer): void <cimport, nodecl> end
-## end
+## cemit "#endif"
 
--- Returns curreny battery status
-global function ice_batt_status(): ice_batt_info <cimport, nodecl> end
+-- Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure!
+global function ice_batt_get_info(batt_info: *ice_batt_info): ice_batt_error <cimport, nodecl> end

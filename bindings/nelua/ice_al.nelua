@@ -1,0 +1,259 @@
+##[[
+  cdefine "ICE_AL_IMPL"
+  cinclude "ice_al.h"
+  
+  if ccinfo.is_windows and not ccinfo.is_msc then
+    linklib "kernel32"
+  elseif ccinfo.is_linux then
+    linklib "dl"
+  end
+]]
+
+-- ============================= Data Types (OpenAL API) ============================= --
+
+global ALboolean: type <cimport, nodecl> = @cchar
+global ALchar: type <cimport, nodecl> = @cchar
+global ALbyte: type <cimport, nodecl> = @cschar
+global ALubyte: type <cimport, nodecl> = @cuchar
+global ALshort: type <cimport, nodecl> = @cshort
+global ALushort: type <cimport, nodecl> = @cushort
+global ALint: type <cimport, nodecl> = @cint
+global ALuint: type <cimport, nodecl> = @cuint
+global ALsizei: type <cimport, nodecl> = @cint
+global ALenum: type <cimport, nodecl> = @cint
+global ALfloat: type <cimport, nodecl> = @float32
+global ALdouble: type <cimport, nodecl> = @float64
+global ALvoid: type <cimport, nodecl> = @void
+
+global ALCdevice: type <cimport, nodecl, forwarddecl> = @record {}
+global ALCcontext: type <cimport, nodecl, forwarddecl> = @record {}
+global ALCboolean: type <cimport, nodecl> = @cchar
+global ALCchar: type <cimport, nodecl> = @cchar
+global ALCbyte: type <cimport, nodecl> = @cschar
+global ALCubyte: type <cimport, nodecl> = @cuchar
+global ALCshort: type <cimport, nodecl> = @cshort
+global ALCushort: type <cimport, nodecl> = @cushort
+global ALCint: type <cimport, nodecl> = @cint
+global ALCuint: type <cimport, nodecl> = @cuint
+global ALCsizei: type <cimport, nodecl> = @cint
+global ALCenum: type <cimport, nodecl> = @cint
+global ALCfloat: type <cimport, nodecl> = @float32
+global ALCdouble: type <cimport, nodecl> = @float64
+global ALCvoid: type <cimport, nodecl> = @void
+
+-- ============================= Definitions (OpenAL API) ============================= --
+
+global AL_NONE: cint <cimport, nodecl, const>
+global AL_FALSE: cint <cimport, nodecl, const>
+global AL_TRUE: cint <cimport, nodecl, const>
+global AL_SOURCE_RELATIVE: cint <cimport, nodecl, const>
+global AL_CONE_INNER_ANGLE: cint <cimport, nodecl, const>
+global AL_CONE_OUTER_ANGLE: cint <cimport, nodecl, const>
+global AL_PITCH: cint <cimport, nodecl, const>
+global AL_POSITION: cint <cimport, nodecl, const>
+global AL_DIRECTION: cint <cimport, nodecl, const>
+global AL_VELOCITY: cint <cimport, nodecl, const>
+global AL_LOOPING: cint <cimport, nodecl, const>
+global AL_BUFFER: cint <cimport, nodecl, const>
+global AL_GAIN: cint <cimport, nodecl, const>
+global AL_MIN_GAIN: cint <cimport, nodecl, const>
+global AL_MAX_GAIN: cint <cimport, nodecl, const>
+global AL_ORIENTATION: cint <cimport, nodecl, const>
+global AL_SOURCE_STATE: cint <cimport, nodecl, const>
+global AL_INITIAL: cint <cimport, nodecl, const>
+global AL_PLAYING: cint <cimport, nodecl, const>
+global AL_PAUSED: cint <cimport, nodecl, const>
+global AL_STOPPED: cint <cimport, nodecl, const>
+global AL_BUFFERS_QUEUED: cint <cimport, nodecl, const>
+global AL_BUFFERS_PROCESSED: cint <cimport, nodecl, const>
+global AL_REFERENCE_DISTANCE: cint <cimport, nodecl, const>
+global AL_ROLLOFF_FACTOR: cint <cimport, nodecl, const>
+global AL_CONE_OUTER_GAIN: cint <cimport, nodecl, const>
+global AL_MAX_DISTANCE: cint <cimport, nodecl, const>
+global AL_SEC_OFFSET: cint <cimport, nodecl, const>
+global AL_SAMPLE_OFFSET: cint <cimport, nodecl, const>
+global AL_BYTE_OFFSET: cint <cimport, nodecl, const>
+global AL_SOURCE_TYPE: cint <cimport, nodecl, const>
+global AL_STATIC: cint <cimport, nodecl, const>
+global AL_STREAMING: cint <cimport, nodecl, const>
+global AL_UNDETERMINED: cint <cimport, nodecl, const>
+global AL_FORMAT_MONO8: cint <cimport, nodecl, const>
+global AL_FORMAT_MONO16: cint <cimport, nodecl, const>
+global AL_FORMAT_STEREO8: cint <cimport, nodecl, const>
+global AL_FORMAT_STEREO16: cint <cimport, nodecl, const>
+global AL_FREQUENCY: cint <cimport, nodecl, const>
+global AL_BITS: cint <cimport, nodecl, const>
+global AL_CHANNELS: cint <cimport, nodecl, const>
+global AL_SIZE: cint <cimport, nodecl, const>
+global AL_UNUSED: cint <cimport, nodecl, const>
+global AL_PENDING: cint <cimport, nodecl, const>
+global AL_PROCESSED: cint <cimport, nodecl, const>
+global AL_NO_ERROR: cint <cimport, nodecl, const>
+global AL_INVALID_NAME: cint <cimport, nodecl, const>
+global AL_INVALID_ENUM: cint <cimport, nodecl, const>
+global AL_INVALID_VALUE: cint <cimport, nodecl, const>
+global AL_INVALID_OPERATION: cint <cimport, nodecl, const>
+global AL_OUT_OF_MEMORY: cint <cimport, nodecl, const>
+global AL_VENDOR: cint <cimport, nodecl, const>
+global AL_VERSION: cint <cimport, nodecl, const>
+global AL_RENDERER: cint <cimport, nodecl, const>
+global AL_EXTENSIONS: cint <cimport, nodecl, const>
+global AL_DOPPLER_FACTOR: cint <cimport, nodecl, const>
+global AL_DOPPLER_VELOCITY: cint <cimport, nodecl, const>
+global AL_SPEED_OF_SOUND: cint <cimport, nodecl, const>
+global AL_DISTANCE_MODEL: cint <cimport, nodecl, const>
+global AL_INVERSE_DISTANCE: cint <cimport, nodecl, const>
+global AL_INVERSE_DISTANCE_CLAMPED: cint <cimport, nodecl, const>
+global AL_LINEAR_DISTANCE: cint <cimport, nodecl, const>
+global AL_LINEAR_DISTANCE_CLAMPED: cint <cimport, nodecl, const>
+global AL_EXPONENT_DISTANCE: cint <cimport, nodecl, const>
+global AL_EXPONENT_DISTANCE_CLAMPED: cint <cimport, nodecl, const>
+
+global ALC_VERSION_0_1: cint <cimport, nodecl, const>
+global ALC_INVALID: cint <cimport, nodecl, const>
+global ALC_FALSE: cint <cimport, nodecl, const>
+global ALC_TRUE: cint <cimport, nodecl, const>
+global ALC_FREQUENCY: cint <cimport, nodecl, const>
+global ALC_REFRESH: cint <cimport, nodecl, const>
+global ALC_SYNC: cint <cimport, nodecl, const>
+global ALC_MONO_SOURCES: cint <cimport, nodecl, const>
+global ALC_STEREO_SOURCES: cint <cimport, nodecl, const>
+global ALC_NO_ERROR: cint <cimport, nodecl, const>
+global ALC_INVALID_DEVICE: cint <cimport, nodecl, const>
+global ALC_INVALID_CONTEXT: cint <cimport, nodecl, const>
+global ALC_INVALID_ENUM: cint <cimport, nodecl, const>
+global ALC_INVALID_VALUE: cint <cimport, nodecl, const>
+global ALC_OUT_OF_MEMORY: cint <cimport, nodecl, const>
+global ALC_MAJOR_VERSION: cint <cimport, nodecl, const>
+global ALC_MINOR_VERSION: cint <cimport, nodecl, const>
+global ALC_ATTRIBUTES_SIZE: cint <cimport, nodecl, const>
+global ALC_ALL_ATTRIBUTES: cint <cimport, nodecl, const>
+global ALC_DEFAULT_DEVICE_SPECIFIER: cint <cimport, nodecl, const>
+global ALC_DEVICE_SPECIFIER: cint <cimport, nodecl, const>
+global ALC_EXTENSIONS: cint <cimport, nodecl, const>
+global ALC_EXT_CAPTURE: cint <cimport, nodecl, const>
+global ALC_CAPTURE_DEVICE_SPECIFIER: cint <cimport, nodecl, const>
+global ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER: cint <cimport, nodecl, const>
+global ALC_CAPTURE_SAMPLES: cint <cimport, nodecl, const>
+global ALC_ENUMERATE_ALL_EXT: cint <cimport, nodecl, const>
+global ALC_DEFAULT_ALL_DEVICES_SPECIFIER: cint <cimport, nodecl, const>
+global ALC_ALL_DEVICES_SPECIFIER: cint <cimport, nodecl, const>
+
+-- ============================= Functions (OpenAL API) ============================= --
+
+global function alDopplerFactor(value: ALfloat): void <cimport, nodecl> end
+global function alSpeedOfSound(value: ALfloat): void <cimport, nodecl> end
+global function alDistanceModel(distanceModel: ALenum): void <cimport, nodecl> end
+global function alEnable(capability: ALenum): void <cimport, nodecl> end
+global function alDisable(capability: ALenum): void <cimport, nodecl> end
+global function alIsEnabled(capability: ALenum): ALboolean <cimport, nodecl> end
+
+const ALchar * alGetString(ALenum param);
+void alGetBooleanv(ALenum param, ALboolean *values);
+void alGetIntegerv(ALenum param, ALint *values);
+void alGetFloatv(ALenum param, ALfloat *values);
+void alGetDoublev(ALenum param, ALdouble *values);
+ALboolean alGetBoolean(ALenum param);
+ALint alGetInteger(ALenum param);
+ALfloat alGetFloat(ALenum param);
+ALdouble alGetDouble(ALenum param);
+ALenum alGetError(void);
+ALboolean alIsExtensionPresent(const ALchar *extname);
+void* alGetProcAddress(const ALchar *fname);
+ALenum alGetEnumValue(const ALchar *ename);
+void alListenerf(ALenum param, ALfloat value);
+void alListener3f(ALenum param, ALfloat value1, ALfloat value2, ALfloat value3);
+void alListenerfv(ALenum param, const ALfloat *values);
+void alListeneri(ALenum param, ALint value);
+void alListener3i(ALenum param, ALint value1, ALint value2, ALint value3);
+void alListeneriv(ALenum param, const ALint *values);
+void alGetListenerf(ALenum param, ALfloat *value);
+void alGetListener3f(ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3);
+void alGetListenerfv(ALenum param, ALfloat *values);
+void alGetListeneri(ALenum param, ALint *value);
+void alGetListener3i(ALenum param, ALint *value1, ALint *value2, ALint *value3);
+void alGetListeneriv(ALenum param, ALint *values);
+void alGenSources(ALsizei n, ALuint *sources);
+void alDeleteSources(ALsizei n, const ALuint *sources);
+ALboolean alIsSource(ALuint source);
+void alSourcef(ALuint source, ALenum param, ALfloat value);
+void alSource3f(ALuint source, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3);
+void alSourcefv(ALuint source, ALenum param, const ALfloat *values);
+void alSourcei(ALuint source, ALenum param, ALint value);
+void alSource3i(ALuint source, ALenum param, ALint value1, ALint value2, ALint value3);
+void alSourceiv(ALuint source, ALenum param, const ALint *values);
+void alGetSourcef(ALuint source, ALenum param, ALfloat *value);
+void alGetSource3f(ALuint source, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3);
+void alGetSourcefv(ALuint source, ALenum param, ALfloat *values);
+void alGetSourcei(ALuint source,  ALenum param, ALint *value);
+void alGetSource3i(ALuint source, ALenum param, ALint *value1, ALint *value2, ALint *value3);
+void alGetSourceiv(ALuint source,  ALenum param, ALint *values);
+void alSourcePlayv(ALsizei n, const ALuint *sources);
+void alSourceStopv(ALsizei n, const ALuint *sources);
+void alSourceRewindv(ALsizei n, const ALuint *sources);
+void alSourcePausev(ALsizei n, const ALuint *sources);
+void alSourcePlay(ALuint source);
+void alSourceStop(ALuint source);
+void alSourceRewind(ALuint source);
+void alSourcePause(ALuint source);
+void alSourceQueueBuffers(ALuint source, ALsizei nb, const ALuint *buffers);
+void alSourceUnqueueBuffers(ALuint source, ALsizei nb, ALuint *buffers);
+void alGenBuffers(ALsizei n, ALuint *buffers);
+void alDeleteBuffers(ALsizei n, const ALuint *buffers);
+ALboolean alIsBuffer(ALuint buffer);
+void alBufferData(ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
+void alBufferf(ALuint buffer, ALenum param, ALfloat value);
+void alBuffer3f(ALuint buffer, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3);
+void alBufferfv(ALuint buffer, ALenum param, const ALfloat *values);
+void alBufferi(ALuint buffer, ALenum param, ALint value);
+void alBuffer3i(ALuint buffer, ALenum param, ALint value1, ALint value2, ALint value3);
+void alBufferiv(ALuint buffer, ALenum param, const ALint *values);
+void alGetBufferf(ALuint buffer, ALenum param, ALfloat *value);
+void alGetBuffer3f(ALuint buffer, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3);
+void alGetBufferfv(ALuint buffer, ALenum param, ALfloat *values);
+void alGetBufferi(ALuint buffer, ALenum param, ALint *value);
+void alGetBuffer3i(ALuint buffer, ALenum param, ALint *value1, ALint *value2, ALint *value3);
+void alGetBufferiv(ALuint buffer, ALenum param, ALint *values);
+
+ALCcontext* alcCreateContext(ALCdevice *device, const ALCint *attrlist);
+ALCboolean alcMakeContextCurrent(ALCcontext *context);
+void alcProcessContext(ALCcontext *context);
+void alcSuspendContext(ALCcontext *context);
+void alcDestroyContext(ALCcontext *context);
+ALCcontext* alcGetCurrentContext(void);
+ALCcontext* alcGetContextsDevice(ALCcontext *context);
+ALCdevice* alcOpenDevice(const ALCchar *devicename);
+ALCboolean alcCloseDevice(ALCdevice *device);
+ALCenum alcGetError(ALCdevice *device);
+ALCboolean alcIsExtensionPresent(ALCdevice *device, const ALCchar *extname);
+ALCvoid* alcGetProcAddress(ALCdevice *device, const ALCchar *funcname);
+ALCenum alcGetEnumValue(ALCdevice *device, const ALCchar *enumname);
+ALCchar* alcGetString(ALCdevice *device, ALCenum param);
+void alcGetIntegerv(ALCdevice *device, ALCenum param, ALCsizei size, ALCint *values);
+ALCdevice* alcCaptureOpenDevice(const ALCchar *devicename, ALCuint frequency, ALCenum format, ALCsizei buffersize);
+ALCboolean alcCaptureCloseDevice(ALCdevice *device);
+void alcCaptureStart(ALCdevice *device);
+void alcCaptureStop(ALCdevice *device);
+void alcCaptureSamples(ALCdevice *device, ALCvoid* buffer, ALCsizei samples);
+
+-- ============================= Data Types ============================= --
+
+-- Handle, Type definition for void* for symbols loaded from shared libs
+global ice_al_handle: type <cimport, nodecl> = @pointer
+
+-- Boolean Enum, To avoid including stdbool.h
+global ice_al_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_AL_FALSE = -1,
+  ICE_AL_TRUE = 0
+}
+
+-- ============================= Functions ============================= --
+
+-- [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call
+global function ice_al_proc(symbol: cstring <const>): ice_al_handle <cimport, nodecl> end
+
+-- Loads OpenAL API from shared library path (ex. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure
+global function ice_al_load(path: cstring <const>): ice_al_bool <cimport, nodecl> end
+
+-- Unloads OpenAL API, Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure
+global function ice_al_unload(): ice_al_bool <cimport, nodecl> end
