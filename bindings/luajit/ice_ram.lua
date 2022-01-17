@@ -11,8 +11,8 @@ typedef unsigned long long ice_ram_bytes;
     
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_ram_bool {
-    ICE_RAM_FALSE = -1,
-    ICE_RAM_TRUE = 0
+    ICE_RAM_FALSE   = -1,
+    ICE_RAM_TRUE    = 0
 } ice_ram_bool;
     
 /* RAM Information, Contains free and used and total RAM in bytes */

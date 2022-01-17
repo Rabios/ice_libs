@@ -8,8 +8,8 @@ ffi_cdef([[
 
 /* Easing Types */
 typedef enum ice_ease_type {
-    ICE_EASE_TYPE_PROGRESS = 1,
-    ICE_EASE_TYPE_PENNER = 4
+    ICE_EASE_TYPE_PROGRESS  = 1,
+    ICE_EASE_TYPE_PENNER    = 4
 } ice_ease_type;
 
 /* ============================== Functions ============================== */
