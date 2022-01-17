@@ -1,10 +1,22 @@
 ##[[
   cdefine "ICE_EASE_IMPL"
   cinclude "ice_ease.h"
+
+  if not ccinfo.is_msc then
+    linklib "m"
+
+    if ccinfo.is_linux or ccinfo.is_bsd then
+      linklib "c"
+    end
+  end
 ]]
 
+-- =============================== Macros =============================== --
+
 -- PI definition
-global ICE_EASE_PI: float64 <cimport, nodecl, const> 3.14159265358979323846
+global ICE_EASE_PI: float64 <cimport, nodecl, const>
+
+-- ============================== Data Types ============================== --
 
 -- Easing Types
 global ice_ease_type: type <cimport, nodecl, using> = @enum(cint) {
@@ -12,55 +24,57 @@ global ice_ease_type: type <cimport, nodecl, using> = @enum(cint) {
   ICE_EASE_TYPE_PENNER = 4
 }
 
+-- ============================== Functions ============================== --
+
 -- Functions for Linear Easing
-global function ice_ease_linear(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_linear(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Quadratic Easing
-global function ice_ease_quad_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_quad_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_quad_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quad_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quad_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quad_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Cubic Easing
-global function ice_ease_cubic_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_cubic_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_cubic_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_cubic_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_cubic_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_cubic_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Quartic Easing
-global function ice_ease_quart_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_quart_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_quart_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quart_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quart_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quart_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Quintic Easing
-global function ice_ease_quint_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_quint_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_quint_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quint_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quint_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_quint_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Sinusoidal Easing
-global function ice_ease_sine_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_sine_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_sine_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_sine_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_sine_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_sine_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Exponential Easing
-global function ice_ease_expo_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_expo_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_expo_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_expo_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_expo_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_expo_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Circular Easing
-global function ice_ease_circ_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_circ_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_circ_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_circ_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_circ_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_circ_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Elastic Easing
-global function ice_ease_elastic_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_elastic_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_elastic_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_elastic_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_elastic_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_elastic_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Back Easing
-global function ice_ease_back_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_back_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_back_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_back_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_back_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_back_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
 
 -- Functions for Bounce Easing
-global function ice_ease_bounce_in(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_bounce_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
-global function ice_ease_bounce_in_out(ice_ease_type ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_bounce_in(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_bounce_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end
+global function ice_ease_bounce_in_out(ease_type: ice_ease_type, ...: cvarargs): float64 <cimport, nodecl> end

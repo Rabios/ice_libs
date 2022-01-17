@@ -1,14 +1,36 @@
 ##[[
   cdefine "ICE_TIME_IMPL"
   cinclude "ice_time.h"
+  
+  cemit "#if defined(ICE_TIME_MICROSOFT)"
+    if not ccinfo.is_msc then
+      cemit "#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)"
+        linklib "WindowsPhoneCore"
+      cemit "#else"
+        linklib "kernel32"
+      cemit "#endif"
+    end
+  cemit "#elif (defined(ICE_TIME_UNIX) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY))"
+    linklib "c"
+  cemit "#elif defined(ICE_TIME_3DS)"
+    linklib "ctru"
+  cemit "#elif defined(ICE_TIME_RPI_PICO)"
+    linklib "pico_time"
+    linklib "lpico_util"
+    linklib "hardware_timer"
+    linklib "hardware_rtc"
+  cemit "#endif"
 ]]
 
--- Typedef for very long integers
-global ice_time_ulong: type <cimport, nodecl> = @culonglong
+-- ============================== Data Types ============================== --
+
+-- Typedef for very unsigned long integers
+global ice_time_ulong: type <cimport, nodecl> = @culong
 
 -- Enumeration for week days
 global ice_time_day: type <cimport, nodecl, using> = @enum(cint) {
-  ICE_TIME_DAY_SUNDAY = 1,
+  ICE_TIME_DAY_UNKNOWN = 0,
+  ICE_TIME_DAY_SUNDAY,
   ICE_TIME_DAY_MONDAY,
   ICE_TIME_DAY_TUESDAY,
   ICE_TIME_DAY_WEDNESDAY,
@@ -19,7 +41,8 @@ global ice_time_day: type <cimport, nodecl, using> = @enum(cint) {
 
 -- Enumeration for year months
 global ice_time_month: type <cimport, nodecl, using> = @enum(cint) {
-  ICE_TIME_MONTH_JANUARY = 1,
+  ICE_TIME_MONTH_UNKNOWN = 0,
+  ICE_TIME_MONTH_JANUARY,
   ICE_TIME_MONTH_FEBRUARY,
   ICE_TIME_MONTH_MARCH,
   ICE_TIME_MONTH_APRIL,
@@ -33,9 +56,10 @@ global ice_time_month: type <cimport, nodecl, using> = @enum(cint) {
   ICE_TIME_MONTH_DECEMBER
 }
 
--- Enumeration for seasons (helpful?)
+-- Enumeration for seasons
 global ice_time_season: type <cimport, nodecl, using> = @enum(cint) {
-  ICE_TIME_SEASON_WINTER = 1,
+  ICE_TIME_SEASON_UNKNOWN = 0,
+  ICE_TIME_SEASON_WINTER,
   ICE_TIME_SEASON_SPRING,
   ICE_TIME_SEASON_SUMMER,
   ICE_TIME_SEASON_AUTUMN
@@ -43,32 +67,102 @@ global ice_time_season: type <cimport, nodecl, using> = @enum(cint) {
 
 -- Struct that contains patched current time info, Including ticks
 global ice_time_info: type <cimport, nodecl> = @record {
-  string: cstring,                  -- Time as string
+  str: cstring,                     -- Time as string
   clock_ticks: ice_time_ulong,      -- Clock Ticks (Nanoseconds)
-  system_ticks: ice_time_ulong,     -- Ticks since system started (Milliseconds)
+  uptime: ice_time_ulong,           -- Ticks since system started (Milliseconds)
   epoch: ice_time_ulong,            -- Unix timestamp
-  nanoseconds: ice_time_ulong,
-  microseconds: ice_time_ulong,
-  milliseconds: ice_time_ulong,
-  second: cuint,
-  minute: cuint,
+  seconds: cuint,
+  minutes: cuint,
   hour: cuint,
   week_day: ice_time_day,           -- (ICE_TIME_DAY_SUNDAY - ICE_TIME_DAY_SATURDAY)
   month_day: cuint,                 -- (1 - Month last day number)
   year_day: cuint,                  -- (1 - 365)
-  month: ice_time_month,
+  month: ice_time_month,            -- (ICE_TIME_MONTH_JANUARY - ICE_TIME_MONTH_DECEMBER)
   season: ice_time_season,          -- (ICE_TIME_SEASON_WINTER - ICE_TIME_SEASON_AUTUMN)
   year: cuint
 }
 
--- Returns difference between 2 ticks, The 2 ticks can be acquired by getting clock_ticks from ice_time_status
-global function ice_time_diff(t1: ice_time_ulong, t2: ice_time_ulong): ice_time_ulong <cimport, nodecl> end
+-- Enumeration for errors that may occur
+global ice_time_error: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_TIME_ERROR_OK = 0,            -- OK - no errors
+  ICE_TIME_ERROR_UNKNOWN_TIME,      -- Occurs when time() function fails
+  ICE_TIME_ERROR_UNKNOWN_CLOCK,     -- Occurs when clock_gettime() function fails (Linux/Unix only)
+  ICE_TIME_ERROR_SYSCALL_FAILURE    -- Occurs when platform-specific call fails
+}
 
--- Returns Delta Time between 2 ticks, The 2 ticks can be acquired by getting clock_ticks from ice_time_status
-global function ice_time_dt(t1: ice_time_ulong, t2: ice_time_ulong): float64 <cimport, nodecl> end
+-- ============================== Functions ============================== --
 
--- Returns current time info (Second, Year, Month, etc...)
-global function ice_time_status(): ice_time_info <cimport, nodecl> end
+-- Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
+global function ice_time_diff(t1: ice_time_info, t2: ice_time_info): ice_time_ulong <cimport, nodecl> end
 
--- Sleeps thread/program for milliseconds
+-- Returns difference between clock tick of current time and clock time of specific time
+global function ice_time_since(t: ice_time_info): ice_time_ulong <cimport, nodecl> end
+
+-- Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
+global function ice_time_dt(t1: ice_time_info, t2: ice_time_info): float64 <cimport, nodecl> end
+
+-- Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure!
+global function ice_time_get_info(time_info: *ice_time_info): ice_time_error <cimport, nodecl> end
+
+-- Sleeps thread/program for Milliseconds
 global function ice_time_sleep(ms: ice_time_ulong): void <cimport, nodecl> end
+
+-- Converts: Attoseconds -> Nanoseconds
+global function ice_time_as_to_ns(as: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Attoseconds -> Microseconds
+global function ice_time_as_to_us(as: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Attoseconds -> Milliseconds
+global function ice_time_as_to_ms(as: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Attoseconds -> Seconds
+global function ice_time_as_to_sec(as: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Nanoseconds -> Attoseconds
+global function ice_time_ns_to_as(ns: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Nanoseconds -> Microseconds
+global function ice_time_ns_to_us(ns: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Nanoseconds -> Milliseconds
+global function ice_time_ns_to_ms(ns: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Nanoseconds -> Seconds
+global function ice_time_ns_to_sec(ns: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Microseconds -> Attoseconds
+global function ice_time_us_to_as(us: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Microseconds -> Nanoseconds
+global function ice_time_us_to_ns(us: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Microseconds -> Milliseconds
+global function ice_time_us_to_ms(us: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Microseconds -> Seconds
+global function ice_time_us_to_sec(us: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Milliseconds -> Attoseconds
+global function ice_time_ms_to_as(ms: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Milliseconds -> Nanoseconds
+global function ice_time_ms_to_ns(ms: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Milliseconds -> Microseconds
+global function ice_time_ms_to_us(ms: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Milliseconds -> Seconds
+global function ice_time_ms_to_sec(ms: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Seconds -> Attoseconds
+global function ice_time_sec_to_as(sec: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Seconds -> Nanoseconds
+global function ice_time_sec_to_ns(sec: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Seconds -> Microseconds
+global function ice_time_sec_to_us(sec: ice_time_ulong): float64 <cimport, nodecl> end
+
+-- Converts: Seconds -> Milliseconds
+global function ice_time_sec_to_ms(sec: ice_time_ulong): float64 <cimport, nodecl> end

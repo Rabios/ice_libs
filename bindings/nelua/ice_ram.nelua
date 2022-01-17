@@ -1,17 +1,33 @@
 ##[[
   cdefine "ICE_RAM_IMPL"
   cinclude "ice_ram.h"
+  
+  if ccinfo.is_windows and not ccinfo.is_msc then
+    linklib "kernel32"
+  elseif ccinfo.is_linux and ccinfo.is_bsd then
+    linklib "c"
+  end
 ]]
 
--- Typedef for free and used and total Bytes of RAM
+-- ============================== Data Types ============================== --
+
+-- Typedef for free and used and total bytes of RAM
 global ice_ram_bytes: type <cimport, nodecl> = @culonglong
 
--- RAM Information, Contains free and used and total RAM in Bytes
+-- Boolean Enum, To avoid including stdbool.h
+global ice_ram_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_RAM_FALSE = -1,
+  ICE_RAM_TRUE = 0
+}
+
+-- RAM Information, Contains free and used and total RAM in bytes
 global ice_ram_info: type <cimport, nodecl> = @record {
   free: ice_ram_bytes,
   used: ice_ram_bytes,
   total: ice_ram_bytes
 }
 
--- Retrives RAM info (Free RAM, Used RAM, Total RAM) in Bytes
-global function ice_ram_status(): ice_ram_info <cimport, nodecl> end
+-- ============================== Functions ============================== --
+
+-- Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure
+global function ice_ram_get_info(ram_info: *ice_ram_info): ice_ram_bool <cimport, nodecl> end

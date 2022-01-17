@@ -1,7 +1,15 @@
 ##[[
   cdefine "ICE_FFI_IMPL"
   cinclude "ice_ffi.h"
+
+  if ccinfo.is_windows and not ccinfo.is_msc then
+    linklib "kernel32"
+  elseif ccinfo.is_linux then
+    linklib "dl"
+  end
 ]]
+
+-- ============================== Data Types ============================== --
 
 -- Boolean Enum, To avoid including stdbool.h
 global ice_ffi_bool: type <cimport, nodecl, using> = @enum(cint) {
@@ -10,10 +18,12 @@ global ice_ffi_bool: type <cimport, nodecl, using> = @enum(cint) {
 }
 
 -- Handle, Represents pointer to loaded shared library or symbol loaded from shared library
-global ice_ffi_handle: type <cimport, nodecl> = @record {}
+global ice_ffi_handle: type <cimport, nodecl> = @pointer
+
+-- ============================== Functions ============================== --
 
 -- Loads shared library from path, Returns handle of loaded shared library on success or NULL on failure
-global function ice_ffi_load(path: cstring <const>): pointer <cimport, nodecl> end
+global function ice_ffi_load(path: cstring <const>): ice_ffi_handle <cimport, nodecl> end
 
 -- Unloads shared library loaded via ice_ffi_load, Returns ICE_FFI_TRUE on success or ICE_FFI_FALSE on failure
 global function ice_ffi_unload(lib: ice_ffi_handle): ice_ffi_bool <cimport, nodecl> end

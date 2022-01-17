@@ -1,0 +1,93 @@
+##[[
+  cdefine "ICE_STR_IMPL"
+  cinclude "ice_str.h"
+
+  if ccinfo.is_linux or ccinfo.is_bsd then
+    linklib "c"
+  end
+]]
+
+-- ============================== Data Types ============================== --
+
+-- Boolean Enum, To avoid including stdbool.h
+global ice_str_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_STR_FALSE = -1,
+  ICE_STR_TRUE = 0
+}
+
+-- ============================== Functions ============================== --
+
+-- Returns string length
+global function ice_str_len(str: cstring <const>): culong <cimport, nodecl> end
+
+-- Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure
+global function ice_str_sub(str: cstring <const>, from_idx: culong, to_idx: culong): cstring <cimport, nodecl> end
+
+-- Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
+global function ice_str_concat(str1: cstring <const>, str2: cstring <const>): cstring <cimport, nodecl> end
+
+-- Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
+global function ice_str_insert(str1: cstring <const>, str2: cstring <const>, idx: culong): cstring <cimport, nodecl> end
+
+-- Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes
+global function ice_str_matches(str1: cstring <const>, str2: cstring <const>, idxs: *[0]culong): culong <cimport, nodecl> end
+
+-- Replaces string str1 in string str with string str2 and returns result string on allocation success or NULL on allocation failure
+global function ice_str_rep(str: cstring <const>, str1: cstring <const>, str2: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns string repeated multiple times on allocation success or NULL on allocation failure
+global function ice_str_dup(str: cstring <const>, times: culong): cstring <cimport, nodecl> end
+
+-- Returns copy of string but malloc-ed on allocation success or NULL on allocation failure
+global function ice_str_copy(str: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns reverse of string on allocation success or NULL on allocation failure
+global function ice_str_rev(str: cstring <const>): cstring <cimport, nodecl> end
+
+-- Converts char to string and returns result on allocation success or NULL on allocation failure
+global function ice_str_char_to_str(ch: cchar): cstring <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if str1 is same as str2, Else returns ICE_STR_FALSE
+global function ice_str_same(str1: cstring <const>, str2: cstring <const>): ice_str_bool <cimport, nodecl> end
+
+-- Returns uppercased version of string on allocation success or NULL on allocation failure
+global function ice_str_upper(str: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns lowercased version of string on allocation success or NULL on allocation failure
+global function ice_str_lower(str: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns capital case version of string on allocation success or NULL on allocation failure
+global function ice_str_cap(str: cstring <const>): cstring <cimport, nodecl> end
+
+-- Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of resulted array
+global function ice_str_split(str: cstring <const>, delim: cchar, arrlen: *culong): *[0]cstring <cimport, nodecl> end
+
+-- Same like ice_str_split but uses new line character '\n' as delimiter
+global function ice_str_splitlines(str: cstring <const>, arrlen: *culong): *[0]cstring <cimport, nodecl> end
+
+-- Returns string which is concat of all strings from array strs on allocation success or NULL on allocation failure, arrlen should be defined for the iteration over the array and delimiter can be used to join each string with (Though it can be NULL as optional parameter)
+global function ice_str_join(strs: *[0]cstring <const>, arrlen: culong, delim: cchar): cstring <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if string str1 starts with string str2, Else returns ICE_STR_FALSE
+global function ice_str_begins(str1: cstring <const>, str2: cstring <const>): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if string str1 ends with string str2, Else returns ICE_STR_FALSE
+global function ice_str_ends(str1: cstring <const>, str2: cstring <const>): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if string str ends with char ch, Else returns ICE_STR_FALSE
+global function ice_str_last_char(str: cstring <const>, ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns char codes of the string as allocated array on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of integer array (Though you can NULL it if you know the length)
+global function ice_str_to_bytes(str: cstring <const>, arrlen: *culong): *[0]cint <cimport, nodecl> end
+
+-- Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length
+global function ice_str_from_bytes(chars: *[0]cint <const>, arrlen: culong): cstring <cimport, nodecl> end
+
+-- Frees a String
+global function ice_str_free(str: cstring): void <cimport, nodecl> end
+
+-- Frees array of char codes
+global function ice_str_free(bytes: *[0]cint): void <cimport, nodecl> end
+
+-- Frees array of strings, arrlen should be set to array length
+global function ice_str_arr_free(arr: *[0]cstring, arrlen: culong): void <cimport, nodecl> end
