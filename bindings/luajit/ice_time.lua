@@ -53,8 +53,8 @@ typedef struct ice_time_info {
     ice_time_ulong clock_ticks;     /* Clock Ticks (Nanoseconds) */
     ice_time_ulong uptime;          /* Ticks since system started (Milliseconds) */
     ice_time_ulong epoch;           /* Unix timestamp */
-    unsigned second;
-    unsigned minute;
+    unsigned seconds;
+    unsigned minutes;
     unsigned hour;
     ice_time_day week_day;          /* (ICE_TIME_DAY_SUNDAY - ICE_TIME_DAY_SATURDAY) */
     unsigned month_day;             /* (1 - Month last day number) */
