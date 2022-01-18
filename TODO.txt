@@ -1,10 +1,8 @@
 ====================== TODO [IMPORTANT] ======================
 
-[o] Update and complete bindings!
-[o] Update and Complete docs
-[ ] Test and fix the GitHub Action if it doesn't build...
-[ ] Continue working on the libs
-[ ] Complete the website
+[o] Test and fix the GitHub Action if it doesn't build...
+[o] Continue working on the libs
+[o] Complete the website
 
 ====================== TODO [UNIMPORTANT] ====================
 
@@ -12,6 +10,10 @@
 [ ] Macro to ease definition of the APIs
 
 ====================== TODO [LIBRARIES] ======================
+
+==== ice_al.h ====
+
+Extend loader to support EFX and XRAM stuff?
 
 ==== ice_ffi.h ====
 
