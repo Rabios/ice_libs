@@ -301,8 +301,8 @@ extern "C" {
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_clip_bool {
-    ICE_CLIP_FALSE = -1,
-    ICE_CLIP_TRUE  = 0
+    ICE_CLIP_FALSE  = -1,
+    ICE_CLIP_TRUE   = 0
 } ice_clip_bool;
 
 /* ============================== Functions ============================== */
@@ -364,6 +364,7 @@ using namespace bb::system;
 #    include <windows.h>
 #    pragma comment(lib, "kernel32.lib")
 #    pragma comment(lib, "user32.lib")
+#    pragma comment(lib, "msvcrt.lib")
 #  else
 #    include <windef.h>
 #    include <winbase.h>

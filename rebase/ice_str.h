@@ -135,7 +135,7 @@ void ice_str_arr_free(char **arr, unsigned long arrlen);
 
 ================================== Linking Flags ==================================
 
-1. Everywhere   => -lc (-lc Most times automatically linked...)
+1. Linux, BSD   =>  -lc (-lc Most times automatically linked...)
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -175,7 +175,7 @@ void ice_str_arr_free(char **arr, unsigned long arrlen);
 #define ICE_STR_EXTERN          // externs library functions
 #define ICE_STR_STATIC          // statics library functions
 
-// NOTE: ICE_STR_EXTERN and ICE_STR_STATIC cannot be #defined together in the code...
+// NOTE: You cannot `#define` both `ICE_STR_EXTERN` and `ICE_STR_STATIC` together in the code...
 
 // Define this to customize ICE_STR_MALLOC, ICE_STR_CALLOC, ICE_STR_REALLOC, ICE_STR_FREE
 #define ICE_STR_CUSTOM_MEMORY_ALLOCATORS
@@ -323,8 +323,8 @@ extern "C" {
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_str_bool {
-    ICE_STR_FALSE = -1,
-    ICE_STR_TRUE = 0
+    ICE_STR_FALSE   = -1,
+    ICE_STR_TRUE    = 0
 } ice_str_bool;
 
 /* ============================== Functions ============================== */
@@ -412,6 +412,9 @@ ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char **arr, unsigned long arr
 
 #if !defined(ICE_STR_CUSTOM_MEMORY_ALLOCATORS)
 #  include <stdlib.h>
+#  if defined(ICE_STR_MICROSOFT) && defined(_MSC_VER)
+#    pragma comment(lib, "msvcrt.lib")
+#  endif
 #endif
 
 /* Returns string length */

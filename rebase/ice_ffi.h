@@ -93,7 +93,7 @@ ice_ffi_handle ice_ffi_get(ice_ffi_handle lib, const char *symbol);
 ================================== Linking Flags ==================================
 
 1. Microsoft Windows    => -lkernel32
-2. Linux                => -ldl
+2. Linux, BSD           => -ldl
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -270,8 +270,8 @@ extern "C" {
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_ffi_bool {
-    ICE_FFI_FALSE = -1,
-    ICE_FFI_TRUE = 0
+    ICE_FFI_FALSE   = -1,
+    ICE_FFI_TRUE    = 0
 } ice_ffi_bool;
 
 /* Handle, Represents pointer to loaded shared library or symbol loaded from shared library */

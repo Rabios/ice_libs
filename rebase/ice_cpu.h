@@ -62,8 +62,8 @@ ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 
 ================================== Linking Flags ==================================
 
-1. Microsoft Windows    =>  -lkernel32
-2. Other                =>  -lc (-lc Most times automatically linked...)
+1. Microsoft Windows        =>  -lkernel32
+2. Linux, BSD, BlackBerry   =>  -lc (-lc Most times automatically linked...)
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -254,8 +254,8 @@ extern "C" {
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_cpu_bool {
-    ICE_CPU_FALSE = -1,
-    ICE_CPU_TRUE = 0
+    ICE_CPU_FALSE   = -1,
+    ICE_CPU_TRUE    = 0
 } ice_cpu_bool;
 
 /* Struct that contains informations about the CPU (Name, Cores, etc...) */
