@@ -2,11 +2,11 @@
   cdefine "ICE_CPU_IMPL"
   cinclude "ice_cpu.h"
 
-  if ccinfo.is_windows and not ccinfo.is_msc then
+  cemit "#if (defined(ICE_CPU_MICROSOFT) && !defined(_MSC_VER))
     linklib "kernel32"
-  elseif ccinfo.is_linux or ccinfo.is_bsd then
+  cemit "#elif (defined(ICE_CPU_UNIX) || defined(ICE_CPU_BSD) || defined(ICE_CPU_BLACKBERRY))"
     linklib "c"
-  end
+  cemit "#endif"
 ]]
 
 -- ============================== Data Types ============================== --

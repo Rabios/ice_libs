@@ -4,7 +4,7 @@
   
   if ccinfo.is_windows and not ccinfo.is_msc then
     linklib "kernel32"
-  elseif ccinfo.is_linux then
+  elseif ccinfo.is_linux or ccinfo.is_bsd then
     linklib "dl"
   end
 ]]
@@ -147,94 +147,93 @@ global function alDistanceModel(distanceModel: ALenum): void <cimport, nodecl> e
 global function alEnable(capability: ALenum): void <cimport, nodecl> end
 global function alDisable(capability: ALenum): void <cimport, nodecl> end
 global function alIsEnabled(capability: ALenum): ALboolean <cimport, nodecl> end
+global function alGetString(param: ALenum): *ALchar <cimport, nodecl> end
+global function alGetBooleanv(param: ALenum, values: *[0]ALboolean): void <cimport, nodecl> end
+global function alGetIntegerv(param: ALenum, values: *[0]ALint): void <cimport, nodecl> end
+global function alGetFloatv(param: ALenum, values: *[0]ALfloat): void <cimport, nodecl> end
+global function alGetDoublev(param: ALenum, values: *[0]ALdouble): void <cimport, nodecl> end
+global function alGetBoolean(param: ALenum): ALboolean <cimport, nodecl> end
+global function alGetInteger(param: ALenum): ALint <cimport, nodecl> end
+global function alGetFloat(param: ALenum): ALfloat <cimport, nodecl> end
+global function alGetDouble(param: ALenum): ALdouble <cimport, nodecl> end
+global function alGetError(): ALenum <cimport, nodecl> end
+global function alIsExtensionPresent(extname: *ALchar <const>): ALboolean <cimport, nodecl> end
+global function alGetProcAddress(fname: *ALchar <const>): pointer <cimport, nodecl> end
+global function alGetEnumValue(ename:  *ALchar <const>): ALenum <cimport, nodecl> end
+global function alListenerf(param: ALenum, value: ALfloat): void <cimport, nodecl> end
+global function alListener3f(param: ALenum, value1: ALfloat, value2: ALfloat, value3: ALfloat): void <cimport, nodecl> end
+global function alListenerfv(param: ALenum, values: *[0]ALfloat <const>): void <cimport, nodecl> end
+global function alListeneri(param: ALenum, value: ALint): void <cimport, nodecl> end
+global function alListener3i(param: ALenum, value1: ALint, value2: ALint, value3: ALint): void <cimport, nodecl> end
+global function alListeneriv(param: ALenum, values: *[0]ALint <const>): void <cimport, nodecl> end
+global function alGetListenerf(param: ALenum, value: *ALfloat): void <cimport, nodecl> end
+global function alGetListener3f(param: ALenum, value1: *ALfloat, value2: *ALfloat, value3: *ALfloat): void <cimport, nodecl> end
+global function alGetListenerfv(param: ALenum, values: *ALfloat): void <cimport, nodecl> end
+global function alGetListeneri(param: ALenum, value: *ALint): void <cimport, nodecl> end
+global function alGetListener3i(param: ALenum, value1: *ALint, value2: *ALint, value3: *ALint): void <cimport, nodecl> end
+global function alGetListeneriv(param: ALenum, values: *ALint): void <cimport, nodecl> end
+global function alGenSources(n: ALsizei, sources: *ALuint): void <cimport, nodecl> end
+global function alDeleteSources(n: ALsizei, sources: *ALuint <const>): void <cimport, nodecl> end
+global function alIsSource(source: ALuint): ALboolean <cimport, nodecl> end
+global function alSourcef(source: ALuint, param: ALenum, value: ALfloat): void <cimport, nodecl> end
+global function alSource3f(source: ALuint, param: ALenum, value1: ALfloat, value2: ALfloat, value3: ALfloat): void <cimport, nodecl> end
+global function alSourcefv(source: ALuint, param: ALenum, values: *ALfloat <const>): void <cimport, nodecl> end
+global function alSourcei(source: ALuint, param: ALenum, value: ALint): void <cimport, nodecl> end
+global function alSource3i(source: ALuint, param: ALenum, value1: ALint, value2: ALint, value3: ALint): void <cimport, nodecl> end
+global function alSourceiv(source: ALuint, param: ALenum, values: *ALint <const>): void <cimport, nodecl> end
+global function alGetSourcef(source: ALuint, param: ALenum, value: *ALfloat): void <cimport, nodecl> end
+global function alGetSource3f(source: ALuint, param: ALenum, value1: *ALfloat, value2: *ALfloat, value3: *ALfloat): void <cimport, nodecl> end
+global function alGetSourcefv(source: ALuint, param: ALenum, values: *ALfloat): void <cimport, nodecl> end
+global function alGetSourcei(source: ALuint, param: ALenum, value: *ALint): void <cimport, nodecl> end
+global function alGetSource3i(source: ALuint, param: ALenum, value1: *ALint, value2: *ALint, value3: *ALint): void <cimport, nodecl> end
+global function alGetSourceiv(source: ALuint, param: ALenum, values: *ALint): void <cimport, nodecl> end
+global function alSourcePlayv(n: ALsizei, sources: *ALuint <const>): void <cimport, nodecl> end
+global function alSourceStopv(n: ALsizei, sources: *ALuint <const>): void <cimport, nodecl> end
+global function alSourceRewindv(n: ALsizei, sources: *ALuint <const>): void <cimport, nodecl> end
+global function alSourcePausev(n: ALsizei, sources: *ALuint <const>): void <cimport, nodecl> end
+global function alSourcePlay(source: ALuint): void <cimport, nodecl> end
+global function alSourceStop(source: ALuint): void <cimport, nodecl> end
+global function alSourceRewind(source: ALuint): void <cimport, nodecl> end
+global function alSourcePause(source: ALuint): void <cimport, nodecl> end
+global function alSourceQueueBuffers(source: ALuint, nb: ALsizei, buffers: *ALuint <const>): void <cimport, nodecl> end
+global function alSourceUnqueueBuffers(source: ALuint, nb: ALsizei, buffers: *ALuint): void <cimport, nodecl> end
+global function alGenBuffers(n: ALsizei, buffers: *ALuint): void <cimport, nodecl> end
+global function alDeleteBuffers(n: ALsizei, buffers: *ALuint <const>): void <cimport, nodecl> end
+global function alIsBuffer(buffer: ALuint): ALboolean <cimport, nodecl> end
+global function alBufferData(buffer: ALuint, format: ALenum, data: pointer <const>, size: ALsizei, freq: ALsizei): void <cimport, nodecl> end
+global function alBufferf(buffer: ALuint, param: ALenum, value: ALfloat): void <cimport, nodecl> end
+global function alBuffer3f(buffer: ALuint, param: ALenum, value1: ALfloat, value2: ALfloat, value3: ALfloat): void <cimport, nodecl> end
+global function alBufferfv(buffer: ALuint, param: ALenum, values: *ALfloat <const>): void <cimport, nodecl> end
+global function alBufferi(buffer: ALuint, param: ALenum, value: ALint): void <cimport, nodecl> end
+global function alBuffer3i(buffer: ALuint, param: ALenum, value1: ALint, value2: ALint, value3: ALint): void <cimport, nodecl> end
+global function alBufferiv(buffer: ALuint, param: ALenum, values: *ALint <const>): void <cimport, nodecl> end
+global function alGetBufferf(buffer: ALuint, param: ALenum, value: *ALfloat): void <cimport, nodecl> end
+global function alGetBuffer3f(buffer: ALuint, param: ALenum, value1: *ALfloat, value2: *ALfloat, value3: *ALfloat): void <cimport, nodecl> end
+global function alGetBufferfv(buffer: ALuint, param: ALenum, values: *ALfloat): void <cimport, nodecl> end
+global function alGetBufferi(buffer: ALuint, param: ALenum, value: *ALint): void <cimport, nodecl> end
+global function alGetBuffer3i(buffer: ALuint, param: ALenum, value1: *ALint, value2: *ALint, value3: *ALint): void <cimport, nodecl> end
+global function alGetBufferiv(buffer: ALuint, param: ALenum, values: *ALint): void <cimport, nodecl> end
 
-const ALchar * alGetString(ALenum param);
-void alGetBooleanv(ALenum param, ALboolean *values);
-void alGetIntegerv(ALenum param, ALint *values);
-void alGetFloatv(ALenum param, ALfloat *values);
-void alGetDoublev(ALenum param, ALdouble *values);
-ALboolean alGetBoolean(ALenum param);
-ALint alGetInteger(ALenum param);
-ALfloat alGetFloat(ALenum param);
-ALdouble alGetDouble(ALenum param);
-ALenum alGetError(void);
-ALboolean alIsExtensionPresent(const ALchar *extname);
-void* alGetProcAddress(const ALchar *fname);
-ALenum alGetEnumValue(const ALchar *ename);
-void alListenerf(ALenum param, ALfloat value);
-void alListener3f(ALenum param, ALfloat value1, ALfloat value2, ALfloat value3);
-void alListenerfv(ALenum param, const ALfloat *values);
-void alListeneri(ALenum param, ALint value);
-void alListener3i(ALenum param, ALint value1, ALint value2, ALint value3);
-void alListeneriv(ALenum param, const ALint *values);
-void alGetListenerf(ALenum param, ALfloat *value);
-void alGetListener3f(ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3);
-void alGetListenerfv(ALenum param, ALfloat *values);
-void alGetListeneri(ALenum param, ALint *value);
-void alGetListener3i(ALenum param, ALint *value1, ALint *value2, ALint *value3);
-void alGetListeneriv(ALenum param, ALint *values);
-void alGenSources(ALsizei n, ALuint *sources);
-void alDeleteSources(ALsizei n, const ALuint *sources);
-ALboolean alIsSource(ALuint source);
-void alSourcef(ALuint source, ALenum param, ALfloat value);
-void alSource3f(ALuint source, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3);
-void alSourcefv(ALuint source, ALenum param, const ALfloat *values);
-void alSourcei(ALuint source, ALenum param, ALint value);
-void alSource3i(ALuint source, ALenum param, ALint value1, ALint value2, ALint value3);
-void alSourceiv(ALuint source, ALenum param, const ALint *values);
-void alGetSourcef(ALuint source, ALenum param, ALfloat *value);
-void alGetSource3f(ALuint source, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3);
-void alGetSourcefv(ALuint source, ALenum param, ALfloat *values);
-void alGetSourcei(ALuint source,  ALenum param, ALint *value);
-void alGetSource3i(ALuint source, ALenum param, ALint *value1, ALint *value2, ALint *value3);
-void alGetSourceiv(ALuint source,  ALenum param, ALint *values);
-void alSourcePlayv(ALsizei n, const ALuint *sources);
-void alSourceStopv(ALsizei n, const ALuint *sources);
-void alSourceRewindv(ALsizei n, const ALuint *sources);
-void alSourcePausev(ALsizei n, const ALuint *sources);
-void alSourcePlay(ALuint source);
-void alSourceStop(ALuint source);
-void alSourceRewind(ALuint source);
-void alSourcePause(ALuint source);
-void alSourceQueueBuffers(ALuint source, ALsizei nb, const ALuint *buffers);
-void alSourceUnqueueBuffers(ALuint source, ALsizei nb, ALuint *buffers);
-void alGenBuffers(ALsizei n, ALuint *buffers);
-void alDeleteBuffers(ALsizei n, const ALuint *buffers);
-ALboolean alIsBuffer(ALuint buffer);
-void alBufferData(ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq);
-void alBufferf(ALuint buffer, ALenum param, ALfloat value);
-void alBuffer3f(ALuint buffer, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3);
-void alBufferfv(ALuint buffer, ALenum param, const ALfloat *values);
-void alBufferi(ALuint buffer, ALenum param, ALint value);
-void alBuffer3i(ALuint buffer, ALenum param, ALint value1, ALint value2, ALint value3);
-void alBufferiv(ALuint buffer, ALenum param, const ALint *values);
-void alGetBufferf(ALuint buffer, ALenum param, ALfloat *value);
-void alGetBuffer3f(ALuint buffer, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3);
-void alGetBufferfv(ALuint buffer, ALenum param, ALfloat *values);
-void alGetBufferi(ALuint buffer, ALenum param, ALint *value);
-void alGetBuffer3i(ALuint buffer, ALenum param, ALint *value1, ALint *value2, ALint *value3);
-void alGetBufferiv(ALuint buffer, ALenum param, ALint *values);
-
-ALCcontext* alcCreateContext(ALCdevice *device, const ALCint *attrlist);
-ALCboolean alcMakeContextCurrent(ALCcontext *context);
-void alcProcessContext(ALCcontext *context);
-void alcSuspendContext(ALCcontext *context);
-void alcDestroyContext(ALCcontext *context);
-ALCcontext* alcGetCurrentContext(void);
-ALCcontext* alcGetContextsDevice(ALCcontext *context);
-ALCdevice* alcOpenDevice(const ALCchar *devicename);
-ALCboolean alcCloseDevice(ALCdevice *device);
-ALCenum alcGetError(ALCdevice *device);
-ALCboolean alcIsExtensionPresent(ALCdevice *device, const ALCchar *extname);
-ALCvoid* alcGetProcAddress(ALCdevice *device, const ALCchar *funcname);
-ALCenum alcGetEnumValue(ALCdevice *device, const ALCchar *enumname);
-ALCchar* alcGetString(ALCdevice *device, ALCenum param);
-void alcGetIntegerv(ALCdevice *device, ALCenum param, ALCsizei size, ALCint *values);
-ALCdevice* alcCaptureOpenDevice(const ALCchar *devicename, ALCuint frequency, ALCenum format, ALCsizei buffersize);
-ALCboolean alcCaptureCloseDevice(ALCdevice *device);
-void alcCaptureStart(ALCdevice *device);
-void alcCaptureStop(ALCdevice *device);
-void alcCaptureSamples(ALCdevice *device, ALCvoid* buffer, ALCsizei samples);
+global function alcCreateContext(device: *ALCdevice, attrlist: *ALCint <const>): *ALCcontext <cimport, nodecl> end
+global function alcMakeContextCurrent(context: *ALCcontext): ALCboolean <cimport, nodecl> end
+global function alcProcessContext(context: *ALCcontext): void <cimport, nodecl> end
+global function alcSuspendContext(context: *ALCcontext): void <cimport, nodecl> end
+global function alcDestroyContext(context: *ALCcontext): void <cimport, nodecl> end
+global function alcGetCurrentContext(): *ALCcontext <cimport, nodecl> end
+global function alcGetContextsDevice(context: *ALCcontext): *ALCdevice <cimport, nodecl> end
+global function alcOpenDevice(devicename: *ALCchar <const>): *ALCdevice <cimport, nodecl> end
+global function alcCloseDevice(device: *ALCdevice): ALCboolean <cimport, nodecl> end
+global function alcGetError(device: *ALCdevice): ALCenum <cimport, nodecl> end
+global function alcIsExtensionPresent(device: *ALCdevice, extname: *ALCchar <const>): ALCboolean <cimport, nodecl> end
+global function alcGetProcAddress(device: *ALCdevice, funcname: *ALCchar <const>): *ALCvoid <cimport, nodecl> end
+global function alcGetEnumValue(device: *ALCdevice, enumname: *ALCchar <const>): ALCenum <cimport, nodecl> end
+global function alcGetString(device: *ALCdevice, param: ALenum): *ALCchar <cimport, nodecl> end
+global function alcGetIntegerv(device: *ALCdevice, param: ALCenum, size: ALCsizei, values: *ALCint): void <cimport, nodecl> end
+global function alcCaptureOpenDevice(devicename: *ALCchar <const>, frequency: ALCuint, format: ALCenum, buffersize: ALCsizei): *ALCdevice <cimport, nodecl> end
+global function alcCaptureCloseDevice(device: *ALCdevice): ALCboolean <cimport, nodecl> end
+global function alcCaptureStart(device: *ALCdevice): void <cimport, nodecl> end
+global function alcCaptureStop(device: *ALCdevice): void <cimport, nodecl> end
+global function alcCaptureSamples(device: *ALCdevice, buffer: *ALCvoid, samples: ALCsizei): void <cimport, nodecl> end
 
 -- ============================= Data Types ============================= --
 

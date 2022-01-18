@@ -4,7 +4,7 @@
 
   if ccinfo.is_windows and not ccinfo.is_msc then
     linklib "kernel32"
-  elseif ccinfo.is_linux then
+  elseif ccinfo.is_linux or ccinfo.is_bsd then
     linklib "dl"
   end
 ]]
