@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
 
 ================================== Linking Flags ==================================
 
-1. Everywhere   =>  -lc (-lc Most times automatically linked...)
+1. Linux, BSD   =>  -lc (-lc Most times automatically linked...)
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -99,6 +99,10 @@ You can support or contribute to ice_libs project by possibly one of following t
 
 #include <assert.h>
 
+#if defined(_MSC_VER)
+#  pragma comment(lib, "msvcrt.lib")
+#endif
+
 /* Creates test with a name, This test can be called as name(); */
 #if defined(__cplusplus)
 #  define ICE_TEST_CREATE(name) extern "C" void name(void)
@@ -127,8 +131,8 @@ Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU inst
     unsigned long lenstr1, lenstr2, matches, i; \
     lenstr1 = lenstr2 = matches = 0;            \
                                                 \
-    while (a[lenstr1] != 0) lenstr1++;       \
-    while (b[lenstr2] != 0) lenstr2++;       \
+    while (a[lenstr1] != 0) lenstr1++;          \
+    while (b[lenstr2] != 0) lenstr2++;          \
                                                 \
     if (lenstr1 == lenstr2) {                   \
         for (i = 0; i < lenstr1; i++) {         \

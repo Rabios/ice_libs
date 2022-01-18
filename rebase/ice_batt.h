@@ -75,13 +75,14 @@ ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
 
 ================================== Linking Flags ==================================
 
-1. Microsoft Windows (Non-UWP)  =>  -lkernel32
-2. BlackBerry 10                =>  -lbbdevice
-3. iOS                          =>  -framework Foundation -framework UIKit
-4. MacOS/OSX                    =>  -framework Foundation -framework CoreFoundation -framework IOKit
-5. Nintendo Switch (libnx)      =>  -lnx
-6. PlayStation Vita (vitasdk)   =>  -lScePower_stub
-7. BSD and Unix and Linux       =>  -lc (-lc Most times automatically linked...)
+1. Microsoft Windows (Non-UWP)      =>  -lkernel32
+2. BlackBerry 10                    =>  -lbbdevice
+3. iOS                              =>  -framework Foundation -framework UIKit
+4. MacOS/OSX                        =>  -framework Foundation -framework CoreFoundation -framework IOKit
+5. Nintendo Switch (libnx)          =>  -lnx
+6. PlayStation Portable (pspsdk)    =>  -lpsppower -lpsppower_driver
+7. PlayStation Vita (vitasdk)       =>  -lScePower_stub
+8. Linux, BSD                       =>  -lc (-lc Most times automatically linked...)
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -310,8 +311,8 @@ extern "C" {
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_batt_bool {
-    ICE_BATT_FALSE = -1,
-    ICE_BATT_TRUE = 0
+    ICE_BATT_FALSE  = -1,
+    ICE_BATT_TRUE   = 0
 } ice_batt_bool;
 
 /* Struct that contains battery status (Exists?, Charging?, Battery Level) */

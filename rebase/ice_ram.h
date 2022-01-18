@@ -66,7 +66,7 @@ ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 ================================== Linking Flags ==================================
 
 1. Microsoft Windows        =>  -lkernel32
-2. BSD, BlackBerry, Linux   =>  -lc (-lc Most times automatically linked...)
+2. Linux, BSD, BlackBerry   =>  -lc (-lc Most times automatically linked...)
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -260,8 +260,8 @@ typedef unsigned long long ice_ram_bytes;
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_ram_bool {
-    ICE_RAM_FALSE = -1,
-    ICE_RAM_TRUE = 0
+    ICE_RAM_FALSE   = -1,
+    ICE_RAM_TRUE    = 0
 } ice_ram_bool;
 
 /* RAM Information, Contains free and used and total RAM in bytes */

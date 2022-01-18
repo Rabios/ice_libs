@@ -94,8 +94,8 @@ ice_al_bool ice_al_unload(void);
 
 ================================== Linking Flags ==================================
 
-1. Microsoft Windows    => -lkernel32
-2. Linux                => -ldl
+1. Microsoft Windows    =>  -lkernel32
+2. Linux, BSD           =>  -ldl
 
 // NOTE: When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
 
@@ -489,7 +489,7 @@ ice_al_def_func(void, alcProcessContext, (ALCcontext *context));
 ice_al_def_func(void, alcSuspendContext, (ALCcontext *context));
 ice_al_def_func(void, alcDestroyContext, (ALCcontext *context));
 ice_al_def_func(ALCcontext*, alcGetCurrentContext, (void));
-ice_al_def_func(ALCcontext*, alcGetContextsDevice, (ALCcontext *context));
+ice_al_def_func(ALCdevice*, alcGetContextsDevice, (ALCcontext *context));
 ice_al_def_func(ALCdevice*, alcOpenDevice, (const ALCchar *devicename));
 ice_al_def_func(ALCboolean, alcCloseDevice, (ALCdevice *device));
 ice_al_def_func(ALCenum, alcGetError, (ALCdevice *device));
@@ -511,8 +511,8 @@ typedef void* ice_al_handle;
 
 /* Boolean Enum, To avoid including stdbool.h */
 typedef enum ice_al_bool {
-    ICE_AL_FALSE = -1,
-    ICE_AL_TRUE = 0
+    ICE_AL_FALSE    = -1,
+    ICE_AL_TRUE     = 0
 } ice_al_bool;
 
 /* ============================= Functions ============================= */

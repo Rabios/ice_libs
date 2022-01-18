@@ -4,7 +4,7 @@ ice_time.h, Single-Header Cross-Platform C library for working with Time!
 
 ================================== Full Overview ==================================
 
-ice_time.h is Single-Header Cross-Platform C library for time functionality!
+ice_time.h is Single-Header Cross-Platform C library for working with time, It provides functions for fetching time info and time units conversion and sleep...
 
 To use it #define ICE_TIME_IMPL then #include "ice_time.h" in your C/C++ code!
 
@@ -14,7 +14,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 ================================== Usage Example ==================================
 
 // Define the implementation of the library and include it
-#define ICE_TIME_IMPL
+#define ICE_TIME_IMPL 1
 #include "ice_time.h"
 
 #include <stdio.h>
@@ -91,13 +91,13 @@ typedef struct ice_time_info {
     ice_time_ulong clock_ticks;     // Clock Ticks (Nanoseconds)
     ice_time_ulong uptime;          // Ticks since system started (Milliseconds)
     ice_time_ulong epoch;           // Unix timestamp
-    unsigned second;
-    unsigned minute;
+    unsigned seconds;
+    unsigned minutes;
     unsigned hour;
     ice_time_day week_day;          // (ICE_TIME_DAY_SUNDAY - ICE_TIME_DAY_SATURDAY)
     unsigned month_day;             // (1 - Month last day number)
     unsigned year_day;              // (1 - 365)
-    ice_time_month month;
+    ice_time_month month;           // (ICE_TIME_MONTH_JANUARY - ICE_TIME_MONTH_DECEMBER)
     ice_time_season season;         // (ICE_TIME_SEASON_WINTER - ICE_TIME_SEASON_AUTUMN)
     unsigned year;
 } ice_time_info;
@@ -188,8 +188,8 @@ double ice_time_sec_to_ms(ice_time_ulong sec);
 
 ================================== Linking Flags ==================================
 
-1. Microsoft Windows        =>  -lkernel32 -lc
-2. Microsoft Windows Phone  =>  -lWindowsPhoneCore -lc
+1. Microsoft Windows        =>  -lkernel32
+2. Microsoft Windows Phone  =>  -lWindowsPhoneCore
 2. Nintendo 3DS (libctru)   =>  -lctru -lc
 3. Raspberry Pi Pico        =>  -lpico_time -lpico_util -lhardware_timer -lhardware_rtc -lc
 
@@ -442,13 +442,13 @@ typedef struct ice_time_info {
     ice_time_ulong clock_ticks;     /* Clock Ticks (Nanoseconds) */
     ice_time_ulong uptime;          /* Ticks since system started (Milliseconds) */
     ice_time_ulong epoch;           /* Unix timestamp */
-    unsigned second;
-    unsigned minute;
+    unsigned seconds;
+    unsigned minutes;
     unsigned hour;
     ice_time_day week_day;          /* (ICE_TIME_DAY_SUNDAY - ICE_TIME_DAY_SATURDAY) */
     unsigned month_day;             /* (1 - Month last day number) */
     unsigned year_day;              /* (1 - 365) */
-    ice_time_month month;
+    ice_time_month month;           /* (ICE_TIME_MONTH_JANUARY - ICE_TIME_MONTH_DECEMBER) */
     ice_time_season season;         /* (ICE_TIME_SEASON_WINTER - ICE_TIME_SEASON_AUTUMN) */
     unsigned year;
 } ice_time_info;
@@ -563,6 +563,7 @@ typedef enum bool { false, true } bool;
 #    else
 #      pragma comment(lib, "kernel32.lib")
 #    endif
+#    pragma comment(lib, "msvcrt.lib")
 #  else
 #    include <sysinfoapi.h>
 #    include <synchapi.h>
@@ -700,8 +701,8 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
     time_info->clock_ticks = (ice_time_ulong) clock();
     time_info->uptime = systicks;
     time_info->epoch = (ice_time_ulong) t;
-    time_info->second = pt->tm_sec;
-    time_info->minute = pt->tm_min;
+    time_info->seconds = pt->tm_sec;
+    time_info->minutes = pt->tm_min;
     time_info->hour = pt->tm_hour;
     time_info->week_day = pt->tm_wday + 1;
     time_info->month_day = pt->tm_mday;
@@ -740,8 +741,8 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
     time_info->clock_ticks = (ice_time_ulong) (time_us_64() * 1000);
     time_info->uptime = systicks;
     time_info->epoch = (ice_time_ulong) pico_time;
-    time_info->second = (ice_time_ulong) t.sec;
-    time_info->minute =(ice_time_ulong) t.min;
+    time_info->seconds = (ice_time_ulong) t.sec;
+    time_info->minutes =(ice_time_ulong) t.min;
     time_info->hour = (ice_time_ulong) t.hour;
     time_info->week_day = t.dotw + 1;
     time_info->month_day = t.day;
@@ -758,8 +759,8 @@ failure:
     time_info->clock_ticks = 0;
     time_info->uptime = 0;
     time_info->epoch = 0;
-    time_info->second = 0;
-    time_info->minute = 0;
+    time_info->seconds = 0;
+    time_info->minutes = 0;
     time_info->hour = 0;
     time_info->week_day = ICE_TIME_DAY_UNKNOWN;
     time_info->month_day = 0;
