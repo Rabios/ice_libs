@@ -310,28 +310,28 @@ static mrb_value drb_ffi__ZTS13ice_time_info_epoch_Set(mrb_state *state, mrb_val
     (&((struct drb_foreign_object_ZTS13ice_time_info *)DATA_PTR(self))->value)->epoch = new_value;
     return mrb_nil_value();
 }
-static mrb_value drb_ffi__ZTS13ice_time_info_second_Get(mrb_state *state, mrb_value self) {
+static mrb_value drb_ffi__ZTS13ice_time_info_seconds_Get(mrb_state *state, mrb_value self) {
     ice_time_info record = drb_ffi__ZTS13ice_time_info_FromRuby(state, self);
-    return drb_ffi__ZTSj_ToRuby(state, record.second);
+    return drb_ffi__ZTSj_ToRuby(state, record.seconds);
 }
-static mrb_value drb_ffi__ZTS13ice_time_info_second_Set(mrb_state *state, mrb_value self) {
+static mrb_value drb_ffi__ZTS13ice_time_info_seconds_Set(mrb_state *state, mrb_value self) {
     mrb_value *args = 0;
     mrb_int argc = 0;
     mrb_get_args_f(state, "*", &args, &argc);
     unsigned int new_value = drb_ffi__ZTSj_FromRuby(state, args[0]);
-    (&((struct drb_foreign_object_ZTS13ice_time_info *)DATA_PTR(self))->value)->second = new_value;
+    (&((struct drb_foreign_object_ZTS13ice_time_info *)DATA_PTR(self))->value)->seconds = new_value;
     return mrb_nil_value();
 }
-static mrb_value drb_ffi__ZTS13ice_time_info_minute_Get(mrb_state *state, mrb_value self) {
+static mrb_value drb_ffi__ZTS13ice_time_info_minutes_Get(mrb_state *state, mrb_value self) {
     ice_time_info record = drb_ffi__ZTS13ice_time_info_FromRuby(state, self);
-    return drb_ffi__ZTSj_ToRuby(state, record.minute);
+    return drb_ffi__ZTSj_ToRuby(state, record.minutes);
 }
-static mrb_value drb_ffi__ZTS13ice_time_info_minute_Set(mrb_state *state, mrb_value self) {
+static mrb_value drb_ffi__ZTS13ice_time_info_minutes_Set(mrb_state *state, mrb_value self) {
     mrb_value *args = 0;
     mrb_int argc = 0;
     mrb_get_args_f(state, "*", &args, &argc);
     unsigned int new_value = drb_ffi__ZTSj_FromRuby(state, args[0]);
-    (&((struct drb_foreign_object_ZTS13ice_time_info *)DATA_PTR(self))->value)->minute = new_value;
+    (&((struct drb_foreign_object_ZTS13ice_time_info *)DATA_PTR(self))->value)->minutes = new_value;
     return mrb_nil_value();
 }
 static mrb_value drb_ffi__ZTS13ice_time_info_hour_Get(mrb_state *state, mrb_value self) {
@@ -725,10 +725,10 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     mrb_define_method_f(state, Ice_time_infoClass, "uptime=", drb_ffi__ZTS13ice_time_info_uptime_Set, MRB_ARGS_REQ(1));
     mrb_define_method_f(state, Ice_time_infoClass, "epoch", drb_ffi__ZTS13ice_time_info_epoch_Get, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, Ice_time_infoClass, "epoch=", drb_ffi__ZTS13ice_time_info_epoch_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "second", drb_ffi__ZTS13ice_time_info_second_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "second=", drb_ffi__ZTS13ice_time_info_second_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "minute", drb_ffi__ZTS13ice_time_info_minute_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "minute=", drb_ffi__ZTS13ice_time_info_minute_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, Ice_time_infoClass, "seconds", drb_ffi__ZTS13ice_time_info_seconds_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, Ice_time_infoClass, "seconds=", drb_ffi__ZTS13ice_time_info_seconds_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, Ice_time_infoClass, "minutes", drb_ffi__ZTS13ice_time_info_minutes_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, Ice_time_infoClass, "minutes=", drb_ffi__ZTS13ice_time_info_minutes_Set, MRB_ARGS_REQ(1));
     mrb_define_method_f(state, Ice_time_infoClass, "hour", drb_ffi__ZTS13ice_time_info_hour_Get, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, Ice_time_infoClass, "hour=", drb_ffi__ZTS13ice_time_info_hour_Set, MRB_ARGS_REQ(1));
     mrb_define_method_f(state, Ice_time_infoClass, "week_day", drb_ffi__ZTS13ice_time_info_week_day_Get, MRB_ARGS_REQ(0));
