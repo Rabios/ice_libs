@@ -7,7 +7,7 @@
 /* Helper */
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char** argv) {
+int main(void) {
     /* Struct that contains Time information */
     ice_time_info current_time;
     
@@ -21,7 +21,7 @@ int main(int argc, char** argv) {
     }
 
     /* Print current time! */
-    printf("Current Time: %s\n", current_time.string);
+    printf("Current Time: %s\n", current_time.str);
 
     return 0;
 }

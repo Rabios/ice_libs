@@ -67,7 +67,7 @@ static ice_ram_info *drb_ffi__ZTSP12ice_ram_info_FromRuby(mrb_state *state, mrb_
         return 0;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_ram_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_RAM_INFO_PTR");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTSP12ice_ram_info);
     return ((struct drb_foreign_object_ZTSP12ice_ram_info *)DATA_PTR(self))->value;
 }
@@ -77,7 +77,7 @@ static mrb_value drb_ffi__ZTSP12ice_ram_info_ToRuby(mrb_state *state, ice_ram_in
     ptr->kind = drb_foreign_object_kind_pointer;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_ram_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_RAM_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTSP12ice_ram_info);
     return mrb_obj_value(rdata);
 }
@@ -85,11 +85,11 @@ struct drb_foreign_object_ZTS12ice_ram_info {
     drb_foreign_object_kind kind;
     ice_ram_info value;
 };
-static mrb_data_type ForeignObjectType_ZTS12ice_ram_info = {"ice_ram_info", drb_free_foreign_object_indirect};
+static mrb_data_type ForeignObjectType_ZTS12ice_ram_info = {"ICE_RAM_INFO", drb_free_foreign_object_indirect};
 static ice_ram_info drb_ffi__ZTS12ice_ram_info_FromRuby(mrb_state *state, mrb_value self) {
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_ram_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_RAM_INFO");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTS12ice_ram_info);
     return ((struct drb_foreign_object_ZTS12ice_ram_info *)DATA_PTR(self))->value;
 }
@@ -99,7 +99,7 @@ static mrb_value drb_ffi__ZTS12ice_ram_info_ToRuby(mrb_state *state, ice_ram_inf
     ptr->kind = drb_foreign_object_kind_struct;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_ram_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_RAM_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS12ice_ram_info);
     return mrb_obj_value(rdata);
 }
@@ -117,7 +117,7 @@ static mrb_value drb_ffi__ZTSP12ice_ram_info_New(mrb_state *mrb, mrb_value self)
     ptr->should_free = 1;
     struct RClass *FFI = mrb_module_get_f(mrb, "FFI");
     struct RClass *module = mrb_module_get_under_f(mrb, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(mrb, module, "Ice_ram_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(mrb, module, "ICE_RAM_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(mrb, klass, ptr, &ForeignObjectType_ZTSP12ice_ram_info);
     return mrb_obj_value(rdata);
 }
@@ -150,7 +150,7 @@ static mrb_value drb_ffi__ZTS12ice_ram_info_New(mrb_state *state, mrb_value self
     struct drb_foreign_object_ZTS12ice_ram_info *ptr = calloc(1, sizeof(struct drb_foreign_object_ZTS12ice_ram_info *));
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_ram_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_RAM_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS12ice_ram_info);
     return mrb_obj_value(rdata);
 }
@@ -208,20 +208,20 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     struct RClass *module = mrb_define_module_under_f(state, FFI, "CExt");
     struct RClass *object_class = state->object_class;
     mrb_define_module_function_f(state, module, "ice_ram_get_info", drb_ffi_ice_ram_get_info_Binding, MRB_ARGS_REQ(1));
-    struct RClass *Ice_ram_infoPointerClass = mrb_define_class_under_f(state, module, "Ice_ram_infoPointer", object_class);
-    mrb_define_class_method_f(state, Ice_ram_infoPointerClass, "new", drb_ffi__ZTSP12ice_ram_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_ram_infoPointerClass, "value", drb_ffi__ZTSP12ice_ram_info_GetValue, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_ram_infoPointerClass, "[]", drb_ffi__ZTSP12ice_ram_info_GetAt, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_ram_infoPointerClass, "[]=", drb_ffi__ZTSP12ice_ram_info_SetAt, MRB_ARGS_REQ(2));
-    mrb_define_method_f(state, Ice_ram_infoPointerClass, "nil?", drb_ffi__ZTSP12ice_ram_info_IsNil, MRB_ARGS_REQ(0));
-    struct RClass *Ice_ram_infoClass = mrb_define_class_under_f(state, module, "Ice_ram_info", object_class);
-    mrb_define_class_method_f(state, Ice_ram_infoClass, "new", drb_ffi__ZTS12ice_ram_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_ram_infoClass, "free", drb_ffi__ZTS12ice_ram_info_free_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_ram_infoClass, "free=", drb_ffi__ZTS12ice_ram_info_free_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_ram_infoClass, "used", drb_ffi__ZTS12ice_ram_info_used_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_ram_infoClass, "used=", drb_ffi__ZTS12ice_ram_info_used_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_ram_infoClass, "total", drb_ffi__ZTS12ice_ram_info_total_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_ram_infoClass, "total=", drb_ffi__ZTS12ice_ram_info_total_Set, MRB_ARGS_REQ(1));
+    struct RClass *ice_ram_info_ptr_class = mrb_define_class_under_f(state, module, "ICE_RAM_INFO_PTR", object_class);
+    mrb_define_class_method_f(state, ice_ram_info_ptr_class, "new", drb_ffi__ZTSP12ice_ram_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_ram_info_ptr_class, "value", drb_ffi__ZTSP12ice_ram_info_GetValue, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_ram_info_ptr_class, "[]", drb_ffi__ZTSP12ice_ram_info_GetAt, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_ram_info_ptr_class, "[]=", drb_ffi__ZTSP12ice_ram_info_SetAt, MRB_ARGS_REQ(2));
+    mrb_define_method_f(state, ice_ram_info_ptr_class, "nil?", drb_ffi__ZTSP12ice_ram_info_IsNil, MRB_ARGS_REQ(0));
+    struct RClass *ice_ram_info_class = mrb_define_class_under_f(state, module, "ICE_RAM_INFO", object_class);
+    mrb_define_class_method_f(state, ice_ram_info_class, "new", drb_ffi__ZTS12ice_ram_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_ram_info_class, "free", drb_ffi__ZTS12ice_ram_info_free_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_ram_info_class, "free=", drb_ffi__ZTS12ice_ram_info_free_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_ram_info_class, "used", drb_ffi__ZTS12ice_ram_info_used_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_ram_info_class, "used=", drb_ffi__ZTS12ice_ram_info_used_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_ram_info_class, "total", drb_ffi__ZTS12ice_ram_info_total_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_ram_info_class, "total=", drb_ffi__ZTS12ice_ram_info_total_Set, MRB_ARGS_REQ(1));
 }
 static int drb_ffi_init_indirect_functions(void *(*lookup)(const char *fnname)) {
   drb_symbol_lookup = lookup;

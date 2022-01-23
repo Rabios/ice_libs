@@ -87,7 +87,7 @@ global function ice_str_from_bytes(chars: *[0]cint <const>, arrlen: culong): cst
 global function ice_str_free(str: cstring): void <cimport, nodecl> end
 
 -- Frees array of char codes
-global function ice_str_free(bytes: *[0]cint): void <cimport, nodecl> end
+global function ice_str_free(bytes: cstring): void <cimport, nodecl> end
 
 -- Frees array of strings, arrlen should be set to array length
 global function ice_str_arr_free(arr: *[0]cstring, arrlen: culong): void <cimport, nodecl> end

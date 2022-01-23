@@ -67,7 +67,7 @@ static ice_cpu_info *drb_ffi__ZTSP12ice_cpu_info_FromRuby(mrb_state *state, mrb_
         return 0;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_cpu_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_CPU_INFO_PTR");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTSP12ice_cpu_info);
     return ((struct drb_foreign_object_ZTSP12ice_cpu_info *)DATA_PTR(self))->value;
 }
@@ -77,7 +77,7 @@ static mrb_value drb_ffi__ZTSP12ice_cpu_info_ToRuby(mrb_state *state, ice_cpu_in
     ptr->kind = drb_foreign_object_kind_pointer;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_cpu_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_CPU_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTSP12ice_cpu_info);
     return mrb_obj_value(rdata);
 }
@@ -85,11 +85,11 @@ struct drb_foreign_object_ZTS12ice_cpu_info {
     drb_foreign_object_kind kind;
     ice_cpu_info value;
 };
-static mrb_data_type ForeignObjectType_ZTS12ice_cpu_info = {"ice_cpu_info", drb_free_foreign_object_indirect};
+static mrb_data_type ForeignObjectType_ZTS12ice_cpu_info = {"ICE_CPU_INFO", drb_free_foreign_object_indirect};
 static ice_cpu_info drb_ffi__ZTS12ice_cpu_info_FromRuby(mrb_state *state, mrb_value self) {
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_cpu_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_CPU_INFO");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTS12ice_cpu_info);
     return ((struct drb_foreign_object_ZTS12ice_cpu_info *)DATA_PTR(self))->value;
 }
@@ -99,7 +99,7 @@ static mrb_value drb_ffi__ZTS12ice_cpu_info_ToRuby(mrb_state *state, ice_cpu_inf
     ptr->kind = drb_foreign_object_kind_struct;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_cpu_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_CPU_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS12ice_cpu_info);
     return mrb_obj_value(rdata);
 }
@@ -151,7 +151,7 @@ static mrb_value drb_ffi__ZTSP12ice_cpu_info_New(mrb_state *mrb, mrb_value self)
     ptr->should_free = 1;
     struct RClass *FFI = mrb_module_get_f(mrb, "FFI");
     struct RClass *module = mrb_module_get_under_f(mrb, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(mrb, module, "Ice_cpu_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(mrb, module, "ICE_CPU_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(mrb, klass, ptr, &ForeignObjectType_ZTSP12ice_cpu_info);
     return mrb_obj_value(rdata);
 }
@@ -223,7 +223,7 @@ static mrb_value drb_ffi__ZTS12ice_cpu_info_New(mrb_state *state, mrb_value self
     struct drb_foreign_object_ZTS12ice_cpu_info *ptr = calloc(1, sizeof(struct drb_foreign_object_ZTS12ice_cpu_info *));
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_cpu_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_CPU_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS12ice_cpu_info);
     return mrb_obj_value(rdata);
 }
@@ -269,12 +269,12 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     struct RClass *module = mrb_define_module_under_f(state, FFI, "CExt");
     struct RClass *object_class = state->object_class;
     mrb_define_module_function_f(state, module, "ice_cpu_get_info", drb_ffi_ice_cpu_get_info_Binding, MRB_ARGS_REQ(1));
-    struct RClass *Ice_cpu_infoPointerClass = mrb_define_class_under_f(state, module, "Ice_cpu_infoPointer", object_class);
-    mrb_define_class_method_f(state, Ice_cpu_infoPointerClass, "new", drb_ffi__ZTSP12ice_cpu_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_cpu_infoPointerClass, "value", drb_ffi__ZTSP12ice_cpu_info_GetValue, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_cpu_infoPointerClass, "[]", drb_ffi__ZTSP12ice_cpu_info_GetAt, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_cpu_infoPointerClass, "[]=", drb_ffi__ZTSP12ice_cpu_info_SetAt, MRB_ARGS_REQ(2));
-    mrb_define_method_f(state, Ice_cpu_infoPointerClass, "nil?", drb_ffi__ZTSP12ice_cpu_info_IsNil, MRB_ARGS_REQ(0));
+    struct RClass *ice_cpu_info_ptr_class = mrb_define_class_under_f(state, module, "ICE_CPU_INFO_PTR", object_class);
+    mrb_define_class_method_f(state, ice_cpu_info_ptr_class, "new", drb_ffi__ZTSP12ice_cpu_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_cpu_info_ptr_class, "value", drb_ffi__ZTSP12ice_cpu_info_GetValue, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_cpu_info_ptr_class, "[]", drb_ffi__ZTSP12ice_cpu_info_GetAt, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_cpu_info_ptr_class, "[]=", drb_ffi__ZTSP12ice_cpu_info_SetAt, MRB_ARGS_REQ(2));
+    mrb_define_method_f(state, ice_cpu_info_ptr_class, "nil?", drb_ffi__ZTSP12ice_cpu_info_IsNil, MRB_ARGS_REQ(0));
     struct RClass *CharPointerClass = mrb_define_class_under_f(state, module, "CharPointer", object_class);
     mrb_define_class_method_f(state, CharPointerClass, "new", drb_ffi__ZTSPc_New, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, CharPointerClass, "value", drb_ffi__ZTSPc_GetValue, MRB_ARGS_REQ(0));
@@ -282,12 +282,12 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     mrb_define_method_f(state, CharPointerClass, "[]=", drb_ffi__ZTSPc_SetAt, MRB_ARGS_REQ(2));
     mrb_define_method_f(state, CharPointerClass, "nil?", drb_ffi__ZTSPc_IsNil, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, CharPointerClass, "str", drb_ffi__ZTSPc_GetString, MRB_ARGS_REQ(0));
-    struct RClass *Ice_cpu_infoClass = mrb_define_class_under_f(state, module, "Ice_cpu_info", object_class);
-    mrb_define_class_method_f(state, Ice_cpu_infoClass, "new", drb_ffi__ZTS12ice_cpu_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_cpu_infoClass, "name", drb_ffi__ZTS12ice_cpu_info_name_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_cpu_infoClass, "name=", drb_ffi__ZTS12ice_cpu_info_name_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_cpu_infoClass, "cores", drb_ffi__ZTS12ice_cpu_info_cores_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_cpu_infoClass, "cores=", drb_ffi__ZTS12ice_cpu_info_cores_Set, MRB_ARGS_REQ(1));
+    struct RClass *ice_cpu_info_class = mrb_define_class_under_f(state, module, "ICE_CPU_INFO", object_class);
+    mrb_define_class_method_f(state, ice_cpu_info_class, "new", drb_ffi__ZTS12ice_cpu_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_cpu_info_class, "name", drb_ffi__ZTS12ice_cpu_info_name_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_cpu_info_class, "name=", drb_ffi__ZTS12ice_cpu_info_name_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_cpu_info_class, "cores", drb_ffi__ZTS12ice_cpu_info_cores_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_cpu_info_class, "cores=", drb_ffi__ZTS12ice_cpu_info_cores_Set, MRB_ARGS_REQ(1));
 }
 static int drb_ffi_init_indirect_functions(void *(*lookup)(const char *fnname)) {
   drb_symbol_lookup = lookup;

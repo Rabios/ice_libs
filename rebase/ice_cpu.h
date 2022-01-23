@@ -1,4 +1,5 @@
 /*
+
 ice_cpu.h, Single-Header Cross-Platform C library to get CPU info!
 
 
@@ -22,7 +23,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
     // Struct that contains CPU information
     ice_cpu_info cpu;
     
@@ -35,7 +36,7 @@ int main(int argc, char **argv) {
         return -1;
     }
     
-    // Print CPU informations
+    // Print the informations
     printf("CPU Name: %s\nCPU Cores: %u\n", cpu.name, cpu.cores);
     
     return 0;
@@ -56,7 +57,7 @@ typedef struct ice_cpu_info {
     unsigned cores;
 } ice_cpu_info;
 
-// Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure
+// Retrieves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure
 ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 
 
@@ -266,7 +267,7 @@ typedef struct ice_cpu_info {
 
 /* ============================== Functions ============================== */
 
-/* Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
+/* Retrieves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
 ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_info);
 
 #if defined(__cplusplus)
@@ -284,15 +285,14 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_inf
 #  endif
 unsigned ice_cpu_brand[12];
 #elif defined(ICE_CPU_MICROSOFT)
+#  include <intrin.h>
 #  if defined(_MSC_VER)
 #    include <windows.h>
-#    include <intrin.h>
 #    pragma comment(lib, "kernel32.lib")
 #  else
 #    include <sysinfoapi.h>
-#    include <cpuid.h>
 #  endif
-unsigned ice_cpu_brand[12];
+char ice_cpu_brand[64];
 #elif defined(ICE_CPU_BSD) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BLACKBERRY)
 #  include <stddef.h>
 #  if defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_CPU_APPLE)
@@ -303,7 +303,7 @@ unsigned ice_cpu_brand[12];
 #  include <sys/sysctl.h>
 #endif
 
-/* Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
+/* Retrieves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
 ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_info) {
 #if defined(ICE_CPU_BSD) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BLACKBERRY)
     char brand[128];
@@ -326,8 +326,13 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_inf
     cpu_info->cores = cores;
 
 #elif defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX)
-    unsigned cores = 0;
+#if defined(ICE_CPU_MICROSOFT)
+    unsigned i, cores = 0, count = 0;
+    int regs[4];
+#else
+    unsigned cores;
     int res;
+#endif
 
 #if defined(ICE_CPU_MICROSOFT)
     SYSTEM_INFO sysinfo;
@@ -341,6 +346,24 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_inf
     cores = sysconf(_SC_NPROC_ONLN);
 #endif
 
+#if defined(ICE_CPU_MICROSOFT)
+    __cpuid(regs, 0x80000004);
+    if (regs[0] == 0) goto failure;
+
+    for (i = 0x80000002; i <= 0x80000004; i++)  {
+        unsigned j;
+        __cpuid(regs, i);
+
+        for (j = 0; j < 16; j++) {
+            const char *str = (const char*) regs;
+            ice_cpu_brand[count] = str[j];
+            count++;
+        }
+    }
+
+    cpu_info->name = (const char*) &ice_cpu_brand[0];
+    cpu_info->cores = cores;
+#else
     res = __get_cpuid_max(0x80000004, 0);
     if (res == 0) goto failure;
 
@@ -348,11 +371,13 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_inf
     __get_cpuid(0x80000003, ice_cpu_brand + 0x4, ice_cpu_brand + 0x5, ice_cpu_brand + 0x6, ice_cpu_brand + 0x7);
     __get_cpuid(0x80000004, ice_cpu_brand + 0x8, ice_cpu_brand + 0x9, ice_cpu_brand + 0xa, ice_cpu_brand + 0xb);
     
-    cpu_info->name = (const char*)(&ice_cpu_brand);
+    cpu_info->name = (const char*)(ice_cpu_brand);
     cpu_info->cores = cores;
 #endif
 
     return ICE_CPU_TRUE;
+
+#endif
 
 failure:
     cpu_info->name = 0;

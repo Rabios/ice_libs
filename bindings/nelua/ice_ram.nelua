@@ -29,5 +29,5 @@ global ice_ram_info: type <cimport, nodecl> = @record {
 
 -- ============================== Functions ============================== --
 
--- Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure
+-- Retrieves info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure
 global function ice_ram_get_info(ram_info: *ice_ram_info): ice_ram_bool <cimport, nodecl> end

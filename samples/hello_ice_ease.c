@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-int main(int argc, char **argv) {
+int main(void) {
     double linear1, linear4;
 
     /* Use linear easing, With 1 argument (easings.net) */

@@ -74,4 +74,4 @@ local lib = _setmetatable({}, mt)
 
 lib.ICE_EASE_PI = 3.14159265358979323846
 
-_setmetatable(_G, { __index = lib })
+return lib

@@ -2,24 +2,24 @@
   cdefine "ICE_CLIP_IMPL"
   cinclude "ice_clip.h"
   
-  cemit "#if defined(ICE_CLIP_MICROSOFT)"
+  if ccinfo.is_windows then
     if not ccinfo.is_msc then
       linklib "kernel32"
       linklib "user32"
     end
-  cemit "#elif defined(ICE_CLIP_IOS)"
+  elseif ccinfo.is_ios then
     cflags "-framework Foundation -framework UIKit"
-  cemit "#elif defined(ICE_CLIP_OSX)"
+  elseif ccinfo.is_macos then
     cflags "-framework Foundation -framework AppKit"
-  cemit "#elif defined(ICE_CLIP_BB10)"
+  elseif ccinfo.is_bb10 then
     linklib "bbsystem"
-  cemit "#endif"
+  end
 ]]
 
 -- ============================== Data Types ============================== --
 
 -- Boolean Enum, To avoid including stdbool.h
-global ice_clip_bool: type <cimport, nodecl, using> = @record(cint) {
+global ice_clip_bool: type <cimport, nodecl, using> = @enum(cint) {
   ICE_CLIP_FALSE = -1,
   ICE_CLIP_TRUE  = 0
 }

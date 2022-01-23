@@ -1,4 +1,5 @@
 /*
+
 ice_ram.h, Single-Header Cross-Platform C library to get RAM info!
 
 
@@ -22,14 +23,14 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char** argv) {
+int main(void) {
     // Struct that contains RAM information
     ice_ram_info ram;
 
     // Fetch RAM info
     ice_ram_bool res = ice_ram_get_info(&ram);
 
-    // If the function failed to fetch RAM info, Trace error then terminate the program
+    // If function failed to fetch RAM info, Trace error then terminate the program
     if (res == ICE_RAM_FALSE) {
         trace("ice_ram_get_info", "ERROR: failed to get RAM info!");
         return -1;
@@ -59,7 +60,7 @@ typedef enum ice_ram_bool {
 // RAM Information, Contains free and used and total RAM in bytes
 typedef struct ice_ram_info { ice_ram_bytes free, used, total; } ice_ram_info;
 
-// Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure
+// Retrieves info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure
 ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 
 
@@ -269,7 +270,7 @@ typedef struct ice_ram_info { ice_ram_bytes free, used, total; } ice_ram_info;
 
 /* ============================== Functions ============================== */
 
-/* Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
+/* Retrieves info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
 ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_info);
 
 #if defined(__cplusplus)
@@ -308,7 +309,7 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
 #  include <sys/sysinfo.h>
 #endif
 
-/* Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
+/* Retrieves info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
 ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_info) {
 #if defined(ICE_RAM_MICROSOFT)
     MEMORYSTATUSEX status;

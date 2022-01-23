@@ -1,7 +1,6 @@
 local ffi = require("ffi")
 local ffi_load = ffi.load
 local ffi_cdef = ffi.cdef
-local _setmetatable = setmetatable
 
 ffi_cdef([[
 /* ============================== Data Types ============================== */
@@ -34,5 +33,4 @@ void ice_batt_use_native_activity(void *activity);
 ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
 ]])
 
-local lib = ffi_load("ice_batt")
-_setmetatable(_G, { __index = lib })
+return ffi_load("ice_batt")

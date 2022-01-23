@@ -1,4 +1,5 @@
 /*
+
 ice_ease.h, Single-Header Cross-Platform C library for working with Easings!
 
 
@@ -19,7 +20,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 
 #include <stdio.h>
 
-int main(int argc, char **argv) {
+int main(void) {
     double linear1, linear4;
 
     // Use linear easing, With 1 argument (easings.net)
@@ -356,10 +357,6 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in_out(ice_ease_type ease_
 #include <stdarg.h>
 #include <math.h>
 
-#if defined(ICE_EASE_MICROSOFT) && defined(_MSC_VER)
-#  pragma comment(lib, "msvcrt.lib")
-#endif
-
 /* [INTERNAL] Assigns variable arguments to array */
 #define ICE_EASE_ASSIGN_ARGS            \
     double args[4];                     \
@@ -411,7 +408,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in(ice_ease_type ease_type, 
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * (t /= d) * t + b;
+        t /= d;
+
+        return c * t * t + b;
     }
 
     return 0;
@@ -426,7 +425,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_out(ice_ease_type ease_type,
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return -c * (t /= d) * (t - 2.0) + b;
+        t /= d;
+
+        return -c * t * (t - 2.0) + b;
     }
 
     return 0;
@@ -441,9 +442,12 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in_out(ice_ease_type ease_ty
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
+        t /= d / 2.0;
 
-        if ((t /= d / 2.0) < 1.0) return c / 2.0 * t * t + b;
-        return -c / 2.0 * ((--t) * (t - 2.0) - 1.0) + b;
+        if (t < 1.0) return c / 2.0 * t * t + b;
+        
+        --t;
+        return -c / 2.0 * (t * (t - 2.0) - 1.0) + b;
     }
 
     return 0;
@@ -459,7 +463,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in(ice_ease_type ease_type,
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * (t /= d) * t * t + b;
+        t /= d;
+
+        return c * t * t * t + b;
     }
 
     return 0;
@@ -474,7 +480,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_out(ice_ease_type ease_type
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * ((t = t / d - 1.0) * t * t + 1.0) + b;
+        t = t / d - 1.0;
+
+        return c * (t * t * t + 1.0) + b;
     }
 
     return 0;
@@ -490,8 +498,12 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in_out(ice_ease_type ease_t
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        if ((t /= d / 2.0) < 1.0) return c / 2.0 * t * t * t + b;
-        return c / 2.0 * ((t -= 2.0) * t * t + 2.0) + b;
+        t /= d / 2.0;
+
+        if (t < 1.0) return c / 2.0 * t * t * t + b;
+        
+        t -= 2.0;
+        return c / 2.0 * (t * t * t + 2.0) + b;
     }
 
     return 0;
@@ -507,7 +519,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in(ice_ease_type ease_type,
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * (t /= d) * t * t * t + b;
+        t /= d;
+
+        return c * t * t * t * t + b;
     }
 
     return 0;
@@ -522,7 +536,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_out(ice_ease_type ease_type
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return -c * ((t = t / d - 1.0) * t * t * t - 1.0) + b;
+        t = t / d - 1.0;
+
+        return -c * (t * t * t * t - 1.0) + b;
     }
 
     return 0;
@@ -538,9 +554,12 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in_out(ice_ease_type ease_t
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
+        t /= d / 2.0;
 
-        if ((t /= d / 2.0) < 1.0) return c / 2.0 * t * t * t * t + b;
-        return -c / 2.0 * ((t -= 2.0) * t * t * t - 2.0) + b;
+        if (t < 1.0) return c / 2.0 * t * t * t * t + b;
+        
+        t -= 2.0;
+        return -c / 2.0 * (t * t * t * t - 2.0) + b;
     }
 
     return 0;
@@ -556,7 +575,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in(ice_ease_type ease_type,
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * (t /= d) * t * t * t * t + b;
+        t /= d;
+
+        return c * t * t * t * t * t + b;
     }
 
     return 0;
@@ -571,7 +592,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_out(ice_ease_type ease_type
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * ((t = t / d - 1.0) * t * t * t * t + 1.0) + b;
+        t = t / d - 1.0;
+
+        return c * (t * t * t * t * t + 1.0) + b;
     }
 
     return 0;
@@ -587,8 +610,12 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in_out(ice_ease_type ease_t
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        if ((t /= d / 2.0) < 1.0) return c / 2.0 * t * t * t * t * t + b;
-        return c / 2.0 * ((t -= 2.0) * t * t * t * t + 2.0) + b;
+        t /= d / 2.0;
+
+        if (t < 1.0) return c / 2.0 * t * t * t * t * t + b;
+        t -= 2.0;
+
+        return c / 2.0 * (t * t * t * t * t + 2.0) + b;
     }
 
     return 0;
@@ -707,7 +734,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_in(ice_ease_type ease_type, 
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return -c * (sqrt(1.0 - (t /= d) * t) - 1.0) + b;
+        t /= d;
+
+        return -c * (sqrt(1.0 - t * t) - 1.0) + b;
     }
 
     return 0;
@@ -722,7 +751,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_out(ice_ease_type ease_type,
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * sqrt(1.0 - (t = t / d - 1.0) * t) + b;
+        t = t / d - 1.0;
+
+        return c * sqrt(1.0 - t * t) + b;
     }
 
     return 0;
@@ -733,13 +764,18 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_in_out(ice_ease_type ease_ty
 
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
+        
         if (x < 0.5) return (1.0 - sqrt(1.0 - pow(2.0 * x, 2))) / 2.0;
         return (sqrt(1.0 - pow(-2.0 * x + 2.0, 2)) + 1.0) / 2.0;
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        if ((t /= d / 2.0) < 1.0) return -c / 2.0 * (sqrt(1.0 - t * t) - 1.0) + b;
-        return c / 2.0 * (sqrt(1.0 - (t -= 2.0) * t) + 1.0) + b;
+        t /= d / 2.0;
+
+        if (t < 1.0) return -c / 2.0 * (sqrt(1.0 - t * t) - 1.0) + b;
+
+        t -= 2.0;
+        return c / 2.0 * (sqrt(1.0 - t * t) + 1.0) + b;
     }
 
     return 0;
@@ -759,14 +795,20 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in(ice_ease_type ease_typ
         return -pow(2.0, 10 * x - 10) * sin((x * 10.0 - 10.75) * c4);
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double p, a, s, postFix;
         ICE_EASE_LOAD_FOUR_ARGS
-        double p = d * 0.3;
-        double a = c;
-        double s = p / 4.0;
-        double postFix = a * pow(2.0, 10 * (t -= 1));
+
+        p = d * 0.3;
+        a = c;
+        s = p / 4.0;
+        t -= 1.0;
+        postFix = a * pow(2.0, 10 * t);
 
         if (t == 0) return b;
-        else if ((t /= d) == 1) return b + c;
+        
+        t /= d;
+        if (t == 1.0) return b + c;
+        
         return -(postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p)) + b;
     }
 
@@ -795,11 +837,15 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_out(ice_ease_type ease_ty
         else if (t == 1) return 1;
 
         if (t < 1.0) {
-            postFix = a * pow(2.0, 10 * (t -= 1));
+            t -= 1.0;
+            postFix = a * pow(2.0, 10 * t);
+
             return -0.5 * (postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p)) + b;
         }
 
-        postFix = a * pow(2.0, -10 * (t -= 1));
+        t -= 1.0;
+        postFix = a * pow(2.0, -10 * t);
+        
         return postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p) * 0.5 + c + b;
     }
 
@@ -830,11 +876,15 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in_out(ice_ease_type ease
         else if (t == 1) return 1;
 
         if (t < 1.0) {
-            postFix = a * pow(2.0, 10 * (t -= 1));
+            t -= 1.0;
+            postFix = a * pow(2.0, 10 * t);
+
             return -0.5 * (postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p)) + b;
         }
 
-        postFix = a * pow(2.0, -10 * (t -= 1));
+        t -= 1.0;
+        postFix = a * pow(2.0, -10 * t);
+
         return postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p) * 0.5 + c + b;
     }
 
@@ -855,8 +905,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in(ice_ease_type ease_type, 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
         double s = 1.70158;
+        t /= d;
 
-        return c * (t /= d) * t * ((s + 1.0) * t - s) + b;
+        return c * t * t * ((s + 1.0) * t - s) + b;
     }
 
     return 0;
@@ -874,7 +925,9 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_out(ice_ease_type ease_type,
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
         double s = 1.70158;
-        return c * ((t = t / d - 1.0) * t * ((s + 1.0) * t + s) + 1.0) + b;
+        t = t / d - 1.0;
+
+        return c * (t * t * ((s + 1.0) * t + s) + 1.0) + b;
     }
 
     return 0;
@@ -895,9 +948,16 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in_out(ice_ease_type ease_ty
         ICE_EASE_LOAD_FOUR_ARGS
         double s = 1.70158;
         double v = 1.525;
+        t /= d;
 
-        if ((t /= d / 2.0) < 1.0) return c / 2.0 * (t * t * (((s *= v) + 1.0) * t - s)) + b;
-        return c / 2.0 * ((t -= 2.0) * t * (((s *= v) + 1.0) * t + s) + 2.0) + b;
+        if (t < 1.0) {
+            s *= v;
+            return c / 2.0 * (t * t * ((s + 1.0) * t - s)) + b;
+        }
+
+        t -= 2.0;
+        s *= v;
+        return c / 2.0 * (t * t * ((s + 1.0) * t + s) + 2.0) + b;
     }
 
     return 0;
@@ -927,20 +987,38 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_out(ice_ease_type ease_typ
         double n1 = 7.5625;
         double d1 = 2.75;
 
-        if (x < 1.0 / d1) return n1 * x * x;
-        else if (x < 2.0 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75;
-        else if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375;
-        return n1 * (x -= 2.625 / d1) * x + 0.984375;
+        if (x < 1.0 / d1) {
+            return n1 * x * x;
+        } else if (x < 2.0 / d1) {
+            x -= 1.5 / d1;
+            return n1 * x * x + 0.75;
+        } else if (x < 2.5 / d1) {
+            x -= 2.25 / d1;
+            return n1 * x * x + 0.9375;
+        } else {
+            x -= 2.625 / d1;
+            return n1 * x * x + 0.984375;
+        }
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
         double n1 = 7.5625;
         double d1 = 2.75;
 
-        if ((t /= d) < (1.0 / d1)) return c * (n1 * t * t) + b;
-        else if (t < (2.0 / d1)) return c * (n1 * (t -= (1.5 / d1)) * t + 0.75) + b;
-        else if (t < (2.5 / d1)) return c * (n1 * (t -= (2.25 / d1)) * t + 0.9375) + b;
-        return c * (n1 * (t -= (2.625 / d1)) * t + 0.984375) + b;
+        t /= d;
+
+        if (t < (1.0 / d1)) {
+            return c * (n1 * t * t) + b;
+        } else if (t < (2.0 / d1)) {
+            t -= (1.5 / d1);
+            return c * (n1 * t * t + 0.75) + b;
+        } else if (t < (2.5 / d1)) {
+            t -= (2.25 / d1);
+            return c * (n1 * t * t + 0.9375) + b;
+        } else {
+            t -= (2.625 / d1);
+            return c * (n1 * t * t + 0.984375) + b;
+        }
     }
 
     return 0;

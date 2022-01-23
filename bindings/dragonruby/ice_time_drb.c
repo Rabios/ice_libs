@@ -60,11 +60,11 @@ struct drb_foreign_object_ZTS13ice_time_info {
     drb_foreign_object_kind kind;
     ice_time_info value;
 };
-static mrb_data_type ForeignObjectType_ZTS13ice_time_info = {"ice_time_info", drb_free_foreign_object_indirect};
+static mrb_data_type ForeignObjectType_ZTS13ice_time_info = {"ICE_TIME_INFO", drb_free_foreign_object_indirect};
 static ice_time_info drb_ffi__ZTS13ice_time_info_FromRuby(mrb_state *state, mrb_value self) {
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_time_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_TIME_INFO");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTS13ice_time_info);
     return ((struct drb_foreign_object_ZTS13ice_time_info *)DATA_PTR(self))->value;
 }
@@ -74,7 +74,7 @@ static mrb_value drb_ffi__ZTS13ice_time_info_ToRuby(mrb_state *state, ice_time_i
     ptr->kind = drb_foreign_object_kind_struct;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_time_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_TIME_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS13ice_time_info);
     return mrb_obj_value(rdata);
 }
@@ -103,7 +103,7 @@ static ice_time_info *drb_ffi__ZTSP13ice_time_info_FromRuby(mrb_state *state, mr
         return 0;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_time_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_TIME_INFO_PTR");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTSP13ice_time_info);
     return ((struct drb_foreign_object_ZTSP13ice_time_info *)DATA_PTR(self))->value;
 }
@@ -113,7 +113,7 @@ static mrb_value drb_ffi__ZTSP13ice_time_info_ToRuby(mrb_state *state, ice_time_
     ptr->kind = drb_foreign_object_kind_pointer;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_time_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_TIME_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTSP13ice_time_info);
     return mrb_obj_value(rdata);
 }
@@ -186,7 +186,7 @@ static mrb_value drb_ffi__ZTSP13ice_time_info_New(mrb_state *mrb, mrb_value self
     ptr->should_free = 1;
     struct RClass *FFI = mrb_module_get_f(mrb, "FFI");
     struct RClass *module = mrb_module_get_under_f(mrb, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(mrb, module, "Ice_time_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(mrb, module, "ICE_TIME_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(mrb, klass, ptr, &ForeignObjectType_ZTSP13ice_time_info);
     return mrb_obj_value(rdata);
 }
@@ -258,7 +258,7 @@ static mrb_value drb_ffi__ZTS13ice_time_info_New(mrb_state *state, mrb_value sel
     struct drb_foreign_object_ZTS13ice_time_info *ptr = calloc(1, sizeof(struct drb_foreign_object_ZTS13ice_time_info *));
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_time_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_TIME_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS13ice_time_info);
     return mrb_obj_value(rdata);
 }
@@ -702,12 +702,12 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     mrb_define_module_function_f(state, module, "ice_time_sec_to_ns", drb_ffi_ice_time_sec_to_ns_Binding, MRB_ARGS_REQ(1));
     mrb_define_module_function_f(state, module, "ice_time_sec_to_us", drb_ffi_ice_time_sec_to_us_Binding, MRB_ARGS_REQ(1));
     mrb_define_module_function_f(state, module, "ice_time_sec_to_ms", drb_ffi_ice_time_sec_to_ms_Binding, MRB_ARGS_REQ(1));
-    struct RClass *Ice_time_infoPointerClass = mrb_define_class_under_f(state, module, "Ice_time_infoPointer", object_class);
-    mrb_define_class_method_f(state, Ice_time_infoPointerClass, "new", drb_ffi__ZTSP13ice_time_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoPointerClass, "value", drb_ffi__ZTSP13ice_time_info_GetValue, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoPointerClass, "[]", drb_ffi__ZTSP13ice_time_info_GetAt, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoPointerClass, "[]=", drb_ffi__ZTSP13ice_time_info_SetAt, MRB_ARGS_REQ(2));
-    mrb_define_method_f(state, Ice_time_infoPointerClass, "nil?", drb_ffi__ZTSP13ice_time_info_IsNil, MRB_ARGS_REQ(0));
+    struct RClass *ice_time_info_ptr_class = mrb_define_class_under_f(state, module, "ICE_TIME_INFO_PTR", object_class);
+    mrb_define_class_method_f(state, ice_time_info_ptr_class, "new", drb_ffi__ZTSP13ice_time_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_info_ptr_class, "value", drb_ffi__ZTSP13ice_time_info_GetValue, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_info_ptr_class, "[]", drb_ffi__ZTSP13ice_time_info_GetAt, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_info_ptr_class, "[]=", drb_ffi__ZTSP13ice_time_info_SetAt, MRB_ARGS_REQ(2));
+    mrb_define_method_f(state, ice_time_info_ptr_class, "nil?", drb_ffi__ZTSP13ice_time_info_IsNil, MRB_ARGS_REQ(0));
     struct RClass *CharPointerClass = mrb_define_class_under_f(state, module, "CharPointer", object_class);
     mrb_define_class_method_f(state, CharPointerClass, "new", drb_ffi__ZTSPc_New, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, CharPointerClass, "value", drb_ffi__ZTSPc_GetValue, MRB_ARGS_REQ(0));
@@ -715,34 +715,34 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     mrb_define_method_f(state, CharPointerClass, "[]=", drb_ffi__ZTSPc_SetAt, MRB_ARGS_REQ(2));
     mrb_define_method_f(state, CharPointerClass, "nil?", drb_ffi__ZTSPc_IsNil, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, CharPointerClass, "str", drb_ffi__ZTSPc_GetString, MRB_ARGS_REQ(0));
-    struct RClass *Ice_time_infoClass = mrb_define_class_under_f(state, module, "Ice_time_info", object_class);
-    mrb_define_class_method_f(state, Ice_time_infoClass, "new", drb_ffi__ZTS13ice_time_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "str", drb_ffi__ZTS13ice_time_info_str_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "str=", drb_ffi__ZTS13ice_time_info_str_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "clock_ticks", drb_ffi__ZTS13ice_time_info_clock_ticks_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "clock_ticks=", drb_ffi__ZTS13ice_time_info_clock_ticks_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "uptime", drb_ffi__ZTS13ice_time_info_uptime_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "uptime=", drb_ffi__ZTS13ice_time_info_uptime_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "epoch", drb_ffi__ZTS13ice_time_info_epoch_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "epoch=", drb_ffi__ZTS13ice_time_info_epoch_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "seconds", drb_ffi__ZTS13ice_time_info_seconds_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "seconds=", drb_ffi__ZTS13ice_time_info_seconds_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "minutes", drb_ffi__ZTS13ice_time_info_minutes_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "minutes=", drb_ffi__ZTS13ice_time_info_minutes_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "hour", drb_ffi__ZTS13ice_time_info_hour_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "hour=", drb_ffi__ZTS13ice_time_info_hour_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "week_day", drb_ffi__ZTS13ice_time_info_week_day_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "week_day=", drb_ffi__ZTS13ice_time_info_week_day_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "month_day", drb_ffi__ZTS13ice_time_info_month_day_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "month_day=", drb_ffi__ZTS13ice_time_info_month_day_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "year_day", drb_ffi__ZTS13ice_time_info_year_day_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "year_day=", drb_ffi__ZTS13ice_time_info_year_day_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "month", drb_ffi__ZTS13ice_time_info_month_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "month=", drb_ffi__ZTS13ice_time_info_month_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "season", drb_ffi__ZTS13ice_time_info_season_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "season=", drb_ffi__ZTS13ice_time_info_season_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_time_infoClass, "year", drb_ffi__ZTS13ice_time_info_year_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_time_infoClass, "year=", drb_ffi__ZTS13ice_time_info_year_Set, MRB_ARGS_REQ(1));
+    struct RClass *ice_time_infoClass = mrb_define_class_under_f(state, module, "ICE_TIME_INFO", object_class);
+    mrb_define_class_method_f(state, ice_time_infoClass, "new", drb_ffi__ZTS13ice_time_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "str", drb_ffi__ZTS13ice_time_info_str_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "str=", drb_ffi__ZTS13ice_time_info_str_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "clock_ticks", drb_ffi__ZTS13ice_time_info_clock_ticks_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "clock_ticks=", drb_ffi__ZTS13ice_time_info_clock_ticks_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "uptime", drb_ffi__ZTS13ice_time_info_uptime_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "uptime=", drb_ffi__ZTS13ice_time_info_uptime_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "epoch", drb_ffi__ZTS13ice_time_info_epoch_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "epoch=", drb_ffi__ZTS13ice_time_info_epoch_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "seconds", drb_ffi__ZTS13ice_time_info_seconds_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "seconds=", drb_ffi__ZTS13ice_time_info_seconds_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "minutes", drb_ffi__ZTS13ice_time_info_minutes_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "minutes=", drb_ffi__ZTS13ice_time_info_minutes_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "hour", drb_ffi__ZTS13ice_time_info_hour_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "hour=", drb_ffi__ZTS13ice_time_info_hour_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "week_day", drb_ffi__ZTS13ice_time_info_week_day_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "week_day=", drb_ffi__ZTS13ice_time_info_week_day_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "month_day", drb_ffi__ZTS13ice_time_info_month_day_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "month_day=", drb_ffi__ZTS13ice_time_info_month_day_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "year_day", drb_ffi__ZTS13ice_time_info_year_day_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "year_day=", drb_ffi__ZTS13ice_time_info_year_day_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "month", drb_ffi__ZTS13ice_time_info_month_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "month=", drb_ffi__ZTS13ice_time_info_month_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "season", drb_ffi__ZTS13ice_time_info_season_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "season=", drb_ffi__ZTS13ice_time_info_season_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_time_infoClass, "year", drb_ffi__ZTS13ice_time_info_year_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_time_infoClass, "year=", drb_ffi__ZTS13ice_time_info_year_Set, MRB_ARGS_REQ(1));
 }
 static int drb_ffi_init_indirect_functions(void *(*lookup)(const char *fnname)) {
   drb_symbol_lookup = lookup;

@@ -2,11 +2,11 @@
   cdefine "ICE_CPU_IMPL"
   cinclude "ice_cpu.h"
 
-  cemit "#if (defined(ICE_CPU_MICROSOFT) && !defined(_MSC_VER))
+  if ccinfo.is_windows and not ccinfo.is_msc then
     linklib "kernel32"
-  cemit "#elif (defined(ICE_CPU_UNIX) || defined(ICE_CPU_BSD) || defined(ICE_CPU_BLACKBERRY))"
+  elseif ccinfo.is_bsd or ccinfo.is_linux or ccinfo.is_qnx then
     linklib "c"
-  cemit "#endif"
+  end
 ]]
 
 -- ============================== Data Types ============================== --
@@ -25,5 +25,5 @@ global ice_cpu_info: type <cimport, nodecl> = @record {
 
 -- ============================== Functions ============================== --
 
--- Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure
+-- Retrieves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure
 global function ice_cpu_get_info(cpu_info: *ice_cpu_info): ice_cpu_bool <cimport, nodecl> end

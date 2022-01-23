@@ -1,7 +1,6 @@
 local ffi = require("ffi")
 local ffi_load = ffi.load
 local ffi_cdef = ffi.cdef
-local _setmetatable = setmetatable
 
 ffi_cdef([[
 /* ============================== Data Types ============================== */
@@ -150,5 +149,4 @@ double ice_time_sec_to_us(ice_time_ulong sec);
 double ice_time_sec_to_ms(ice_time_ulong sec);
 ]])
 
-local lib = ffi_load("ice_time")
-_setmetatable(_G, { __index = lib })
+return ffi_load("ice_time")

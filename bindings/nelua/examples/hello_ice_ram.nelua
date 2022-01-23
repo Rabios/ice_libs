@@ -1,0 +1,23 @@
+require "ice_ram"
+require "string"
+
+local function main(): cint
+  -- Struct that contains RAM information
+  local ram: ice_ram_info <noinit>
+  
+  -- Fetch RAM info
+  local res: ice_ram_bool = ice_ram_get_info(&ram)
+  
+  -- If function failed to fetch RAM info, Trace error then terminate the program
+  if (res == ICE_RAM_FALSE) then
+    print("ERROR: failed to get RAM info!")
+    return -1
+  end
+  
+  -- Print RAM info (free, used, total) in bytes
+  print("Free RAM: " .. ram.free .. " bytes\nUsed RAM: " .. ram.used .. " bytes\n" .. "Total RAM: " .. ram.total .. " bytes")
+
+  return 0
+end
+
+return main()

@@ -7,7 +7,7 @@
 /* Helper */
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
     /* Create a string repeated for multiple times */
     char *haha = ice_str_dup("HA", 8); /* HAHAHAHAHAHAHAHA */
 
