@@ -9,6 +9,8 @@ ice_test.h is Single-Header tiny C library for unit testing!
 
 To use it #define ICE_TEST_IMPL then #include "ice_test.h" in your C/C++ code!
 
+Check out "Linking Flags" to know which libs required to link for compilation depending on each platform...
+
 
 ================================== Usage Example ==================================
 
@@ -47,7 +49,7 @@ int main(void) {
 // Creates test with a name, This test can be called as name();
 #define ICE_TEST_CREATE(name)
 
-// Creates test with a name but this one extended to allow argument passing, This test can be called as name(int argc, char** argv);
+// Creates test with a name but this one extended to allow argument passing, This test can be called as name(int argc, char **argv);
 #define ICE_TEST_CREATE_EX(name)
 
 // Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU instead!
@@ -73,6 +75,12 @@ int main(void) {
 
 // Tests if variable is not integer number
 #define ICE_TEST_ASSERT_NOT_INT(a)
+
+
+================================= Usable #define(s) ===============================
+
+// Define the implementation, This should be #defined before including ice_test.h in the code...
+#define ICE_TEST_IMPL
 
 
 ================================= Support ice_libs ================================
@@ -110,7 +118,7 @@ You can support or contribute to ice_libs project by possibly one of following t
 /*
 Creates test with a name but this one extended to allow argument passing...
 
-This test can be called as name(argc, argv);
+This test can be called as name(int argc, char **argv);
 */
 #if defined(__cplusplus)
 #  define ICE_TEST_CREATE_EX(name) extern "C" void name(int argc, char **argv)

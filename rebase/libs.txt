@@ -1,19 +1,23 @@
+WIP:
+
+[o] ice_fs.h
+[o] ice_math.h
+[o] ice_vecmath.h
+[o] ice_arr.h
+[o] ice_steam.h
+[o] ice_hashmap.h
+[o] ice_joy.h
+[o] ice_kbd.h
+[o] ice_mouse.h
+
 NEXT:
 
-[ ] ice_steam.h
-[ ] ice_vecmath.h
-[ ] ice_math.h
-[ ] ice_hashmap.h
-[ ] ice_arr.h
-[ ] ice_joy.h
-[ ] ice_kbd.h
 [ ] ice_app.h
 [ ] ice_arc.h
 [ ] ice_audio.h
 [ ] ice_collision.h
 [ ] ice_coro.h
 [ ] ice_ctx.h
-[ ] ice_fs.h
 [ ] ice_gfx.h
 [ ] ice_gpu.h
 [ ] ice_gui.h
@@ -21,7 +25,6 @@ NEXT:
 [ ] ice_img.h
 [ ] ice_mem.h
 [ ] ice_model.h
-[ ] ice_mouse.h
 [ ] ice_net.h
 [ ] ice_physics.h
 [ ] ice_platform.h

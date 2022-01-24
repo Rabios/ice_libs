@@ -201,7 +201,7 @@ double ice_time_sec_to_ms(ice_time_ulong sec);
 
 ================================= Usable #define(s) ===============================
 
-// Define the implementation, This should be #define(d) before including ice_time.h in the code...
+// Define the implementation, This should be #defined before including ice_time.h in the code...
 #define ICE_TIME_IMPL
 
 
