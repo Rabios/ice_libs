@@ -49,7 +49,7 @@ int main(void) {
 // Creates test with a name, This test can be called as name();
 #define ICE_TEST_CREATE(name)
 
-// Creates test with a name but this one extended to allow argument passing, This test can be called as name(int argc, char** argv);
+// Creates test with a name but this one extended to allow argument passing, This test can be called as name(int argc, char **argv);
 #define ICE_TEST_CREATE_EX(name)
 
 // Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU instead!
@@ -112,7 +112,7 @@ You can support or contribute to ice_libs project by possibly one of following t
 /*
 Creates test with a name but this one extended to allow argument passing...
 
-This test can be called as name(argc, argv);
+This test can be called as name(int argc, char **argv);
 */
 #if defined(__cplusplus)
 #  define ICE_TEST_CREATE_EX(name) extern "C" void name(int argc, char **argv)
