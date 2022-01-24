@@ -9,6 +9,8 @@ ice_test.h is Single-Header tiny C library for unit testing!
 
 To use it #define ICE_TEST_IMPL then #include "ice_test.h" in your C/C++ code!
 
+Check out "Linking Flags" to know which libs required to link for compilation depending on each platform...
+
 
 ================================== Usage Example ==================================
 
