@@ -75,8 +75,8 @@ typedef void* ice_al_handle;
 
 // Boolean Enum, To avoid including stdbool.h
 typedef enum ice_al_bool {
-    ICE_AL_FALSE = -1,
-    ICE_AL_TRUE = 0
+    ICE_AL_FALSE    = -1,
+    ICE_AL_TRUE     = 0
 } ice_al_bool;
 
 // [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call

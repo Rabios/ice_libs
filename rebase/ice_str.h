@@ -54,8 +54,8 @@ int main(void) {
 
 // Boolean Enum, To avoid including stdbool.h
 typedef enum ice_str_bool {
-    ICE_STR_FALSE = -1,
-    ICE_STR_TRUE = 0
+    ICE_STR_FALSE   = -1,
+    ICE_STR_TRUE    = 0
 } ice_str_bool;
 
 // Returns string length

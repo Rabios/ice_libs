@@ -68,8 +68,8 @@ int main(void) {
 
 // Boolean Enum, To avoid including stdbool.h
 typedef enum ice_clip_bool {
-    ICE_CLIP_FALSE = -1,
-    ICE_CLIP_TRUE  = 0
+    ICE_CLIP_FALSE  = -1,
+    ICE_CLIP_TRUE   = 0
 } ice_clip_bool;
 
 // [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_clip on Android, This Should be called first before other ice_clip.h functions
