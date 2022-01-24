@@ -26,10 +26,14 @@ testfile2.c:40:6: warning: dereferencing type-punned pointer will break strict-a
    40 |     *(unsigned**)(&F42) = sym;
       |      ^~~~~~~~~~~~~~~~~~
 
+==== ice_ram.h ====
+
+Use megabytes instead of bytes for ice_ram.h (Thus we have to use double type instead...)
+
 ==== ice_str.h ====
 
 1. ice_str_is_one_of_chars/ice_str_has_one_of_chars to indicate if character belongs to collection of chars from string...
-2. Embedded mode option? To use char buffers instead of dynamic memory management...
+2. Embedded mode option? To use stack allocation instead of heap allocation...
 
 ==== ice_batt.h ====
 
@@ -41,7 +45,7 @@ Linux, Palm, Tizen, and Symbian implementations...
 
 ==== ice_math.h ====
 
-Implement these...
+Add these?
 
 ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erf(double n);
 ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erfc(double n);
@@ -57,11 +61,16 @@ ICE_MATH_API double ICE_MATH_CALLCONV ice_math_yn(int b, double n);
 
 ================= CURRENT WIP LIBRARIES =================
 
+ice_fs.h (Complete the lib)
+
 ice_math.h (Complete the lib)
 ice_vecmath.h (Complete the lib)
+
+ice_arr.h (Complete the lib)
+
 ice_steam.h (Complete the lib)
 ice_hashmap.h (Fix the implementation)
-ice_arr.h (Complete the lib)
+
 ice_joy.h
 ice_mouse.h
 ice_kbd.h
