@@ -44,8 +44,8 @@ int main(void) {
 
 // Easing Types
 typedef enum ice_ease_type {
-    ICE_EASE_TYPE_PROGRESS = 1,
-    ICE_EASE_TYPE_PENNER = 4
+    ICE_EASE_TYPE_PROGRESS  = 1,
+    ICE_EASE_TYPE_PENNER    = 4
 } ice_ease_type;
 
 // NOTE: You can use Robert Penner's Easings or Easings that take one value, To use Robert one argc should be 4 and to use Single-Value ones it should be 1 (Arguments Number)
