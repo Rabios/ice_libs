@@ -77,6 +77,12 @@ int main(void) {
 #define ICE_TEST_ASSERT_NOT_INT(a)
 
 
+================================= Usable #define(s) ===============================
+
+// Define the implementation, This should be #defined before including ice_test.h in the code...
+#define ICE_TEST_IMPL
+
+
 ================================= Support ice_libs ================================
 
 ice_test.h is one of libraries that ice_libs project provide...
