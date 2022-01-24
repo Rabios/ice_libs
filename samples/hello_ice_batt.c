@@ -7,12 +7,12 @@
 /* Helper */
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
     /* Struct that contains information about the battery */
-    ice_batt_info info;
+    ice_batt_info batt;
 
     /* Fetch battery information and store the information in the struct */
-    ice_batt_error err = ice_batt_get_status(&info);
+    ice_batt_error err = ice_batt_get_info(&batt);
 
     /* If the function failed to fetch battery information, Trace error then terminate the program */
     if (err != ICE_BATT_ERROR_OK) {
@@ -20,11 +20,11 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    /* Print information we got */
+    /* Print the informations */
     printf("Device has battery: %s\nIs battery charging: %s\nBattery Level: %u\n",
-      (info.exists == ICE_BATT_TRUE) ? "YES" : "NO",
-      (info.charging == ICE_BATT_TRUE) ? "YES" : "NO",
-      info.level);
+      (batt.exists == ICE_BATT_TRUE) ? "YES" : "NO",
+      (batt.charging == ICE_BATT_TRUE) ? "YES" : "NO",
+      batt.level);
 
     return 0;
 }

@@ -1,4 +1,5 @@
 /*
+
 ice_ffi.h, Single-Header Cross-Platform C library for working with shared libs!
 
 
@@ -14,7 +15,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 ================================== Usage Example ==================================
 
 // Define the implementation of the library and include it
-#define ICE_FFI_IMPL 1
+#define ICE_FFI_IMPL
 #include "ice_ffi.h"
 
 #include <stdio.h>
@@ -22,10 +23,15 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
+    // To store result of unloading the shared library/object
     ice_ffi_bool unload_res;
+
+    // Handle for shared library/object
     ice_ffi_handle lib;
-    unsigned (*F42)(void); // function from shared library/object
+
+    // function from shared library/object
+    unsigned (*F42)(void);
     
     // Define path of the shared library/object depending on platform
 #if defined(ICE_FFI_MICROSOFT)

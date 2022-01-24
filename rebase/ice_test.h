@@ -1,4 +1,5 @@
 /*
+
 ice_test.h, Single-Header Cross-Platform tiny C library for unit testing!
 
 
@@ -21,13 +22,13 @@ To use it #define ICE_TEST_IMPL then #include "ice_test.h" in your C/C++ code!
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 // Create a Test
-ICE_TEST_CREATE_EX(test1) {
+ICE_TEST_CREATE(test1) {
     ICE_TEST_ASSERT_TRUE(sizeof(void*) == 8);
 }
 
-int main(int argc, char **argv) {
+int main(void) {
     trace("main", "Testing if program is 64-bit...");
-    test1(argc, argv); // test!
+    test1(); // test!
     trace("main", "TEST SUCCESS!");
 
     return 0;
@@ -99,10 +100,6 @@ You can support or contribute to ice_libs project by possibly one of following t
 
 #include <assert.h>
 
-#if defined(_MSC_VER)
-#  pragma comment(lib, "msvcrt.lib")
-#endif
-
 /* Creates test with a name, This test can be called as name(); */
 #if defined(__cplusplus)
 #  define ICE_TEST_CREATE(name) extern "C" void name(void)
@@ -116,9 +113,9 @@ Creates test with a name but this one extended to allow argument passing...
 This test can be called as name(argc, argv);
 */
 #if defined(__cplusplus)
-#  define ICE_TEST_CREATE_EX(name) extern "C" void name(int argc, char** argv)
+#  define ICE_TEST_CREATE_EX(name) extern "C" void name(int argc, char **argv)
 #else
-#  define ICE_TEST_CREATE_EX(name) void name(int argc, char** argv)
+#  define ICE_TEST_CREATE_EX(name) void name(int argc, char **argv)
 #endif
 
 /*
@@ -130,6 +127,8 @@ Tests equality between 2 variables, For strings use ICE_TEST_ASSERT_STR_EQU inst
 #define ICE_TEST_ASSERT_STR_EQU(a, b) {         \
     unsigned long lenstr1, lenstr2, matches, i; \
     lenstr1 = lenstr2 = matches = 0;            \
+                                                \
+    assert((a != 0) && (b != 0));               \
                                                 \
     while (a[lenstr1] != 0) lenstr1++;          \
     while (b[lenstr2] != 0) lenstr2++;          \

@@ -1,7 +1,6 @@
 local ffi = require("ffi")
 local ffi_load = ffi.load
 local ffi_cdef = ffi.cdef
-local _setmetatable = setmetatable
 
 ffi_cdef([[
 /* ============================== Data Types ============================== */
@@ -30,5 +29,4 @@ ice_clip_bool ice_clip_set(const char *text);
 ice_clip_bool ice_clip_clear(void);
 ]])
 
-local lib = ffi_load("ice_clip")
-_setmetatable(_G, { __index = lib })
+return ffi_load("ice_clip")

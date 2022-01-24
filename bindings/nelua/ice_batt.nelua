@@ -2,30 +2,26 @@
   cdefine "ICE_BATT_IMPL"
   cinclude "ice_batt.h"
   
-  cemit "#if defined(ICE_BATT_MICROSOFT)"
+  if ccinfo.is_windows then
     if not ccinfo.is_msc then
       linklib "kernel32"
     end
-  cemit "#elif defined(ICE_BATT_OSX)"
+  elseif ccinfo.is_macos then
     cflags "-framework Foundation -framework CoreFoundation -framework IOKit"
-  cemit "#elif defined(ICE_BATT_IOS)"
+  elseif ccinfo.is_ios then
     cflags "-framework Foundation -framework UIKit"
-  cemit "#elif defined(ICE_BATT_UNIX)"
-    if ccinfo.is_linux then
-      linklib "c"
-    end
-  cemit "#elif defined(ICE_BATT_BSD)"
+  elseif ccinfo.is_linux or ccinfo.is_bsd then
     linklib "c"
-  cemit "#elif defined(ICE_BATT_BB10)"
+  elseif ccinfo.is_bb10 then
     linklib "bbdevice"
-  cemit "#elif defined(ICE_BATT_SWITCH)"
+  elseif ccinfo.is_switch then
     linklib "nx"
-  cemit "#elif defined(ICE_BATT_PSP)"
+  elseif ccinfo.is_psp then
     linklib "psppower"
     linklib "psppower_driver"
-  cemit "#elif defined(ICE_BATT_PSVITA)"
+  elseif ccinfo.is_psvita then
     linklib "ScePower_stub"
-  cemit "#endif"
+  end
 ]]
 
 -- ============================== Data Types ============================== --
@@ -52,10 +48,10 @@ global ice_batt_error: type <cimport, nodecl, using> = @enum(cint) {
 
 -- ============================== Functions ============================== --
 
-## cemit "#if defined(ICE_BATT_ANDROID)"
+## if ccinfo.is_android then
 -- [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
 global function ice_batt_use_native_activity(activity: pointer): void <cimport, nodecl> end
-## cemit "#endif"
+## end
 
 -- Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure!
 global function ice_batt_get_info(batt_info: *ice_batt_info): ice_batt_error <cimport, nodecl> end

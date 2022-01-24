@@ -7,10 +7,15 @@
 /* Helper */
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
+    /* To store result of unloading the shared library/object */
     ice_ffi_bool unload_res;
+
+    /* Handle for shared library/object */
     ice_ffi_handle lib;
-    unsigned (*F42)(void); /* function from shared library/object */
+
+    /* function from shared library/object */
+    unsigned (*F42)(void);
     
     /* Define path of the shared library/object depending on platform */
 #if defined(ICE_FFI_MICROSOFT)

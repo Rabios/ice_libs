@@ -7,12 +7,12 @@
 /* Helper */
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
     /* Struct that contains CPU information */
     ice_cpu_info cpu;
     
     /* Get CPU information */
-    ice_cpu_bool res = ice_cpu_get_status(&cpu);
+    ice_cpu_bool res = ice_cpu_get_info(&cpu);
     
     /* If the function failed to retrieve CPU information, Trace error then terminate the program */
     if (res == ICE_CPU_FALSE) {

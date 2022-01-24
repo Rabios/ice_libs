@@ -7,12 +7,12 @@
 /* Helper */
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char** argv) {
+int main(void) {
     ice_al_bool res;
 
     /* OpenAL device and OpenAL device name */
-    char* device_name;
-    ALCdevice* dev;
+    char *device_name;
+    ALCdevice *dev;
 
     /* Define the path of the OpenAL shared library/object depending on the platform (NOTE: You can also use OpenAL-soft) */
 #if defined(ICE_AL_MICROSOFT)
@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
         return -1;
     }
     
-    /* Get the default OpenAL audio device and initialize */
+    /* Get the default OpenAL audio device and initialize it */
     device_name = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
     dev = alcOpenDevice(device_name);
     

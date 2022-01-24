@@ -1,7 +1,6 @@
 local ffi = require("ffi")
 local ffi_load = ffi.load
 local ffi_cdef = ffi.cdef
-local _setmetatable = setmetatable
 
 ffi_cdef([[
 /* ============================== Data Types ============================== */
@@ -90,5 +89,4 @@ void ice_str_free_bytes(int *bytes);
 void ice_str_arr_free(char **arr, unsigned long arrlen);
 ]])
 
-local lib = ffi_load("ice_str")
-_setmetatable(_G, { __index = lib })
+return ffi_load("ice_str")

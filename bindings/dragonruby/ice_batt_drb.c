@@ -67,7 +67,7 @@ static ice_batt_info *drb_ffi__ZTSP13ice_batt_info_FromRuby(mrb_state *state, mr
         return 0;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_batt_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_BATT_INFO_PTR");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTSP13ice_batt_info);
     return ((struct drb_foreign_object_ZTSP13ice_batt_info *)DATA_PTR(self))->value;
 }
@@ -77,7 +77,7 @@ static mrb_value drb_ffi__ZTSP13ice_batt_info_ToRuby(mrb_state *state, ice_batt_
     ptr->kind = drb_foreign_object_kind_pointer;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_batt_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_BATT_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTSP13ice_batt_info);
     return mrb_obj_value(rdata);
 }
@@ -85,11 +85,11 @@ struct drb_foreign_object_ZTS13ice_batt_info {
     drb_foreign_object_kind kind;
     ice_batt_info value;
 };
-static mrb_data_type ForeignObjectType_ZTS13ice_batt_info = {"ice_batt_info", drb_free_foreign_object_indirect};
+static mrb_data_type ForeignObjectType_ZTS13ice_batt_info = {"ICE_BATT_INFO", drb_free_foreign_object_indirect};
 static ice_batt_info drb_ffi__ZTS13ice_batt_info_FromRuby(mrb_state *state, mrb_value self) {
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_batt_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_BATT_INFO");
     drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTS13ice_batt_info);
     return ((struct drb_foreign_object_ZTS13ice_batt_info *)DATA_PTR(self))->value;
 }
@@ -99,7 +99,7 @@ static mrb_value drb_ffi__ZTS13ice_batt_info_ToRuby(mrb_state *state, ice_batt_i
     ptr->kind = drb_foreign_object_kind_struct;
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_batt_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_BATT_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS13ice_batt_info);
     return mrb_obj_value(rdata);
 }
@@ -124,7 +124,7 @@ static mrb_value drb_ffi__ZTSP13ice_batt_info_New(mrb_state *mrb, mrb_value self
     ptr->should_free = 1;
     struct RClass *FFI = mrb_module_get_f(mrb, "FFI");
     struct RClass *module = mrb_module_get_under_f(mrb, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(mrb, module, "Ice_batt_infoPointer");
+    struct RClass *klass = mrb_class_get_under_f(mrb, module, "ICE_BATT_INFO_PTR");
     struct RData *rdata = mrb_data_object_alloc_f(mrb, klass, ptr, &ForeignObjectType_ZTSP13ice_batt_info);
     return mrb_obj_value(rdata);
 }
@@ -157,7 +157,7 @@ static mrb_value drb_ffi__ZTS13ice_batt_info_New(mrb_state *state, mrb_value sel
     struct drb_foreign_object_ZTS13ice_batt_info *ptr = calloc(1, sizeof(struct drb_foreign_object_ZTS13ice_batt_info *));
     struct RClass *FFI = mrb_module_get_f(state, "FFI");
     struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
-    struct RClass *klass = mrb_class_get_under_f(state, module, "Ice_batt_info");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_BATT_INFO");
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS13ice_batt_info);
     return mrb_obj_value(rdata);
 }
@@ -215,20 +215,20 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     struct RClass *module = mrb_define_module_under_f(state, FFI, "CExt");
     struct RClass *object_class = state->object_class;
     mrb_define_module_function_f(state, module, "ice_batt_get_info", drb_ffi_ice_batt_get_info_Binding, MRB_ARGS_REQ(1));
-    struct RClass *Ice_batt_infoPointerClass = mrb_define_class_under_f(state, module, "Ice_batt_infoPointer", object_class);
-    mrb_define_class_method_f(state, Ice_batt_infoPointerClass, "new", drb_ffi__ZTSP13ice_batt_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_batt_infoPointerClass, "value", drb_ffi__ZTSP13ice_batt_info_GetValue, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_batt_infoPointerClass, "[]", drb_ffi__ZTSP13ice_batt_info_GetAt, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_batt_infoPointerClass, "[]=", drb_ffi__ZTSP13ice_batt_info_SetAt, MRB_ARGS_REQ(2));
-    mrb_define_method_f(state, Ice_batt_infoPointerClass, "nil?", drb_ffi__ZTSP13ice_batt_info_IsNil, MRB_ARGS_REQ(0));
-    struct RClass *Ice_batt_infoClass = mrb_define_class_under_f(state, module, "Ice_batt_info", object_class);
-    mrb_define_class_method_f(state, Ice_batt_infoClass, "new", drb_ffi__ZTS13ice_batt_info_New, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_batt_infoClass, "exists", drb_ffi__ZTS13ice_batt_info_exists_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_batt_infoClass, "exists=", drb_ffi__ZTS13ice_batt_info_exists_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_batt_infoClass, "charging", drb_ffi__ZTS13ice_batt_info_charging_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_batt_infoClass, "charging=", drb_ffi__ZTS13ice_batt_info_charging_Set, MRB_ARGS_REQ(1));
-    mrb_define_method_f(state, Ice_batt_infoClass, "level", drb_ffi__ZTS13ice_batt_info_level_Get, MRB_ARGS_REQ(0));
-    mrb_define_method_f(state, Ice_batt_infoClass, "level=", drb_ffi__ZTS13ice_batt_info_level_Set, MRB_ARGS_REQ(1));
+    struct RClass *ice_batt_info_ptr_class = mrb_define_class_under_f(state, module, "ICE_BATT_INFO_PTR", object_class);
+    mrb_define_class_method_f(state, ice_batt_info_ptr_class, "new", drb_ffi__ZTSP13ice_batt_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_batt_info_ptr_class, "value", drb_ffi__ZTSP13ice_batt_info_GetValue, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_batt_info_ptr_class, "[]", drb_ffi__ZTSP13ice_batt_info_GetAt, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_batt_info_ptr_class, "[]=", drb_ffi__ZTSP13ice_batt_info_SetAt, MRB_ARGS_REQ(2));
+    mrb_define_method_f(state, ice_batt_info_ptr_class, "nil?", drb_ffi__ZTSP13ice_batt_info_IsNil, MRB_ARGS_REQ(0));
+    struct RClass *ice_batt_info_class = mrb_define_class_under_f(state, module, "ICE_BATT_INFO", object_class);
+    mrb_define_class_method_f(state, ice_batt_info_class, "new", drb_ffi__ZTS13ice_batt_info_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_batt_info_class, "exists", drb_ffi__ZTS13ice_batt_info_exists_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_batt_info_class, "exists=", drb_ffi__ZTS13ice_batt_info_exists_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_batt_info_class, "charging", drb_ffi__ZTS13ice_batt_info_charging_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_batt_info_class, "charging=", drb_ffi__ZTS13ice_batt_info_charging_Set, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_batt_info_class, "level", drb_ffi__ZTS13ice_batt_info_level_Get, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_batt_info_class, "level=", drb_ffi__ZTS13ice_batt_info_level_Set, MRB_ARGS_REQ(1));
 }
 static int drb_ffi_init_indirect_functions(void *(*lookup)(const char *fnname)) {
   drb_symbol_lookup = lookup;

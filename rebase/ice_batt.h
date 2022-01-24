@@ -1,4 +1,5 @@
 /*
+
 ice_batt.h, Single-Header Cross-Platform C library to get battery info!
 
 
@@ -22,8 +23,8 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
-    // Struct that contains battery information
+int main(void) {
+    // Struct that contains information about the battery
     ice_batt_info batt;
 
     // Fetch battery information and store the information in the struct
@@ -35,7 +36,7 @@ int main(int argc, char **argv) {
         return -1;
     }
 
-    // Print information we got
+    // Print the informations
     printf("Device has battery: %s\nIs battery charging: %s\nBattery Level: %u\n",
       (batt.exists == ICE_BATT_TRUE) ? "YES" : "NO",
       (batt.charging == ICE_BATT_TRUE) ? "YES" : "NO",
@@ -373,12 +374,11 @@ typedef enum bool { false, true } bool;
 #elif defined(ICE_BATT_BB10)
 #  include <bb/device/BatteryInfo>
 #  include <bb/device/BatteryChargingState>
-using namespace bb::device;
 #elif defined(ICE_BATT_WEB)
 #  include <emscripten/html5.h>
 #elif defined(ICE_BATT_UWP)
-using namespace Windows::Devices::Power;
-using namespace Windows::System::Power;
+#  include <windows.devices.power.h>
+#  include <windows.system.power.h>
 #elif defined(ICE_BATT_MICROSOFT)
 #  if defined(_MSC_VER)
 #    include <windows.h>
@@ -436,7 +436,7 @@ ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(void *activity)
 #endif
 
 /* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure! */
-ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_status(ice_batt_info *batt_info) {
+ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_info(ice_batt_info *batt_info) {
     ice_batt_error error = ICE_BATT_ERROR_OK;
 #if defined(ICE_BATT_ANDROID)
     JNIEnv *env = ice_batt_native_activity->env;

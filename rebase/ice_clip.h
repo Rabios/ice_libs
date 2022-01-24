@@ -1,4 +1,5 @@
 /*
+
 ice_clip.h, Single-Header Cross-Platform library to work with Clipboard!
 
 
@@ -22,7 +23,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
     // To store result of called functions
     ice_clip_bool res;
     
@@ -32,13 +33,12 @@ int main(int argc, char **argv) {
     // Retrieve the clipboard text
     const char *text = ice_clip_get();
 
-    // If the function failed to retrieve Clipboard text, Trace error then terminate the program
+    // If the function failed to retrieve Clipboard text or Clipboard has no text then trace log a note, Else print the retrieved text...
     if (text == NULL) {
-        trace("ice_clip_get", "ERROR: failed to retrieve Clipboard text!");
-        return -1;
+        trace("ice_clip_get", "LOG: failed to retrieve Clipboard text, Maybe the Clipboard does not contain text?");
+    } else {
+        printf("Text from the Clipboard: %s\n", text);
     }
-    
-    printf("Text from the Clipboard: %s\n", text);
 
     // Clear the Clipboard
     res = ice_clip_clear();
@@ -54,7 +54,7 @@ int main(int argc, char **argv) {
 
     // If the function failed to copy text to the Clipboard, Trace error then terminate the program
     if (res == ICE_CLIP_FALSE) {
-        printf("ERROR: Failed to copy text to Clipboard!\n");
+        trace("ice_clip_set", "ERROR: failed to copy text to Clipboard!");
         return -1;
     }
     
@@ -172,6 +172,13 @@ You can support or contribute to ice_libs project by possibly one of following t
 
 #if !defined(ICE_CLIP_H)
 #define ICE_CLIP_H 1
+
+/* Disable security warnings for MSVC compiler to not force usage of secure versions of various C functions (Which requires C11) */
+#if defined(_MSC_VER)
+#  define _CRT_SECURE_NO_DEPRECATE 1
+#  define _CRT_SECURE_NO_WARNINGS 1
+#  pragma warning(disable:4996)
+#endif
 
 /* Allow to use calling conventions if desired... */
 #if defined(ICE_CLIP_VECTORCALL)
@@ -354,7 +361,6 @@ typedef enum bool { false, true } bool;
 #  include <QtCore/QString>
 #  include <QtCore/QByteArray>
 #  include <bb/system/Clipboard>
-using namespace bb::system;
 #elif defined(ICE_CLIP_BEOS)
 #  include <be/app/Clipboard.h>
 #  include <string.h>
@@ -364,7 +370,6 @@ using namespace bb::system;
 #    include <windows.h>
 #    pragma comment(lib, "kernel32.lib")
 #    pragma comment(lib, "user32.lib")
-#    pragma comment(lib, "msvcrt.lib")
 #  else
 #    include <windef.h>
 #    include <winbase.h>
@@ -375,8 +380,8 @@ using namespace bb::system;
 #  include <wchar.h>
 #  include <iostream>
 #  include <string>
-using namespace Platform;
-using namespace Windows::ApplicationModel::DataTransfer;
+#  include <windows.applicationmodel.datatransfer.h>
+#  include <vccorlib.h>
 #endif
 
 /* Check if ARC enabled or not... */
@@ -599,7 +604,6 @@ failure:
     
 deinit:
     close_res = CloseClipboard();
-    
     if (close_res == 0) return 0;
 
     return res;
@@ -627,7 +631,6 @@ deinit:
     delete datapackview;
 
     return 0;
-
 #endif
 }
 
@@ -765,6 +768,7 @@ goto failure:
 failure:
     delete txt;
     delete clipboard;
+
     return ICE_CLIP_FALSE;
 
 #elif defined(ICE_CLIP_BEOS)
@@ -790,6 +794,7 @@ failure:
 
 failure:
     be_clipboard->Unlock();
+
     return ICE_CLIP_FALSE;
 
 #elif defined(ICE_CLIP_MICROSOFT)
@@ -797,6 +802,8 @@ failure:
     char *buffer;
     int res;
     unsigned alloc_size = strlen(text) + 1;
+    
+    if (ice_clip_clear() == ICE_CLIP_FALSE) return ICE_CLIP_FALSE;
 
     res = OpenClipboard(ice_clip_hwnd);
     if (res == 0) return ICE_CLIP_FALSE;
@@ -902,7 +909,6 @@ ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_clear(void) {
     bb::system::Clipboard clipboard;
     
     res = clipboard.clear();
-
     delete clipboard;
 
     return (res == true) ? ICE_CLIP_TRUE : ICE_CLIP_FALSE;
@@ -915,7 +921,6 @@ ICE_CLIP_API ice_clip_bool ICE_CLIP_CALLCONV ice_clip_clear(void) {
     if (r1 == false) return ICE_CLIP_FALSE;
     
     r2 = be_clipboard->Clear();
-    
     be_clipboard->Unlock();
 
     return (r2 != 0) ? ICE_CLIP_FALSE : ICE_CLIP_TRUE;

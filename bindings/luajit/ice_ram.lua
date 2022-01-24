@@ -1,7 +1,6 @@
 local ffi = require("ffi")
 local ffi_load = ffi.load
 local ffi_cdef = ffi.cdef
-local _setmetatable = setmetatable
 
 ffi_cdef([[
 /* ============================== Data Types ============================== */
@@ -20,9 +19,8 @@ typedef struct ice_ram_info { ice_ram_bytes free, used, total; } ice_ram_info;
     
 /* ============================== Functions ============================== */
     
-/* Retrives info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
+/* Retrieves info about RAM (free, used, total) in bytes and stores info into ice_ram_info struct by pointing to, Returns ICE_RAM_TRUE on success or ICE_RAM_FALSE on failure */
 ice_ram_bool ice_ram_get_info(ice_ram_info *ram_info);
 ]])
 
-local lib = ffi_load("ice_ram")
-_setmetatable(_G, { __index = lib })
+return ffi_load("ice_ram")

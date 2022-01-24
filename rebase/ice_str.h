@@ -1,4 +1,5 @@
 /*
+
 ice_str.h, Single-Header Cross-Platform C library for working with Strings!
 
 
@@ -24,7 +25,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
     // Create a string repeated for multiple times
     char *haha = ice_str_dup("HA", 8); // HAHAHAHAHAHAHAHA
 
@@ -412,15 +413,13 @@ ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char **arr, unsigned long arr
 
 #if !defined(ICE_STR_CUSTOM_MEMORY_ALLOCATORS)
 #  include <stdlib.h>
-#  if defined(ICE_STR_MICROSOFT) && defined(_MSC_VER)
-#    pragma comment(lib, "msvcrt.lib")
-#  endif
 #endif
 
 /* Returns string length */
 ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_len(const char *str) {
     unsigned long res = 0;
-    while (str[res] != 0) res++;   
+    if (str == 0) return 0;
+    while (str[res] != 0) res++; 
     return res;
 }
 

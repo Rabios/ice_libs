@@ -1,0 +1,23 @@
+require "ice_cpu"
+require "string"
+
+local function main(): cint
+  -- Struct that contains CPU information
+  local cpu: ice_cpu_info <noinit>
+
+  -- Get CPU information
+  local res: ice_cpu_bool = ice_cpu_get_info(&cpu)
+  
+  -- If the function failed to retrieve CPU information, Trace error then terminate the program
+  if (res == ICE_CPU_FALSE) then
+    print("ERROR: failed to retrieve CPU information!")
+    return -1
+  end
+
+  -- Print the informations
+  print("CPU Name: " .. cpu.name .. "\nCPU Cores: " .. cpu.cores)
+
+  return 0
+end
+
+return main()

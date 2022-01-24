@@ -1,7 +1,6 @@
 local ffi = require("ffi")
 local ffi_load = ffi.load
 local ffi_cdef = ffi.cdef
-local _setmetatable = setmetatable
 
 ffi_cdef([[
 /* ============================== Data Types ============================== */
@@ -20,9 +19,8 @@ typedef struct ice_cpu_info {
 
 /* ============================== Functions ============================== */
 
-/* Retrives info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
+/* Retreves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
 ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 ]])
 
-local lib = ffi_load("ice_cpu")
-_setmetatable(_G, { __index = lib })
+return ffi_load("ice_cpu")

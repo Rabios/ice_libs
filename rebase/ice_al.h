@@ -1,4 +1,5 @@
 /*
+
 ice_al.h, Single-Header Cross-Platform C library for working with OpenAL!
 
 
@@ -22,12 +23,12 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char** argv) {
+int main(void) {
     ice_al_bool res;
 
     // OpenAL device and OpenAL device name
-    char* device_name;
-    ALCdevice* dev;
+    char *device_name;
+    ALCdevice *dev;
 
     // Define the path of the OpenAL shared library/object depending on the platform (NOTE: You can also use OpenAL-soft)
 #if defined(ICE_AL_MICROSOFT)
@@ -45,7 +46,7 @@ int main(int argc, char** argv) {
         return -1;
     }
     
-    // Get the default OpenAL audio device and initialize
+    // Get the default OpenAL audio device and initialize it
     device_name = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
     dev = alcOpenDevice(device_name);
     
@@ -273,7 +274,7 @@ extern "C" {
 
 /* [INTERNAL] Macro to ease loading symbols */
 #define ICE_AL_LOAD_PROC(sym)                       \
-    sym = (PFN_##sym) ice_al_proc(#sym);            \
+    *(PFN_##sym**)(&sym) = ice_al_proc(#sym);       \
 
 /* [INTERNAL] Macro to ease unloading symbols */
 #define ICE_AL_UNLOAD_PROC(sym) sym = 0;
@@ -410,99 +411,99 @@ typedef void ALCvoid;
 
 /* ============================= Functions (OpenAL API) ============================= */
 
-ice_al_def_func(void, alDopplerFactor, (ALfloat value));
-ice_al_def_func(void, alSpeedOfSound, (ALfloat value));
-ice_al_def_func(void, alDistanceModel, (ALenum distanceModel));
-ice_al_def_func(void, alEnable, (ALenum capability));
-ice_al_def_func(void, alDisable, (ALenum capability));
-ice_al_def_func(ALboolean, alIsEnabled, (ALenum capability));
-ice_al_def_func(const ALchar *, alGetString, (ALenum param));
-ice_al_def_func(void, alGetBooleanv, (ALenum param, ALboolean *values));
-ice_al_def_func(void, alGetIntegerv, (ALenum param, ALint *values));
-ice_al_def_func(void, alGetFloatv, (ALenum param, ALfloat *values));
-ice_al_def_func(void, alGetDoublev, (ALenum param, ALdouble *values));
-ice_al_def_func(ALboolean, alGetBoolean, (ALenum param));
-ice_al_def_func(ALint, alGetInteger, (ALenum param));
-ice_al_def_func(ALfloat, alGetFloat, (ALenum param));
-ice_al_def_func(ALdouble, alGetDouble, (ALenum param));
-ice_al_def_func(ALenum, alGetError, (void));
-ice_al_def_func(ALboolean, alIsExtensionPresent, (const ALchar *extname));
-ice_al_def_func(void*, alGetProcAddress, (const ALchar *fname));
-ice_al_def_func(ALenum, alGetEnumValue, (const ALchar *ename));
-ice_al_def_func(void, alListenerf, (ALenum param, ALfloat value));
-ice_al_def_func(void, alListener3f, (ALenum param, ALfloat value1, ALfloat value2, ALfloat value3));
-ice_al_def_func(void, alListenerfv, (ALenum param, const ALfloat *values));
-ice_al_def_func(void, alListeneri, (ALenum param, ALint value));
-ice_al_def_func(void, alListener3i, (ALenum param, ALint value1, ALint value2, ALint value3));
-ice_al_def_func(void, alListeneriv, (ALenum param, const ALint *values));
-ice_al_def_func(void, alGetListenerf, (ALenum param, ALfloat *value));
-ice_al_def_func(void, alGetListener3f, (ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3));
-ice_al_def_func(void, alGetListenerfv, (ALenum param, ALfloat *values));
-ice_al_def_func(void, alGetListeneri, (ALenum param, ALint *value));
-ice_al_def_func(void, alGetListener3i, (ALenum param, ALint *value1, ALint *value2, ALint *value3));
-ice_al_def_func(void, alGetListeneriv, (ALenum param, ALint *values));
-ice_al_def_func(void, alGenSources, (ALsizei n, ALuint *sources));
-ice_al_def_func(void, alDeleteSources, (ALsizei n, const ALuint *sources));
-ice_al_def_func(ALboolean, alIsSource, (ALuint source));
-ice_al_def_func(void, alSourcef, (ALuint source, ALenum param, ALfloat value));
-ice_al_def_func(void, alSource3f, (ALuint source, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3));
-ice_al_def_func(void, alSourcefv, (ALuint source, ALenum param, const ALfloat *values));
-ice_al_def_func(void, alSourcei, (ALuint source, ALenum param, ALint value));
-ice_al_def_func(void, alSource3i, (ALuint source, ALenum param, ALint value1, ALint value2, ALint value3));
-ice_al_def_func(void, alSourceiv, (ALuint source, ALenum param, const ALint *values));
-ice_al_def_func(void, alGetSourcef, (ALuint source, ALenum param, ALfloat *value));
-ice_al_def_func(void, alGetSource3f, (ALuint source, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3));
-ice_al_def_func(void, alGetSourcefv, (ALuint source, ALenum param, ALfloat *values));
-ice_al_def_func(void, alGetSourcei, (ALuint source,  ALenum param, ALint *value));
-ice_al_def_func(void, alGetSource3i, (ALuint source, ALenum param, ALint *value1, ALint *value2, ALint *value3));
-ice_al_def_func(void, alGetSourceiv, (ALuint source,  ALenum param, ALint *values));
-ice_al_def_func(void, alSourcePlayv, (ALsizei n, const ALuint *sources));
-ice_al_def_func(void, alSourceStopv, (ALsizei n, const ALuint *sources));
-ice_al_def_func(void, alSourceRewindv, (ALsizei n, const ALuint *sources));
-ice_al_def_func(void, alSourcePausev, (ALsizei n, const ALuint *sources));
-ice_al_def_func(void, alSourcePlay, (ALuint source));
-ice_al_def_func(void, alSourceStop, (ALuint source));
-ice_al_def_func(void, alSourceRewind, (ALuint source));
-ice_al_def_func(void, alSourcePause, (ALuint source));
-ice_al_def_func(void, alSourceQueueBuffers, (ALuint source, ALsizei nb, const ALuint *buffers));
-ice_al_def_func(void, alSourceUnqueueBuffers, (ALuint source, ALsizei nb, ALuint *buffers));
-ice_al_def_func(void, alGenBuffers, (ALsizei n, ALuint *buffers));
-ice_al_def_func(void, alDeleteBuffers, (ALsizei n, const ALuint *buffers));
-ice_al_def_func(ALboolean, alIsBuffer, (ALuint buffer));
-ice_al_def_func(void, alBufferData, (ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq));
-ice_al_def_func(void, alBufferf, (ALuint buffer, ALenum param, ALfloat value));
-ice_al_def_func(void, alBuffer3f, (ALuint buffer, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3));
-ice_al_def_func(void, alBufferfv, (ALuint buffer, ALenum param, const ALfloat *values));
-ice_al_def_func(void, alBufferi, (ALuint buffer, ALenum param, ALint value));
-ice_al_def_func(void, alBuffer3i, (ALuint buffer, ALenum param, ALint value1, ALint value2, ALint value3));
-ice_al_def_func(void, alBufferiv, (ALuint buffer, ALenum param, const ALint *values));
-ice_al_def_func(void, alGetBufferf, (ALuint buffer, ALenum param, ALfloat *value));
-ice_al_def_func(void, alGetBuffer3f, (ALuint buffer, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3));
-ice_al_def_func(void, alGetBufferfv, (ALuint buffer, ALenum param, ALfloat *values));
-ice_al_def_func(void, alGetBufferi, (ALuint buffer, ALenum param, ALint *value));
-ice_al_def_func(void, alGetBuffer3i, (ALuint buffer, ALenum param, ALint *value1, ALint *value2, ALint *value3));
-ice_al_def_func(void, alGetBufferiv, (ALuint buffer, ALenum param, ALint *values));
+ice_al_def_func(void, alDopplerFactor, (ALfloat value))
+ice_al_def_func(void, alSpeedOfSound, (ALfloat value))
+ice_al_def_func(void, alDistanceModel, (ALenum distanceModel))
+ice_al_def_func(void, alEnable, (ALenum capability))
+ice_al_def_func(void, alDisable, (ALenum capability))
+ice_al_def_func(ALboolean, alIsEnabled, (ALenum capability))
+ice_al_def_func(const ALchar *, alGetString, (ALenum param))
+ice_al_def_func(void, alGetBooleanv, (ALenum param, ALboolean *values))
+ice_al_def_func(void, alGetIntegerv, (ALenum param, ALint *values))
+ice_al_def_func(void, alGetFloatv, (ALenum param, ALfloat *values))
+ice_al_def_func(void, alGetDoublev, (ALenum param, ALdouble *values))
+ice_al_def_func(ALboolean, alGetBoolean, (ALenum param))
+ice_al_def_func(ALint, alGetInteger, (ALenum param))
+ice_al_def_func(ALfloat, alGetFloat, (ALenum param))
+ice_al_def_func(ALdouble, alGetDouble, (ALenum param))
+ice_al_def_func(ALenum, alGetError, (void))
+ice_al_def_func(ALboolean, alIsExtensionPresent, (const ALchar *extname))
+ice_al_def_func(void*, alGetProcAddress, (const ALchar *fname))
+ice_al_def_func(ALenum, alGetEnumValue, (const ALchar *ename))
+ice_al_def_func(void, alListenerf, (ALenum param, ALfloat value))
+ice_al_def_func(void, alListener3f, (ALenum param, ALfloat value1, ALfloat value2, ALfloat value3))
+ice_al_def_func(void, alListenerfv, (ALenum param, const ALfloat *values))
+ice_al_def_func(void, alListeneri, (ALenum param, ALint value))
+ice_al_def_func(void, alListener3i, (ALenum param, ALint value1, ALint value2, ALint value3))
+ice_al_def_func(void, alListeneriv, (ALenum param, const ALint *values))
+ice_al_def_func(void, alGetListenerf, (ALenum param, ALfloat *value))
+ice_al_def_func(void, alGetListener3f, (ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3))
+ice_al_def_func(void, alGetListenerfv, (ALenum param, ALfloat *values))
+ice_al_def_func(void, alGetListeneri, (ALenum param, ALint *value))
+ice_al_def_func(void, alGetListener3i, (ALenum param, ALint *value1, ALint *value2, ALint *value3))
+ice_al_def_func(void, alGetListeneriv, (ALenum param, ALint *values))
+ice_al_def_func(void, alGenSources, (ALsizei n, ALuint *sources))
+ice_al_def_func(void, alDeleteSources, (ALsizei n, const ALuint *sources))
+ice_al_def_func(ALboolean, alIsSource, (ALuint source))
+ice_al_def_func(void, alSourcef, (ALuint source, ALenum param, ALfloat value))
+ice_al_def_func(void, alSource3f, (ALuint source, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3))
+ice_al_def_func(void, alSourcefv, (ALuint source, ALenum param, const ALfloat *values))
+ice_al_def_func(void, alSourcei, (ALuint source, ALenum param, ALint value))
+ice_al_def_func(void, alSource3i, (ALuint source, ALenum param, ALint value1, ALint value2, ALint value3))
+ice_al_def_func(void, alSourceiv, (ALuint source, ALenum param, const ALint *values))
+ice_al_def_func(void, alGetSourcef, (ALuint source, ALenum param, ALfloat *value))
+ice_al_def_func(void, alGetSource3f, (ALuint source, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3))
+ice_al_def_func(void, alGetSourcefv, (ALuint source, ALenum param, ALfloat *values))
+ice_al_def_func(void, alGetSourcei, (ALuint source,  ALenum param, ALint *value))
+ice_al_def_func(void, alGetSource3i, (ALuint source, ALenum param, ALint *value1, ALint *value2, ALint *value3))
+ice_al_def_func(void, alGetSourceiv, (ALuint source,  ALenum param, ALint *values))
+ice_al_def_func(void, alSourcePlayv, (ALsizei n, const ALuint *sources))
+ice_al_def_func(void, alSourceStopv, (ALsizei n, const ALuint *sources))
+ice_al_def_func(void, alSourceRewindv, (ALsizei n, const ALuint *sources))
+ice_al_def_func(void, alSourcePausev, (ALsizei n, const ALuint *sources))
+ice_al_def_func(void, alSourcePlay, (ALuint source))
+ice_al_def_func(void, alSourceStop, (ALuint source))
+ice_al_def_func(void, alSourceRewind, (ALuint source))
+ice_al_def_func(void, alSourcePause, (ALuint source))
+ice_al_def_func(void, alSourceQueueBuffers, (ALuint source, ALsizei nb, const ALuint *buffers))
+ice_al_def_func(void, alSourceUnqueueBuffers, (ALuint source, ALsizei nb, ALuint *buffers))
+ice_al_def_func(void, alGenBuffers, (ALsizei n, ALuint *buffers))
+ice_al_def_func(void, alDeleteBuffers, (ALsizei n, const ALuint *buffers))
+ice_al_def_func(ALboolean, alIsBuffer, (ALuint buffer))
+ice_al_def_func(void, alBufferData, (ALuint buffer, ALenum format, const ALvoid *data, ALsizei size, ALsizei freq))
+ice_al_def_func(void, alBufferf, (ALuint buffer, ALenum param, ALfloat value))
+ice_al_def_func(void, alBuffer3f, (ALuint buffer, ALenum param, ALfloat value1, ALfloat value2, ALfloat value3))
+ice_al_def_func(void, alBufferfv, (ALuint buffer, ALenum param, const ALfloat *values))
+ice_al_def_func(void, alBufferi, (ALuint buffer, ALenum param, ALint value))
+ice_al_def_func(void, alBuffer3i, (ALuint buffer, ALenum param, ALint value1, ALint value2, ALint value3))
+ice_al_def_func(void, alBufferiv, (ALuint buffer, ALenum param, const ALint *values))
+ice_al_def_func(void, alGetBufferf, (ALuint buffer, ALenum param, ALfloat *value))
+ice_al_def_func(void, alGetBuffer3f, (ALuint buffer, ALenum param, ALfloat *value1, ALfloat *value2, ALfloat *value3))
+ice_al_def_func(void, alGetBufferfv, (ALuint buffer, ALenum param, ALfloat *values))
+ice_al_def_func(void, alGetBufferi, (ALuint buffer, ALenum param, ALint *value))
+ice_al_def_func(void, alGetBuffer3i, (ALuint buffer, ALenum param, ALint *value1, ALint *value2, ALint *value3))
+ice_al_def_func(void, alGetBufferiv, (ALuint buffer, ALenum param, ALint *values))
 
-ice_al_def_func(ALCcontext*, alcCreateContext, (ALCdevice *device, const ALCint *attrlist));
-ice_al_def_func(ALCboolean, alcMakeContextCurrent, (ALCcontext *context));
-ice_al_def_func(void, alcProcessContext, (ALCcontext *context));
-ice_al_def_func(void, alcSuspendContext, (ALCcontext *context));
-ice_al_def_func(void, alcDestroyContext, (ALCcontext *context));
-ice_al_def_func(ALCcontext*, alcGetCurrentContext, (void));
-ice_al_def_func(ALCdevice*, alcGetContextsDevice, (ALCcontext *context));
-ice_al_def_func(ALCdevice*, alcOpenDevice, (const ALCchar *devicename));
-ice_al_def_func(ALCboolean, alcCloseDevice, (ALCdevice *device));
-ice_al_def_func(ALCenum, alcGetError, (ALCdevice *device));
-ice_al_def_func(ALCboolean, alcIsExtensionPresent, (ALCdevice *device, const ALCchar *extname));
-ice_al_def_func(ALCvoid*, alcGetProcAddress, (ALCdevice *device, const ALCchar *funcname));
-ice_al_def_func(ALCenum, alcGetEnumValue, (ALCdevice *device, const ALCchar *enumname));
-ice_al_def_func(ALCchar*, alcGetString, (ALCdevice *device, ALCenum param));
-ice_al_def_func(void, alcGetIntegerv, (ALCdevice *device, ALCenum param, ALCsizei size, ALCint *values));
-ice_al_def_func(ALCdevice*, alcCaptureOpenDevice, (const ALCchar *devicename, ALCuint frequency, ALCenum format, ALCsizei buffersize));
-ice_al_def_func(ALCboolean, alcCaptureCloseDevice, (ALCdevice *device));
-ice_al_def_func(void, alcCaptureStart, (ALCdevice *device));
-ice_al_def_func(void, alcCaptureStop, (ALCdevice *device));
-ice_al_def_func(void, alcCaptureSamples, (ALCdevice *device, ALCvoid* buffer, ALCsizei samples));
+ice_al_def_func(ALCcontext*, alcCreateContext, (ALCdevice *device, const ALCint *attrlist))
+ice_al_def_func(ALCboolean, alcMakeContextCurrent, (ALCcontext *context))
+ice_al_def_func(void, alcProcessContext, (ALCcontext *context))
+ice_al_def_func(void, alcSuspendContext, (ALCcontext *context))
+ice_al_def_func(void, alcDestroyContext, (ALCcontext *context))
+ice_al_def_func(ALCcontext*, alcGetCurrentContext, (void))
+ice_al_def_func(ALCdevice*, alcGetContextsDevice, (ALCcontext *context))
+ice_al_def_func(ALCdevice*, alcOpenDevice, (const ALCchar *devicename))
+ice_al_def_func(ALCboolean, alcCloseDevice, (ALCdevice *device))
+ice_al_def_func(ALCenum, alcGetError, (ALCdevice *device))
+ice_al_def_func(ALCboolean, alcIsExtensionPresent, (ALCdevice *device, const ALCchar *extname))
+ice_al_def_func(ALCvoid*, alcGetProcAddress, (ALCdevice *device, const ALCchar *funcname))
+ice_al_def_func(ALCenum, alcGetEnumValue, (ALCdevice *device, const ALCchar *enumname))
+ice_al_def_func(ALCchar*, alcGetString, (ALCdevice *device, ALCenum param))
+ice_al_def_func(void, alcGetIntegerv, (ALCdevice *device, ALCenum param, ALCsizei size, ALCint *values))
+ice_al_def_func(ALCdevice*, alcCaptureOpenDevice, (const ALCchar *devicename, ALCuint frequency, ALCenum format, ALCsizei buffersize))
+ice_al_def_func(ALCboolean, alcCaptureCloseDevice, (ALCdevice *device))
+ice_al_def_func(void, alcCaptureStart, (ALCdevice *device))
+ice_al_def_func(void, alcCaptureStop, (ALCdevice *device))
+ice_al_def_func(void, alcCaptureSamples, (ALCdevice *device, ALCvoid* buffer, ALCsizei samples))
 
 /* ============================= Data Types ============================= */
 
@@ -570,7 +571,7 @@ ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char *symbol) {
 }
 
 /* Loads OpenAL API from shared library path (ex. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
-ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char* path) {
+ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char *path) {
 #if defined(ICE_AL_MICROSOFT)
     ice_al_lib = LoadLibraryA(path);
     if (ice_al_lib == 0) return ICE_AL_FALSE;
@@ -781,7 +782,7 @@ ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_unload(void) {
     ICE_AL_UNLOAD_PROC(alcCaptureSamples);
 
 #if defined(ICE_AL_MICROSOFT)
-    res = (FreeLibrary(lib) != 0) ? 0 : -1;
+    res = (FreeLibrary(ice_al_lib) != 0) ? 0 : -1;
 
 #elif defined(ICE_AL_BEOS)
     res = unload_add_on((isize) ice_al_lib);

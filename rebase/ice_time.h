@@ -1,4 +1,5 @@
 /*
+
 ice_time.h, Single-Header Cross-Platform C library for working with Time!
 
 
@@ -22,7 +23,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 // Helper
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char** argv) {
+int main(void) {
     // Struct that contains Time information
     ice_time_info current_time;
     
@@ -36,7 +37,7 @@ int main(int argc, char** argv) {
     }
 
     // Print current time!
-    printf("Current Time: %s\n", current_time.string);
+    printf("Current Time: %s\n", current_time.str);
 
     return 0;
 }
@@ -87,7 +88,7 @@ typedef enum ice_time_season {
 
 // Struct that contains patched current time info, Including ticks
 typedef struct ice_time_info {
-    const char* str;                // Time as string
+    const char *str;                // Time as string
     ice_time_ulong clock_ticks;     // Clock Ticks (Nanoseconds)
     ice_time_ulong uptime;          // Ticks since system started (Milliseconds)
     ice_time_ulong epoch;           // Unix timestamp
@@ -274,6 +275,13 @@ You can support or contribute to ice_libs project by possibly one of following t
 #if !defined(ICE_TIME_H)
 #define ICE_TIME_H 1
 
+/* Disable security warnings for MSVC compiler to not force usage of secure versions of various C functions (Which requires C11) */
+#if defined(_MSC_VER)
+#  define _CRT_SECURE_NO_DEPRECATE 1
+#  define _CRT_SECURE_NO_WARNINGS 1
+#  pragma warning(disable:4996)
+#endif
+
 /* Allow to use calling convention if desired... */
 #if defined(ICE_TIME_VECTORCALL)
 #  if defined(_MSC_VER)
@@ -438,7 +446,7 @@ typedef enum ice_time_season {
 
 /* Struct that contains patched current time info, Including ticks */
 typedef struct ice_time_info {
-    const char* str;                /* Time as string */
+    const char *str;                /* Time as string */
     ice_time_ulong clock_ticks;     /* Clock Ticks (Nanoseconds) */
     ice_time_ulong uptime;          /* Ticks since system started (Milliseconds) */
     ice_time_ulong epoch;           /* Unix timestamp */
@@ -563,7 +571,6 @@ typedef enum bool { false, true } bool;
 #    else
 #      pragma comment(lib, "kernel32.lib")
 #    endif
-#    pragma comment(lib, "msvcrt.lib")
 #  else
 #    include <sysinfoapi.h>
 #    include <synchapi.h>
@@ -592,13 +599,13 @@ typedef enum bool { false, true } bool;
 
 /* Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
 ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_diff(ice_time_info t1, ice_time_info t2) {
-    long diff = t1.clock_ticks - t2.clock_ticks
+    long diff = t1.clock_ticks - t2.clock_ticks;
     return (ice_time_ulong)((diff < 0) ? 1 : diff);
 }
 
 /* Returns difference between clock tick of current time and clock time of specific time */
 ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_since(ice_time_info t) {
-    ice_time_get_info current_time;
+    ice_time_info current_time;
     ice_time_error error = ice_time_get_info(&current_time);
     long diff;
 

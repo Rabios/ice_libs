@@ -7,7 +7,7 @@
 /* Helper */
 #define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
-int main(int argc, char **argv) {
+int main(void) {
     /* To store result of called functions */
     ice_clip_bool res;
     
@@ -17,13 +17,12 @@ int main(int argc, char **argv) {
     /* Retrieve the clipboard text */
     const char *text = ice_clip_get();
 
-    /* If the function failed to retrieve Clipboard text, Trace error then terminate the program */
+    /* If the function failed to retrieve Clipboard text or Clipboard has no text then trace log a note, Else print the retrieved text... */
     if (text == NULL) {
-        trace("ice_clip_get", "ERROR: failed to retrieve Clipboard text!");
-        return -1;
+        trace("ice_clip_get", "LOG: failed to retrieve Clipboard text, Maybe the Clipboard does not contain text?");
+    } else {
+        printf("Text from the Clipboard: %s\n", text);
     }
-    
-    printf("Text from the Clipboard: %s\n", text);
 
     /* Clear the Clipboard */
     res = ice_clip_clear();
@@ -39,7 +38,7 @@ int main(int argc, char **argv) {
 
     /* If the function failed to copy text to the Clipboard, Trace error then terminate the program */
     if (res == ICE_CLIP_FALSE) {
-        printf("ERROR: Failed to copy text to Clipboard!\n");
+        trace("ice_clip_set", "ERROR: failed to copy text to Clipboard!");
         return -1;
     }
     

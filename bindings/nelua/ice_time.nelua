@@ -2,24 +2,20 @@
   cdefine "ICE_TIME_IMPL"
   cinclude "ice_time.h"
   
-  cemit "#if defined(ICE_TIME_MICROSOFT)"
-    if not ccinfo.is_msc then
-      cemit "#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)"
-        linklib "WindowsPhoneCore"
-      cemit "#else"
-        linklib "kernel32"
-      cemit "#endif"
-    end
-  cemit "#elif (defined(ICE_TIME_UNIX) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY))"
+  if ccinfo.is_winphone then
+    linklib "WindowsPhoneCore"
+  elseif ccinfo.is_windows then
+    linklib "kernel32"
+  elseif ccinfo.is_linux or ccinfo.is_linux or ccinfo.is_bsd or ccinfo.is_blackberry then
     linklib "c"
-  cemit "#elif defined(ICE_TIME_3DS)"
+  elseif ccinfo.is_3ds then
     linklib "ctru"
-  cemit "#elif defined(ICE_TIME_RPI_PICO)"
+  elseif ccinfo.is_rpi2040 then
     linklib "pico_time"
     linklib "lpico_util"
     linklib "hardware_timer"
     linklib "hardware_rtc"
-  cemit "#endif"
+  end
 ]]
 
 -- ============================== Data Types ============================== --
