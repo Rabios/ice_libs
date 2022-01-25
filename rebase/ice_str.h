@@ -425,7 +425,7 @@ ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_len(const char *str) {
 
 /* Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx) {
-    long i = 0;
+    unsigned long i = 0;
     unsigned long count = 0;
     ice_str_bool backwards = (to_idx < from_idx) ? ICE_STR_TRUE : ICE_STR_FALSE;
     unsigned long len = (backwards == ICE_STR_TRUE) ? ((from_idx - to_idx) + 2) : ((to_idx - from_idx) + 2);
@@ -435,12 +435,14 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long fr
     if (res == 0) return 0;
     
     if (backwards == ICE_STR_TRUE) {
-        for (i = ((long) from_idx); i >= ((long) to_idx); i--) {
-            res[count] = str[i];
-            count++;
+        for (i = to_idx; i <= from_idx; i++) {
+            res[((len - 2) - i)] = str[i];
         }
+        
+        count = len - 1;
+
     } else {
-        for (i = ((long) from_idx); i <= ((long) to_idx); i++) {
+        for (i = from_idx; i <= to_idx; i++) {
             res[count] = str[i];
             count++;
         }
