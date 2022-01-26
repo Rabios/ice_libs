@@ -191,8 +191,9 @@ double ice_time_sec_to_ms(ice_time_ulong sec);
 
 1. Microsoft Windows        =>  -lkernel32
 2. Microsoft Windows Phone  =>  -lWindowsPhoneCore
-2. Nintendo 3DS (libctru)   =>  -lctru -lc
-3. Raspberry Pi Pico        =>  -lpico_time -lpico_util -lhardware_timer -lhardware_rtc -lc
+3. Nintendo 3DS (libctru)   =>  -lctru -lc
+4. Raspberry Pi Pico        =>  -lpico_time -lpico_util -lhardware_timer -lhardware_rtc -lc
+5. Linux, BSD               =>  -lc
 
 // NOTES:
 // 1. When using MSVC on Microsoft Windows, Required static libraries are automatically linked via #pragma preprocessor
@@ -217,7 +218,7 @@ double ice_time_sec_to_ms(ice_time_ulong sec);
 
 #define ICE_TIME_MICROSOFT      // Microsoft Platforms
 #define ICE_TIME_APPLE          // Apple Platforms
-#define ICE_TIME_UNIX           // Unix and Unix-like
+#define ICE_TIME_LINUX          // Linux
 #define ICE_TIME_RPI_PICO       // Raspberry Pi Pico
 #define ICE_TIME_3DS            // Nintendo 3DS (libctru)
 #define ICE_TIME_BSD            // BSD (FreeBSD, DragonFly BSD, NetBSD, OpenBSD)
@@ -313,7 +314,7 @@ You can support or contribute to ice_libs project by possibly one of following t
 #  define ICE_TIME_CALLCONV
 #endif
 
-#if !(defined(ICE_TIME_MICROSOFT) || defined(ICE_TIME_3DS) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_UNIX) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY) || defined(ICE_TIME_RPI_PICO))
+#if !(defined(ICE_TIME_MICROSOFT) || defined(ICE_TIME_3DS) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_LINUX) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY) || defined(ICE_TIME_RPI_PICO))
 #  define ICE_TIME_AUTODETECT_PLATFORM 1
 #endif
 
@@ -342,8 +343,8 @@ You can support or contribute to ice_libs project by possibly one of following t
         defined(ADAFRUIT_QTPY_RP2040)           ||  defined(ADAFRUIT_TRINKEY_QT2040)        || \
         defined(ARDUINO_NANO_RP2040_CONNECT)    ||  defined(MELOPERO_SHAKE_RP2040)
 #    define ICE_TIME_RPI_PICO 1
-#  elif defined(__unix__) || defined(__unix)
-#    define ICE_TIME_UNIX 1
+#  elif defined(__linux__) || defined(__linux)
+#    define ICE_TIME_LINUX 1
 #  else
 #    error "ice_time.h does not support this platform yet! :("
 #  endif
@@ -465,7 +466,7 @@ typedef struct ice_time_info {
 typedef enum ice_time_error {
     ICE_TIME_ERROR_OK = 0,          /* OK - no errors */
     ICE_TIME_ERROR_UNKNOWN_TIME,    /* Occurs when time() function fails */
-    ICE_TIME_ERROR_UNKNOWN_CLOCK,   /* Occurs when clock_gettime() function fails (Linux/Unix only) */
+    ICE_TIME_ERROR_UNKNOWN_CLOCK,   /* Occurs when retrieving uptime function fails (Only given on Linux and BSD) */
     ICE_TIME_ERROR_SYSCALL_FAILURE  /* Occurs when platform-specific call fails */
 } ice_time_error;
 
@@ -575,10 +576,10 @@ typedef enum bool { false, true } bool;
 #    include <sysinfoapi.h>
 #    include <synchapi.h>
 #  endif
-#elif defined(ICE_TIME_BSD) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BLACKBERRY) || defined(ICE_TIME_UNIX)
-#  include <sys/time.h>
+#elif defined(ICE_TIME_BSD) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BLACKBERRY) || defined(ICE_TIME_LINUX)
 #  include <sys/resource.h>
-#  if !defined(ICE_TIME_UNIX)
+#  include <sys/sysinfo.h>
+#  if !defined(ICE_TIME_LINUX)
 #    include <stddef.h>
 #    if defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_TIME_APPLE)
 #      include <sys/types.h>
@@ -586,6 +587,8 @@ typedef enum bool { false, true } bool;
 #      include <sys/param.h>
 #    endif
 #    include <sys/sysctl.h>
+#  elif defined(ICE_TIME_LINUX)
+#    include <sys/time.h>
 #  endif
 #elif defined(ICE_TIME_RPI_PICO)
 #  include "pico/types.h"
@@ -658,21 +661,16 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
     systicks = (ice_time_ulong) ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 #elif defined(ICE_TIME_3DS)
     systicks = (ice_time_ulong) (svcGetSystemTick() / 1000);
-#elif defined(ICE_TIME_UNIX)
-    struct timespec ts;
+#elif defined(ICE_TIME_LINUX)
+    struct sysinfo info;
+    int sysinfo_res = sysinfo(&info);
 
-#if defined(CLOCK_MONOTONIC) || (defined(_POSIX_MONOTONIC_CLOCK) && (_POSIX_MONOTONIC_CLOCK > 0))
-    int clockres = clock_gettime(CLOCK_MONOTONIC, &ts);
-#elif defined(CLOCK_REALTIME) || (defined(_POSIX_MONOTONIC_CLOCK) && (_POSIX_MONOTONIC_CLOCK < 0))
-    int clockres = clock_gettime(CLOCK_REALTIME, &ts);
-#endif
-
-    if (clockres != 0) {
-        error = ICE_TIME_ERROR_UNKNOWN_CLOCK;
+    if (sysinfo_res != 0) {
+        error = ICE_TIME_ERROR_SYSCALL_FAILURE;
         goto failure;
     }
 
-    systicks = (ice_time_ulong)((ts.tv_sec * 1000) + (ts.tv_nsec / 1000000));
+    systicks = (ice_time_ulong)(uptime * 1000);
 
 #elif defined(ICE_TIME_RPI_PICO)
     absolute_time_t pico_time = get_absolute_time();
@@ -785,7 +783,7 @@ ICE_TIME_API void ICE_TIME_CALLCONV ice_time_sleep(ice_time_ulong ms) {
     Sleep(ms);
 #elif defined(ICE_TIME_3DS)
     svcSleepThread(ms * 1000000);
-#elif defined(ICE_TIME_UNIX) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY)
+#elif defined(ICE_TIME_LINUX) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BSD) || defined(ICE_TIME_BLACKBERRY)
     struct timeval tv;
 
     tv.tv_sec = (time_t)(ms / 1000);
