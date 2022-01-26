@@ -407,6 +407,8 @@ typedef enum bool { false, true } bool;
 #elif defined(ICE_BATT_UNIX)
 #  include <unistd.h>
 #  include <string.h>
+#  include <stdlib.h>
+#  include <fcntl.h>
 #endif
 
 /* Check if ARC enabled or not... */

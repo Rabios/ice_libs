@@ -329,17 +329,17 @@ You can support or contribute to ice_libs project by possibly one of following t
 #    define ICE_TIME_BLACKBERRY 1
 #  elif defined(_3DS) || defined(__3DS__)
 #    define ICE_TIME_3DS 1
-#  elif defined(RASPBERRYPI_PICO)               ||  defined(RASPBERRYPI_VGABOARD)           ||
-        defined(PIMORONI_INTERSTATE75)          ||  defined(PIMORONI_KEYBOW2040)            ||
-        defined(PIMORONI_PGA2040)               ||  defined(PIMORONI_PICOLIPO_4MB)          ||
-        defined(PIMORONI_PICOLIPO_16MB)         ||  defined(PIMORONI_PICOSYSTEM)            ||
-        defined(PIMORONI_PLASMA2040)            ||  defined(PIMORONI_TINY2040)              ||
-        defined(PYBSTICK26_RP2040)              ||  defined(SPARKFUN_MICROMOD)              ||
-        defined(SPARKFUN_PROMICRO)              ||  defined(SPARKFUN_THINGPLUS)             ||
-        defined(WAVESHARE_RP2040_LCD_0_96)      ||  defined(WAVESHARE_RP2040_PLUS_4MB)      ||
-        defined(WAVESHARE_RP2040_PLUS_16MB)     ||  defined(ADAFRUIT_FEATHER_RP2040)        ||
-        defined(WAVESHARE_RP2040_ZERO)          ||  defined(ADAFRUIT_ITSYBITSY_RP2040)      ||
-        defined(ADAFRUIT_QTPY_RP2040)           ||  defined(ADAFRUIT_TRINKEY_QT2040)        ||
+#  elif defined(RASPBERRYPI_PICO)               ||  defined(RASPBERRYPI_VGABOARD)           || \
+        defined(PIMORONI_INTERSTATE75)          ||  defined(PIMORONI_KEYBOW2040)            || \
+        defined(PIMORONI_PGA2040)               ||  defined(PIMORONI_PICOLIPO_4MB)          || \
+        defined(PIMORONI_PICOLIPO_16MB)         ||  defined(PIMORONI_PICOSYSTEM)            || \
+        defined(PIMORONI_PLASMA2040)            ||  defined(PIMORONI_TINY2040)              || \
+        defined(PYBSTICK26_RP2040)              ||  defined(SPARKFUN_MICROMOD)              || \
+        defined(SPARKFUN_PROMICRO)              ||  defined(SPARKFUN_THINGPLUS)             || \
+        defined(WAVESHARE_RP2040_LCD_0_96)      ||  defined(WAVESHARE_RP2040_PLUS_4MB)      || \
+        defined(WAVESHARE_RP2040_PLUS_16MB)     ||  defined(ADAFRUIT_FEATHER_RP2040)        || \
+        defined(WAVESHARE_RP2040_ZERO)          ||  defined(ADAFRUIT_ITSYBITSY_RP2040)      || \
+        defined(ADAFRUIT_QTPY_RP2040)           ||  defined(ADAFRUIT_TRINKEY_QT2040)        || \
         defined(ARDUINO_NANO_RP2040_CONNECT)    ||  defined(MELOPERO_SHAKE_RP2040)
 #    define ICE_TIME_RPI_PICO 1
 #  elif defined(__unix__) || defined(__unix)
@@ -661,9 +661,9 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
 #elif defined(ICE_TIME_UNIX)
     struct timespec ts;
 
-#if defined(CLOCK_MONOTONIC_RAW)
-    int clockres = clock_gettime(CLOCK_MONOTONIC_RAW, &ts);
-#elif defined(CLOCK_REALTIME)
+#if defined(CLOCK_MONOTONIC) || (defined(_POSIX_MONOTONIC_CLOCK) && (_POSIX_MONOTONIC_CLOCK > 0))
+    int clockres = clock_gettime(CLOCK_MONOTONIC, &ts);
+#elif defined(CLOCK_REALTIME) || (defined(_POSIX_MONOTONIC_CLOCK) && (_POSIX_MONOTONIC_CLOCK < 0))
     int clockres = clock_gettime(CLOCK_REALTIME, &ts);
 #endif
 
@@ -791,7 +791,7 @@ ICE_TIME_API void ICE_TIME_CALLCONV ice_time_sleep(ice_time_ulong ms) {
     tv.tv_sec = (time_t)(ms / 1000);
     tv.tv_usec = (long)((ms % 1000) * 1000);
     
-    select(0, 0, 0, 0, &t);
+    select(0, 0, 0, 0, &tv);
 #elif defined(ICE_TIME_RPI_PICO)
     sleep_ms(ms);
 #endif
