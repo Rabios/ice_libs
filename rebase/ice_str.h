@@ -813,20 +813,24 @@ ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char *str, char delim, u
     char **res;
     unsigned long alloc_size;
     unsigned long i;
-    unsigned long *idxs;
-    unsigned long repeat_count = 0;
-    unsigned long idxs_counter = 0;
-    unsigned long i1 = 0, i2 = 0;
+    unsigned long repeat_count = 0, count = 0;
+    unsigned long i1 = 0, i2 = 0, sets = 0;
     
     for (i = 0; i < len; i++) {
         unsigned long j = 0;
         
         if (str[i] == delim) {
+            if (i == 0) {
+                while (str[i] == delim) i++;
+                i1 = i;
+                while (str[i] != delim) i++;
+            }
+            
             while ((i < len - 1) && (str[i + j++] == delim)) {
                 repeat_count++;
             }
             
-            i += repeat_count + 1;
+            i += repeat_count;
             arr_len++;
             repeat_count = 0;
         }
@@ -840,56 +844,29 @@ ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char *str, char delim, u
     res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
     
-    alloc_size = (arr_len * 2 * sizeof(unsigned long));
-    idxs = ICE_STR_MALLOC(alloc_size);
-    if (idxs == 0) return 0;
-    
     for (i = 0; i < len; i++) {
-        unsigned long j = 0;
-        
         if (str[i] == delim) {
+            if (i == 0) {
+                while (str[i] == delim) i++;
+                i1 = i;
+                while (str[i] != delim) i++;
+            }
+            
             i2 = i - 1;
             
-            if (i1 == len - 1) {
-                idxs[idxs_counter] = i1;
-                idxs[idxs_counter + 1] = i1;
-                idxs_counter += 2;
-                
-                break;
-            }
+            res[count] = ice_str_sub(str, i1, i2);
             
-            while ((i < len - 1) && (str[i + j++] == delim)) {
-                repeat_count++;
-            }
+            while (str[i] == delim) i++;
+            i1 = i;
             
-            i += repeat_count;
-            
-            idxs[idxs_counter] = i1;
-            idxs[idxs_counter + 1] = i2;
-            idxs_counter += 2;
-            
-            i1 = i2 + repeat_count + 1;
-            repeat_count = 0;
-            
-            if ((str[len - 1] != delim) && (i1 == len - 1)) {
-                idxs[idxs_counter] = i1;
-                idxs[idxs_counter + 1] = i1;
-                idxs_counter += 2;
-                
-                break;
-            }
+            sets++;
+            count++;
         }
     }
     
-    idxs_counter = 0;
-    
-    for (i = 0; i < arr_len; i++) {
-        res[i] = ice_str_sub(str, idxs[idxs_counter], idxs[idxs_counter + 1]);
-        idxs_counter += 2;
+    if (sets < arr_len) {
+        res[count] = ice_str_sub(str, i1, len - 1);
     }
-    
-    ICE_STR_FREE(idxs);
-    idxs = 0;
     
     *arrlen = arr_len;
     
