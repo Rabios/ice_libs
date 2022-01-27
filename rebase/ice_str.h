@@ -432,6 +432,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long fr
     unsigned long alloc_size = (len * sizeof(char));
     char *res = ICE_STR_MALLOC(alloc_size);
     
+    if (from_idx == to_idx) return ice_str_char_to_str(str[to_idx]);
     if (res == 0) return 0;
     
     if (backwards == ICE_STR_TRUE) {
@@ -809,38 +810,64 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_cap(const char *str) {
 ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char *str, char delim, unsigned long *arrlen) {
     unsigned long len = ice_str_len(str);
     unsigned long arr_len = 0;
-    unsigned long arr_idx = 0;
-    unsigned long sz = 0;
     char **res;
     unsigned long alloc_size;
     unsigned long i;
-
+    unsigned long repeat_count = 0, count = 0;
+    unsigned long i1 = 0, i2 = 0, sets = 0;
+    
+    for (i = 0; i < len; i++) {
+        unsigned long j = 0;
+        
+        if (str[i] == delim) {
+            if (i == 0) {
+                while (str[i] == delim) i++;
+                i1 = i;
+                while (str[i] != delim) i++;
+            }
+            
+            while ((i < len - 1) && (str[i + j++] == delim)) {
+                repeat_count++;
+            }
+            
+            i += repeat_count;
+            arr_len++;
+            repeat_count = 0;
+        }
+    }
+    
+    if (arr_len == 0) return 0;
     if (str[len - 1] != delim) arr_len++;
 
     alloc_size = (arr_len * sizeof(char*));
 
     res = ICE_STR_MALLOC(alloc_size);
-
     if (res == 0) return 0;
-
+    
     for (i = 0; i < len; i++) {
         if (str[i] == delim) {
-            if (sz == 0) {
-                res[arr_idx] = ice_str_sub(str, 0, i - 1);
-            } else {
-                res[arr_idx] = ice_str_sub(str, sz + 1, i - 1);
+            if (i == 0) {
+                while (str[i] == delim) i++;
+                i1 = i;
+                while (str[i] != delim) i++;
             }
-
-            arr_len++;
-            arr_idx++;
-            sz = i;
-        }
-        
-        if (i == len - 1 && str[len - 1] != delim) {
-            res[arr_idx] = ice_str_sub(str, sz + 1, i);
+            
+            i2 = i - 1;
+            
+            res[count] = ice_str_sub(str, i1, i2);
+            
+            while (str[i] == delim) i++;
+            i1 = i;
+            
+            sets++;
+            count++;
         }
     }
-
+    
+    if (sets < arr_len) {
+        res[count] = ice_str_sub(str, i1, len - 1);
+    }
+    
     *arrlen = arr_len;
     
     return res;
@@ -977,6 +1004,7 @@ ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char **arr, unsigned long arr
         arr[i] = 0;
     }
     
+    ICE_STR_FREE(arr);
     arr = 0;
 }
 
