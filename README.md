@@ -1,6 +1,6 @@
 # ice_libs
 
-> NOTE: This project is still work in progress, Development of the project is still continuous in [`dev`](https://github.com/Rabios/ice_libs/tree/dev) branch and everyone is welcome to join development, Thanks for your patience...
+> NOTE: This project is into continuous development in [`dev`](https://github.com/Rabios/ice_libs/tree/dev) branch and everyone are welcome to join development, Thanks for patience...
 
 <div align="center">
   <img src="img/icon1.png" width="256", height="256"><br><br>
@@ -12,15 +12,15 @@
 
 ice_libs is collection of Cross-Platform Single-Header C libraries for doing a lot of stuff...
 
-Libraries were originally designed to cover what other Single-Header libraries miss (ex. `sokol_time.h` does not have Sleep function...) and in the same time it tries to provide backward compatibility with oldest standard ANSI C (C89) as best as possible, Except if libraries where in need to do implementation in C99, C++ (BeOS/Haiku, BlackBerry 10, UWP), or even Objective-C (Apple Platforms)
+Libraries were originally designed to cover what other Single-Header libraries miss (ex. `sokol_time.h` does not have Sleep function...) and in the same time it tries to stick to the oldest C standard ANSI C (C89) as best as possible, Except if libraries were in need to do the implementation in C99, C++ (BeOS/Haiku, BlackBerry 10, UWP), or even Objective-C (Apple Platforms)
 
-The libraries can detect the platform automatically to provide the suitable implementation, As they are able to run on any platform possible to implement like Mobile, Desktop, Web, Embeddable Platforms, and even Game Consoles (via Homebrew SDKs) with goal of keeping the portability and abstraction of them, Empowering softwares with high-level and user-friendly optimized API that does the same job without any changes required
+The libraries can detect the platform automatically to provide the suitable implementation, As they are able to run on any platform possible to implement like Mobile, Desktop, Web, Embeddable Platforms, and even Game Consoles (via Homebrew SDKs) with goal of keeping the portability and abstraction of them, Empowering softwares with high-level and user-friendly optimized API that does the same job without any changes required...
 
 Also, The libraries are designed to be bindings-friendly so the developer can write/generate bindings for his favourite programming language with ease and no pain, And allows developers to do some customizations on their own like changing the call convention or changing default memory allocation functions, Giving the developers a full power to write softwares the way they like...
 
-The libraries are Dual-Licensed, The developer can choose between MIT and Public Domain depending on his preferences, See license [here](#license) and if you are interested in more info check out the docs [here](https://github.com/Rabios/ice_libs/wiki)
+The libraries are Dual-Licensed, The developer can choose between MIT or Public Domain depending on his preferences, See license [here](#license) and if he is interested in more info he can check out the docs [here](https://github.com/Rabios/ice_libs/wiki)
 
-Also you can join the Discord Server [here](https://discord.gg/KfkwXjCW) to share your interests with the community!
+Also the Discord Server can be found [here](https://discord.gg/KfkwXjCW)
 
 ### Story
 
