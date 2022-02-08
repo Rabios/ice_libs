@@ -562,84 +562,51 @@ ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_matches(const char *str1, con
 
 /* Replaces string str1 in string str with string str2 and returns result string on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char *str, const char *str1, const char *str2) {
+    unsigned long *idxs = 0, matches = 0, alloc_size = 0;
+    unsigned long len1, len2, len3, i, count = 0;
     char *res;
-
-    unsigned long len1 = ice_str_len(str);
-    unsigned long len2 = ice_str_len(str1);
-    unsigned long len3 = ice_str_len(str2);
     
-    unsigned long *matches_idxs;
-    unsigned long char_matches = 0;
-    unsigned long matches = 0;
-    unsigned long count = 0;
-    unsigned long count2 = 0;
-    unsigned long matches_alloc_size;
-    unsigned long alloc_size;
-    unsigned long i;
-
-    for (i = 0; i < len1; i++) {
-        if ((str[i] == str1[0]) && ((i + (len2 - 1)) < len1)) {
-            unsigned long j;
-
-            for (j = 0; j < len2; j++) {
-                if (str[i + j] == str1[j]) {
-                    char_matches++;
-                }
-            }
-
-            if (char_matches == len2) {
-                matches++;
-                char_matches = 0;
-            }
-        }
-    }
-
-    matches_alloc_size = (matches * sizeof(unsigned long));
-    alloc_size = ((len1 + ((len3 - len2) * matches) + 1) * sizeof(char));
-
-    matches_idxs = ICE_STR_MALLOC(matches_alloc_size);
-    if (matches_idxs == 0) return 0;
+    if ((str == 0) || (str1 == 0) || (str2 == 0)) return 0;
     
-    for (i = 0; i < len1; i++) {
-        if ((str[i] == str1[0]) && ((i + (len2 - 1)) < len1)) {
-            matches_idxs[count] = i;
-            count++;
-        }
+    matches = ice_str_matches(str, str1, &idxs);
+    if (matches == 0) return 0;
+    
+    len1 = ice_str_len(str);
+    len2 = ice_str_len(str1);
+    len3 = ice_str_len(str2);
+    
+    if (len2 > len3) {
+        alloc_size = (len1 + (len2 * matches) - (len3 * matches)) + 1;
+    } else if (len3 > len2) {
+        alloc_size = (len1 + (len3 * matches) - (len2 * matches)) + 1;
     }
-
-    res = ICE_STR_MALLOC(alloc_size);
-
+    
+    res = ICE_STR_MALLOC(alloc_size * sizeof(char));
     if (res == 0) return 0;
-
+    
     for (i = 0; i < len1; i++) {
         unsigned long j;
-
-        for (j = 0; j < count; j++) {
-            if (i == matches_idxs[j]) {
+        
+        for (j = 0; j < matches; j++) {
+            unsigned long idx = idxs[j];
+            
+            if (idx == i) {
                 unsigned long k;
-
+                
                 for (k = 0; k < len3; k++) {
-                    res[count2] = str2[k];
-                    count2++;
+                    res[count] = str2[k];
+                    count++;
                 }
                 
-                if (len2 == len3) {
-                    i += len3;
-                } else if (len2 < len3) {
-                    i += +(len2 - len3);
-                } else if (len2 > len3) {
-                    i += len2 - len3;
-                }
+                i += len2;
             }
         }
-
-        res[count2] = str[i];
-        count2++;
+        
+        res[count] = str[i];
+        count++;
     }
     
-    res[(len1 + (len3 - len2) * matches)] = 0;
-    ICE_STR_FREE(matches_idxs);
-    matches_idxs = 0;
+    res[count] = 0;
     
     return res;
 }
