@@ -53,5 +53,5 @@ jobs:
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
       with: 
-          name: ice_cpu_builds
+          name: ice_cpu_builds.zip
           path: ${{ github.workspace }}/ice_libs_downloads/ice_cpu_builds.zip
