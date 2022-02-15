@@ -50,6 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Artifacts Setup & Update
+      shell: bash
       run: |
         mkdir -p downloads
         mkdir -p downloads/ice_cpu
