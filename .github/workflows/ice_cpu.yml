@@ -15,6 +15,7 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    
     - name: Toolchain Checks
       shell: bash
       run: |
@@ -25,31 +26,34 @@ jobs:
       shell: bash
       run: |
         # Create directories for each platform...
-        mkdir -p builds
-        mkdir -p builds/ice_cpu
-        mkdir -p builds/ice_cpu/linux32
-        mkdir -p builds/ice_cpu/linux64
-        mkdir -p builds/ice_cpu/win32
-        mkdir -p builds/ice_cpu/win64
+        mkdir -p ${{ github.workspace }}/builds
+        mkdir -p ${{ github.workspace }}/builds/ice_cpu
+        mkdir -p ${{ github.workspace }}/builds/ice_cpu/linux32
+        mkdir -p ${{ github.workspace }}/builds/ice_cpu/linux64
+        mkdir -p ${{ github.workspace }}/builds/ice_cpu/win32
+        mkdir -p ${{ github.workspace }}/builds/ice_cpu/win64
 
-        cp -rf ${{ github.workspace }}/rebase/ice_cpu.h builds/ice_cpu.h
-        printf '#define ICE_CPU_IMPL 1\n#include "ice_cpu.h"\n' > builds/ice_cpu.c
+        cp -rf ${{ github.workspace }}/rebase/ice_cpu.h ${{ github.workspace }}/builds/ice_cpu.h
+        printf '#define ICE_CPU_IMPL 1\n#include "ice_cpu.h"\n' > ${{ github.workspace }}/builds/ice_cpu.c
         
         # Linux (i386, x86_84)
-        gcc -shared builds/ice_cpu.c -o builds/ice_cpu/linux32/ice_cpu.so -m32 -std=c89 -pedantic -Wall -Wextra -Werror -fPIC
-        gcc -shared builds/ice_cpu.c -o builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -fPIC
+        gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/linux32/ice_cpu.so -m32 -std=c89 -pedantic -Wall -Wextra -Werror -fPIC
+        gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -fPIC
         
         # Microsoft Windows (x86/i386, x86_64)
-        i686-w64-mingw32-gcc -shared builds/ice_cpu.c -o builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
-        x86_64-w64-mingw32-gcc -shared builds/ice_cpu.c -o builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
+        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
+        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
         
-        rm -f builds/ice_cpu.c builds/ice_cpu.h
+        rm -f ${{ github.workspace }}/builds/ice_cpu.c ${{ github.workspace }}/builds/ice_cpu.h
         
-        mkdir -p downloads
-        cp -r builds downloads
-    
+        mkdir -p ${{ github.workspace }}/downloads
+        cp -r ${{ github.workspace }}/builds ${{ github.workspace }}/downloads
+        
+  archive-build-artifacts:
+    runs-on: ubuntu-latest
+    steps:
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
       with: 
           name: ice_cpu_builds
-          path: downloads/ice_cpu
+          path: ${{ github.workspace }}/downloads/ice_cpu
