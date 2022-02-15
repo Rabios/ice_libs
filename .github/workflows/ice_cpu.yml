@@ -49,7 +49,8 @@ jobs:
         mkdir -p ice_libs_downloads
         cp -r ${{ github.workspace }}/ice_libs_builds/ice_cpu ${{ github.workspace }}/ice_libs_downloads
         
-        zip -r ${{ github.workspace }}/ice_cpu_builds.zip ${{ github.workspace }}/ice_libs_downloads
+        cd ice_libs_downloads
+        zip -r ../ice_cpu_builds.zip *
         
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
