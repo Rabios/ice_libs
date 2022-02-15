@@ -50,7 +50,7 @@ jobs:
         cp -r ${{ github.workspace }}/ice_libs_builds/ice_cpu ${{ github.workspace }}/ice_libs_downloads
         
         cd ice_libs_downloads
-        zip -r ../ice_cpu_builds.zip *
+        zip -r ../ice_cpu_builds.zip ice_cpu
         
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
