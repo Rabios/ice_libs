@@ -37,12 +37,12 @@ jobs:
         printf '#define ICE_CPU_IMPL 1\n#include "ice_cpu.h"\n' > ${{ github.workspace }}/ice_libs_builds/ice_cpu.c
         
         # Linux (i386, x86_84)
-        gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/linux32/ice_cpu.so -m32 -std=c89 -pedantic -Wall -Wextra -Werror -fPIC -Osize -Ofast -s
-        gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -fPIC -Osize -Ofast -s
+        gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/linux32/ice_cpu.so -m32 -std=c89 -pedantic -Wall -Wextra -Werror -fPIC -Os -Ofast -lc
+        gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -fPIC -Os -Ofast -lc
         
         # Microsoft Windows (x86/i386, x86_64)
-        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -Osize -Ofast -s
-        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -Osize -Ofast -s
+        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -Os -Ofast -lkernel32
+        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -Os -Ofast -lkernel32
         
         rm -f ${{ github.workspace }}/ice_libs_builds/ice_cpu.c ${{ github.workspace }}/ice_libs_builds/ice_cpu.h
         
