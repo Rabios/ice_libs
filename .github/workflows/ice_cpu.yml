@@ -59,10 +59,7 @@ jobs:
         mkdir -p downloads/ice_cpu/win32
         mkdir -p downloads/ice_cpu/win64
 
-        cp -r ${{ github.workspace }}/builds/ice_cpu/linux32/ice_cpu.so ${{ github.workspace }}/downloads/ice_cpu/linux32/ice_cpu.so
-        cp -r ${{ github.workspace }}/builds/ice_cpu/linux64/ice_cpu.so ${{ github.workspace }}/downloads/ice_cpu/linux64/ice_cpu.so
-        cp -r ${{ github.workspace }}/builds/ice_cpu/win32/ice_cpu.dll ${{ github.workspace }}/downloads/ice_cpu/win32/ice_cpu.dll
-        cp -r ${{ github.workspace }}/builds/ice_cpu/win64/ice_cpu.dll ${{ github.workspace }}/downloads/ice_cpu/win64/ice_cpu.dll
+        cp -r ${{ github.workspace }}/builds/ice_cpu ${{ github.workspace }}/downloads/ice_cpu
     
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
