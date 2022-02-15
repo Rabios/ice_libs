@@ -18,8 +18,9 @@ jobs:
     - name: Toolchain Checks
       shell: bash
       run: |
-        apt-get install -y libc6-dev-i386
-        apt-get install -y mingw-w64
+        #apt-get update -y
+        #apt-get install -y libc6-dev-i386
+        #apt-get install -y mingw-w64
 
     - name: Build (Microsoft Windows, Linux, macOS/OSX)
       shell: bash
@@ -29,8 +30,8 @@ jobs:
         mkdir -p builds/ice_cpu
         mkdir -p builds/ice_cpu/linux32
         mkdir -p builds/ice_cpu/linux64
-        mkdir -p builds/ice_cpu/win32
-        mkdir -p builds/ice_cpu/win64
+        #mkdir -p builds/ice_cpu/win32
+        #mkdir -p builds/ice_cpu/win64
 
         cp -rf ${{ github.workspace }}/rebase/ice_cpu.h ${{ github.workspace }}/builds/ice_cpu.h
         printf '#define ICE_CPU_IMPL 1\n#include "ice_cpu.h"\n' > ${{ github.workspace }}/builds/ice_cpu.c
@@ -40,8 +41,8 @@ jobs:
         gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -static -fPIC
         
         # Microsoft Windows (x86/i386, x86_64)
-        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -static
-        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -static
+        #i686-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -static
+        #x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -static
         
         rm -f ${{ github.workspace }}/builds/ice_cpu.c ${{ github.workspace }}/builds/ice_cpu.h
   
@@ -54,13 +55,13 @@ jobs:
         mkdir -p downloads/ice_cpu
         mkdir -p downloads/ice_cpu/linux32
         mkdir -p downloads/ice_cpu/linux64
-        mkdir -p downloads/ice_cpu/win32
-        mkdir -p downloads/ice_cpu/win64
+        #mkdir -p downloads/ice_cpu/win32
+        #mkdir -p downloads/ice_cpu/win64
 
         cp -r builds/ice_cpu/linux32/ice_cpu.so downloads/ice_cpu/linux32/ice_cpu.so
         cp -r builds/ice_cpu/linux64/ice_cpu.so downloads/ice_cpu/linux64/ice_cpu.so
-        cp -r builds/ice_cpu/win32/ice_cpu.dll downloads/ice_cpu/win32/ice_cpu.dll
-        cp -r builds/ice_cpu/win64/ice_cpu.dll downloads/ice_cpu/win64/ice_cpu.dll
+        #cp -r builds/ice_cpu/win32/ice_cpu.dll downloads/ice_cpu/win32/ice_cpu.dll
+        #cp -r builds/ice_cpu/win64/ice_cpu.dll downloads/ice_cpu/win64/ice_cpu.dll
     
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
