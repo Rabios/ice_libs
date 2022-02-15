@@ -18,7 +18,6 @@ jobs:
     - name: Toolchain Checks
       shell: bash
       run: |
-        apt-get update -y
         apt-get install -y libc6-dev-i386
         apt-get install -y mingw-w64
 
