@@ -41,14 +41,14 @@ jobs:
         gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -fPIC
         
         # Microsoft Windows (x86/i386, x86_64)
-        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
-        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
+        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -Ofast -s
+        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/ice_cpu.c -o ${{ github.workspace }}/ice_libs_builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -Ofast -s
         
         rm -f ${{ github.workspace }}/ice_libs_builds/ice_cpu.c ${{ github.workspace }}/ice_libs_builds/ice_cpu.h
         
         mkdir -p ice_libs_downloads
         
-        zip -r ${{ github.workspace }}/ice_libs_downloads/ice_cpu_builds.zip ${{ github.workspace }}/ice_libs_builds/ice_cpu/
+        zip -jr ${{ github.workspace }}/ice_libs_downloads/ice_cpu_builds.zip ${{ github.workspace }}/ice_libs_builds/ice_cpu/
         
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
