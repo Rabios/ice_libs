@@ -37,12 +37,12 @@ jobs:
         printf '#define ICE_CPU_IMPL 1\n#include "ice_cpu.h"\n' > ${{ github.workspace }}/builds/ice_cpu.c
         
         # Linux (i386, x86_84)
-        gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/linux32/ice_cpu.so -m32 -std=c89 -pedantic -Wall -Wextra -Werror -static -fPIC
-        gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -static -fPIC
+        gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/linux32/ice_cpu.so -m32 -std=c89 -pedantic -Wall -Wextra -Werror -fPIC
+        gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/linux64/ice_cpu.so -std=c89 -pedantic -Wall -Wextra -Werror -fPIC
         
         # Microsoft Windows (x86/i386, x86_64)
-        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -static
-        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror -static
+        i686-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win32/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
+        x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/builds/ice_cpu.c -o ${{ github.workspace }}/builds/ice_cpu/win64/ice_cpu.dll -std=c89 -pedantic -Wall -Wextra -Werror
         
         rm -f ${{ github.workspace }}/builds/ice_cpu.c ${{ github.workspace }}/builds/ice_cpu.h
   
