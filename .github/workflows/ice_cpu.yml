@@ -47,10 +47,7 @@ jobs:
         
         mkdir -p downloads
         cp -r ${{ github.workspace }}/builds ${{ github.workspace }}/downloads
-        
-  archive-build-artifacts:
-    runs-on: ubuntu-latest
-    steps:
+    
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
       with: 
