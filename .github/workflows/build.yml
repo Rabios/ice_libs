@@ -53,8 +53,8 @@ jobs:
             compile_flags_win="-std=c99 -pedantic -Wall -Wextra -Werror -Os -Ofast"
           fi
 
-          i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/win32/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win32/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
-          x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/win64/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win64/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
+          i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win32/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
+          x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win64/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
           
           # ========== Build: Linux (x86/i386, x86_64) ========== #
           if [ "${libs[$i]}" != "ice_clip" ]; then
@@ -74,8 +74,8 @@ jobs:
               fi
             fi
 
-            gcc -shared ${{ github.workspace }}/ice_libs_builds/linux32/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux32/${libs[$i]}.so -m32 ${compile_flags_linux} ${linux_link_flags[$i]}
-            gcc -shared ${{ github.workspace }}/ice_libs_builds/linux64/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux64/${libs[$i]}.so ${compile_flags_linux} ${linux_link_flags[$i]}
+            gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux32/${libs[$i]}.so -m32 ${compile_flags_linux} ${linux_link_flags[$i]}
+            gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux64/${libs[$i]}.so ${compile_flags_linux} ${linux_link_flags[$i]}
           fi
         done
 
