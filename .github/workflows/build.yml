@@ -1,0 +1,91 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 'dev'
+  pull_request:
+    branches:
+      - 'dev'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    
+    - name: Toolchain Checks
+      shell: bash
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y zip unzip libc6-dev-i386 mingw-w64
+
+    - name: Build (Microsoft Windows, Linux)
+      shell: bash
+      run: |
+        # Create directories for each platform...
+        mkdir -p ice_libs_builds
+        mkdir -p ice_libs_builds/linux32
+        mkdir -p ice_libs_builds/linux64
+        mkdir -p ice_libs_builds/win32
+        mkdir -p ice_libs_builds/win64
+        
+        cp -rf ${{ github.workspace }}/rebase/*.h ${{ github.workspace }}/ice_libs_builds/*.h
+
+        libs=("ice_al" "ice_ffi" "ice_batt" "ice_cpu" "ice_ease" "ice_ram" "ice_str" "ice_test" "ice_time" "ice_clip")
+
+        for l in ${libs[@]}; do
+          printf '#define ${l | tr [:lower:] [:upper:]}_IMPL 1\n#include "${l}.h"\n' > ${{ github.workspace }}/ice_libs_builds/${l}.c
+        done
+
+        win_link_flags=("-lkernel32" "-lkernel32" "-lkernel32" "-lm" "-lkernel32" "-lkernel32" "" "" "-lkernel32" "-lkernel32 -luser32")
+        linux_link_flags=("-ldl" "-lc" "-lc" "-lm" "-ldl" "-lc" "-lc" "-lc")
+        
+        for i in ${#libs[@]} do
+          # ========== Build: Microsoft Windows (x86/i386, x86_64) ========== #
+          compile_flags_win="-std=c89 -pedantic -Wall -Wextra -Werror -Os -Ofast"
+          
+          if [ $i < 2 ]; then
+            compile_flags_win="-Os -Ofast"
+          elif [ $i == 5 ]; then
+            compile_flags_win="-std=c99 -pedantic -Wall -Wextra -Werror -Os -Ofast"
+          fi
+
+          i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/win32/${libs[i]}.c -o ${{ github.workspace }}/ice_libs_builds/win32/${libs[i]}.dll ${compile_flags_win} ${win_link_flags[i]}
+          x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/win64/${libs[i]}.c -o ${{ github.workspace }}/ice_libs_builds/win64/${libs[i]}.dll ${compile_flags_win} ${win_link_flags[i]}
+          
+          # ========== Build: Linux (x86/i386, x86_64) ========== #
+          if [ "${libs[i]}" != "ice_clip" ]; then
+            compile_flags_linux="-Os -Ofast"
+          
+            if [ $i == 0 ] || [ $i == 3 ]; then
+              compile_flags_linux+="-fPIC"
+            fi
+
+            if [ $i > 1 ]; then
+              compile_flags_linux+="-pedantic -Wall -Wextra -Werror"
+            
+              if [ $i == 5 ]; then
+                compile_flags_linux+="-std=c99"
+              else
+                compile_flags_linux+="-std=c89"
+              fi
+            fi
+
+            gcc -shared ${{ github.workspace }}/ice_libs_builds/linux32/${libs[i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux32/${libs[i]}.so -m32 ${compile_flags_linux} ${linux_link_flags[i]}
+            gcc -shared ${{ github.workspace }}/ice_libs_builds/linux64/${libs[i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux64/${libs[i]}.so ${compile_flags_linux} ${linux_link_flags[i]}
+          fi
+        done
+
+        rm -f ${{ github.workspace }}/ice_libs_builds/*.c ${{ github.workspace }}/ice_libs_builds/*.h
+
+        cd ice_libs_builds
+        zip -r ${{ github.workspace }}/ice_libs_builds.zip $PWD
+        
+    - name: Uploading Artifacts
+      uses: actions/upload-artifact@v2
+      with: 
+          name: ice_libs_builds
+          path: ${{ github.workspace }}/ice_libs_builds.zip
