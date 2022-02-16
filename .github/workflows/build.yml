@@ -32,7 +32,7 @@ jobs:
         mkdir -p ice_libs_builds/win32
         mkdir -p ice_libs_builds/win64
         
-        cp -rf ${{ github.workspace }}/rebase/*.h ${{ github.workspace }}/ice_libs_builds/*.h
+        cp -rf ${{ github.workspace }}/rebase/*.h ${{ github.workspace }}/ice_libs_builds
 
         libs=("ice_al" "ice_ffi" "ice_batt" "ice_cpu" "ice_ease" "ice_ram" "ice_str" "ice_test" "ice_time" "ice_clip")
 
