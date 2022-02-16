@@ -43,7 +43,7 @@ jobs:
         win_link_flags=("-lkernel32" "-lkernel32" "-lkernel32" "-lm" "-lkernel32" "-lkernel32" "" "" "-lkernel32" "-lkernel32 -luser32")
         linux_link_flags=("-ldl" "-lc" "-lc" "-lm" "-ldl" "-lc" "-lc" "-lc")
         
-        for i in ${#libs[@]} do
+        for i in ${#libs[@]}; do
           # ========== Build: Microsoft Windows (x86/i386, x86_64) ========== #
           compile_flags_win="-std=c89 -pedantic -Wall -Wextra -Werror -Os -Ofast"
           
