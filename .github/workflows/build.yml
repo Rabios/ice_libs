@@ -87,7 +87,7 @@ jobs:
         rm -f ${{ github.workspace }}/ice_libs_builds/*.c ${{ github.workspace }}/ice_libs_builds/*.h
 
         cd ${{ github.workspace }}/ice_libs_builds
-        zip -r ./ice_libs_builds.zip *
+        zip -r ice_libs_builds.zip *
         
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
