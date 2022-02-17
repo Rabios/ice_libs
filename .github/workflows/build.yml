@@ -54,7 +54,7 @@ jobs:
             compile_flags_win="-std=c99 -pedantic -Wall -Wextra -Werror -Os -Ofast"
           fi
           
-          if [ $i != 5 ] && [ $i > 2 ]; then
+          if [ $i != 5 ] && [ $i > 1 ]; then
             compile_flags_win="-std=c89 -pedantic -Wall -Wextra -Werror -Os -Ofast"
           fi
           
