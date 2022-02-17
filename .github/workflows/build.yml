@@ -61,7 +61,7 @@ jobs:
           x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win64/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
           
           # ========== Build: Linux (x86/i386, x86_64) ========== #
-          if [ "${libs[$i]}" -ne "ice_clip" ]; then
+          if [ "$i" -ne "9" ]; then
             compile_flags_linux="-Os -Ofast"
             
             if [ "$i" -eq "0" ] || [ "$i" -eq "3" ]; then
