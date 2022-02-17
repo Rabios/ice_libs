@@ -46,49 +46,39 @@ jobs:
         
         for i in ${!libs[@]}; do
           # ========== Build: Microsoft Windows (x86/i386, x86_64) ========== #
-          if [ $i < 2 ]; then
-            compile_flags_win="-Os -Ofast"
+          compile_flags_win="-Os -Ofast"
+          
+          if [ "$i" -gt "1" ]; then
+            if [ "$i" -eq "5" ]; then
+              compile_flags_win="-std=c99 -pedantic -Wall -Wextra -Werror -Os -Ofast"
+            elif [ "$i" -ne "5" ]; then
+              compile_flags_win="-std=c89 -pedantic -Wall -Wextra -Werror -Os -Ofast"
+            fi
           fi
           
-          if [ $i == 5 ]; then
-            compile_flags_win="-std=c99 -pedantic -Wall -Wextra -Werror -Os -Ofast"
-          fi
-          
-          if [ $i != 5 ] && [ $i > 1 ]; then
-            compile_flags_win="-std=c89 -pedantic -Wall -Wextra -Werror -Os -Ofast"
-          fi
-          
-          echo "i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win32/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}"
-
           i686-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win32/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
-          
-          echo "x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win64/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}"
           
           x86_64-w64-mingw32-gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/win64/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
           
           # ========== Build: Linux (x86/i386, x86_64) ========== #
-          if [ "${libs[$i]}" != "ice_clip" ]; then
+          if [ "${libs[$i]}" -ne "ice_clip" ]; then
             compile_flags_linux="-Os -Ofast"
-          
-            if [ $i == 0 ] || [ $i == 3 ]; then
-              compile_flags_linux+="-fPIC"
-            fi
-
-            if [ $i > 1 ]; then
-              compile_flags_linux+="-pedantic -Wall -Wextra -Werror"
             
-              if [ $i == 5 ]; then
-                compile_flags_linux+="-std=c99"
+            if [ "$i" -eq "0" ] || [ "$i" -eq "3" ]; then
+              compile_flags_linux+=" -fPIC"
+            fi
+            
+            if [ "$i" -gt "1" ]; then
+              compile_flags_linux+=" -pedantic -Wall -Wextra -Werror"
+              
+              if [ "$i" -eq "5" ]; then
+                compile_flags_linux+=" -std=c99"
               else
-                compile_flags_linux+="-std=c89"
+                compile_flags_linux+=" -std=c89"
               fi
             fi
             
-            echo "gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux32/${libs[$i]}.so -m32 ${compile_flags_linux} ${linux_link_flags[$i]}"
-
             gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux32/${libs[$i]}.so -m32 ${compile_flags_linux} ${linux_link_flags[$i]}
-            
-            echo "gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux64/${libs[$i]}.so ${compile_flags_linux} ${linux_link_flags[$i]}"
             
             gcc -shared ${{ github.workspace }}/ice_libs_builds/${libs[$i]}.c -o ${{ github.workspace }}/ice_libs_builds/linux64/${libs[$i]}.so ${compile_flags_linux} ${linux_link_flags[$i]}
           fi

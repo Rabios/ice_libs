@@ -670,7 +670,7 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
         goto failure;
     }
 
-    systicks = (ice_time_ulong)(uptime * 1000);
+    systicks = (ice_time_ulong)(info.uptime * 1000);
 
 #elif defined(ICE_TIME_RPI_PICO)
     absolute_time_t pico_time = get_absolute_time();
