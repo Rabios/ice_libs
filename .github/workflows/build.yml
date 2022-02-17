@@ -37,7 +37,8 @@ jobs:
         libs=("ice_al" "ice_ffi" "ice_batt" "ice_cpu" "ice_ease" "ice_ram" "ice_str" "ice_test" "ice_time" "ice_clip")
 
         for l in ${libs[@]}; do
-          printf '#define ${l | tr [:lower:] [:upper:]}_IMPL 1\n#include "${l}.h"\n' > ${{ github.workspace }}/ice_libs_builds/${l}.c
+          x=$(echo "${l}"|tr '[:lower:]' '[:upper:]')
+          printf "#define ${x}_IMPL 1\n#include \"${l}.h\"\n" > ${{ github.workspace }}/ice_libs_builds/${l}.c
         done
 
         win_link_flags=("-lkernel32" "-lkernel32" "-lkernel32" "-lm" "-lkernel32" "-lkernel32" "" "" "-lkernel32" "-lkernel32 -luser32")
