@@ -86,11 +86,11 @@ jobs:
 
         rm -f ${{ github.workspace }}/ice_libs_builds/*.c ${{ github.workspace }}/ice_libs_builds/*.h
 
-        cd ice_libs_builds
-        zip -r ${{ github.workspace }}/ice_libs_builds.zip $PWD
+        cd ${{ github.workspace }}/ice_libs_builds
+        zip -r ice_libs_builds.zip $PWD
         
     - name: Uploading Artifacts
       uses: actions/upload-artifact@v2
       with: 
           name: ice_libs_builds
-          path: ${{ github.workspace }}/ice_libs_builds.zip
+          path: ${{ github.workspace }}/ice_libs_builds/ice_libs_builds.zip
