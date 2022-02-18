@@ -2,6 +2,6 @@
 
 [WIP] ice_fs.h
 [WIP] Python, C#, Rust support!
-[WIP] Security and Documentation updates! (+ Changelog)
+[WIP] Security and Documentation updates!
 
 To be continued...

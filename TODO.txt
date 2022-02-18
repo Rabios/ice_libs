@@ -1,6 +1,5 @@
 ====================== TODO [IMPORTANT] ======================
 
-[o] Test and fix the GitHub Action if it doesn't build...
 [o] Continue working on the libs
 [o] Complete the website
 
