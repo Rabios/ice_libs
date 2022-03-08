@@ -314,10 +314,11 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
 #if defined(ICE_RAM_MICROSOFT)
     MEMORYSTATUSEX status;
     int fetch_res;
+
+    if (ram_info == 0) return ICE_RAM_FALSE;
+
     status.dwLength = sizeof(status);
-
     fetch_res = GlobalMemoryStatusEx(&status);
-
     if (fetch_res == 0) goto failure;
 
     ram_info->free = status.ullAvailPhys;
@@ -330,6 +331,8 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     mach_port_t host_port = mach_host_self();
     mach_msg_type_number_t host_size = sizeof(vm_status) / sizeof(natural_t);
     int res;
+
+    if (ram_info == 0) return ICE_RAM_FALSE;
     
     res = host_page_size(host_port, &pagesize);
     if (res != 0) goto failure;
@@ -353,6 +356,8 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     };
     struct vmtotal vm_status;
 
+    if (ram_info == 0) return ICE_RAM_FALSE;
+
     len = sizeof(pagesize);
     res = sysctl(mibs[0], 2, &pagesize, &len, 0, 0);
     if (res != 0) goto failure;
@@ -366,6 +371,8 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     ram_info->total = ram_info->free + ram_info->used;
 
 #elif defined(ICE_RAM_WEB)
+    if (ram_info == 0) return ICE_RAM_FALSE;
+
     ram_info->free = (ice_ram_bytes) EM_ASM_INT({
         return (os.freemem() || 0);
     });
@@ -380,6 +387,8 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     runtime_memory_info_s inf;
     int fetch_res = runtime_info_get_system_memory_info(&inf);
 
+    if (ram_info == 0) return ICE_RAM_FALSE;
+
     if (fetch_res != 0) goto failure;
 
     ram_info->free = inf.free * 1024;
@@ -390,7 +399,9 @@ ICE_RAM_API ice_ram_bool ICE_RAM_CALLCONV ice_ram_get_info(ice_ram_info *ram_inf
     struct sysinfo si;
     int fetch_res = sysinfo(&si);
 
-   if (fetch_res != 0) goto failure;
+    if (ram_info == 0) return ICE_RAM_FALSE;
+    
+    if (fetch_res != 0) goto failure;
 
     ram_info->free = si.freeram;
     ram_info->used = si.totalram - si.freeram;

@@ -1,5 +1,4 @@
-$gtk.ffi_misc.gtk_dlopen("ice_ram")
-include FFI::CExt
+require "app/ice_ram.rb"
 
 def tick args
   # Struct that contains RAM information
@@ -9,7 +8,7 @@ def tick args
   res = ice_ram_get_info(ram)
   
   # If function failed to fetch RAM info, Trace error then terminate the program
-  if (res == -1)
+  if (res == ICE_RAM_FALSE)
     puts("ERROR: failed to get RAM info!")
     return -1
   end

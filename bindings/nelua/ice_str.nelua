@@ -26,7 +26,7 @@ global function ice_str_sub(str: cstring <const>, from_idx: culong, to_idx: culo
 -- Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
 global function ice_str_concat(str1: cstring <const>, str2: cstring <const>): cstring <cimport, nodecl> end
 
--- Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
+-- Returns string consists of string str2 inserted in string str1 at index idx on allocation success or NULL on allocation failure
 global function ice_str_insert(str1: cstring <const>, str2: cstring <const>, idx: culong): cstring <cimport, nodecl> end
 
 -- Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes
@@ -90,4 +90,4 @@ global function ice_str_free(str: cstring): void <cimport, nodecl> end
 global function ice_str_free(bytes: cstring): void <cimport, nodecl> end
 
 -- Frees array of strings, arrlen should be set to array length
-global function ice_str_arr_free(arr: *[0]cstring, arrlen: culong): void <cimport, nodecl> end
+global function ice_str_free_arr(arr: *[0]cstring, arrlen: culong): void <cimport, nodecl> end

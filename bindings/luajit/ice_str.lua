@@ -22,7 +22,7 @@ char* ice_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx)
 /* Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure */
 char* ice_str_concat(const char *str1, const char *str2);
 
-/* Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure */
+/* Returns string consists of string str2 inserted in string str1 at index idx on allocation success or NULL on allocation failure */
 char* ice_str_insert(const char *str1, const char *str2, unsigned long idx);
 
 /* Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes */
@@ -86,7 +86,7 @@ void ice_str_free(char *str);
 void ice_str_free_bytes(int *bytes);
 
 /* Frees array of strings, arrlen should be set to array length */
-void ice_str_arr_free(char **arr, unsigned long arrlen);
+void ice_str_free_arr(char **arr, unsigned long arrlen);
 ]])
 
 return ffi_load("ice_str")

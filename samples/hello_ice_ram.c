@@ -16,7 +16,7 @@ int main(void) {
 
     /* If function failed to fetch RAM info, Trace error then terminate the program */
     if (res == ICE_RAM_FALSE) {
-        trace("ice_ram_get_status", "ERROR: failed to get RAM info!");
+        trace("ice_ram_get_info", "ERROR: failed to retrieve RAM informations!");
         return -1;
     }
     

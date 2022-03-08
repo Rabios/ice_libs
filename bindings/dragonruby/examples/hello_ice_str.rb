@@ -1,5 +1,4 @@
-$gtk.ffi_misc.gtk_dlopen("ice_str")
-include FFI::CExt
+require "app/ice_str.rb"
 
 $gtk.show_console
 

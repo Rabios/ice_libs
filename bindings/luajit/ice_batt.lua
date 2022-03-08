@@ -21,7 +21,8 @@ typedef struct ice_batt_info {
 typedef enum ice_batt_error {
     ICE_BATT_ERROR_OK = 0,          /* OK - no errors */
     ICE_BATT_ERROR_UNKNOWN_STATUS,  /* Occurs when failed to get battery status, Or if battery status is undefined, Or device doesn't have battery */
-    ICE_BATT_ERROR_SYSCALL_FAILURE  /* Occurs when platform-specific function fails */
+    ICE_BATT_ERROR_SYSCALL_FAILURE, /* Occurs when platform-specific function fails */
+    ICE_BATT_ERROR_INVALID_POINTER  /* Occurs when passing NULL (Zero) as argument to ice_batt_get_info() */
 } ice_batt_error;
     
 /* ============================== Functions ============================== */

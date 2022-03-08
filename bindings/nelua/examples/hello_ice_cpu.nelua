@@ -10,7 +10,7 @@ local function main(): cint
   
   -- If the function failed to retrieve CPU information, Trace error then terminate the program
   if (res == ICE_CPU_FALSE) then
-    print("ERROR: failed to retrieve CPU information!")
+    print("ERROR: failed to retrieve CPU informations!")
     return -1
   end
 

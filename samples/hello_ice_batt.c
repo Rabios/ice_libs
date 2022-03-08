@@ -16,7 +16,7 @@ int main(void) {
 
     /* If the function failed to fetch battery information, Trace error then terminate the program */
     if (err != ICE_BATT_ERROR_OK) {
-        trace("ice_batt_get_status", "ERROR: failed to fetch battery information!");
+        trace("ice_batt_get_status", "ERROR: failed to retrieve battery informations!");
         return -1;
     }
 

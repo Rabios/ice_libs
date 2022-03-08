@@ -15,7 +15,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 ================================== Usage Example ==================================
 
 // Define the implementation of the library and include it
-#define ICE_FFI_IMPL
+#define ICE_FFI_IMPL 1
 #include "ice_ffi.h"
 
 #include <stdio.h>

@@ -16,7 +16,7 @@ int main(void) {
     
     /* If the function failed to retrieve CPU information, Trace error then terminate the program */
     if (res == ICE_CPU_FALSE) {
-        trace("ice_cpu_get_info", "ERROR: failed to retrieve CPU information!");
+        trace("ice_cpu_get_info", "ERROR: failed to retrieve CPU informations!");
         return -1;
     }
     

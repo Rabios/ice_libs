@@ -1,5 +1,21 @@
 # Changelog
 
+### March 8, 2022
+
+1. ice_libs have passed 1 year on GitHub! (Happy Anniversary!)
+2. `ice_fs.h` released, Which is a Single-Header Cross-Platform C library to work with files and directories and paths!
+3. Done some patches to prevent crashes in some libraries!
+4. Added sample for `ice_fs.h` along with bindings for DragonRuby, LuaJIT, and Nelua!
+5. Added build scripts based on the same ones used in GitHub Actions, So you can build locally on your device.
+6. Build flags for the workflow are now more strict, Which allowed to fix a lot of problems...
+7. Renamed `ice_str_arr_free` to `ice_str_free_arr` in `ice_str.h`
+8. Fixed `ice_cpu.h` on BSDs!
+9. Updated TODO for next goals!
+10. Simplified the GitHub Actions workflow build script...
+11. Splitted DragonRuby/MRuby bindings into `cexts` folder and added Ruby files that loads the compiled shared library of the bindings along with Ruby definitions for each library!
+12. Added invalid pointer error codes to the libraries that uses error enumerations (Like `ice_batt.h` and `ice_time.h`)
+13. Fixed reverse of string mechanism for `ice_str_rev` in `ice_str.h`
+
 ### February 18, 2022
 
 Re-added the changelog with more extended and easy-to-read info!

@@ -1,5 +1,4 @@
-$gtk.ffi_misc.gtk_dlopen("ice_cpu")
-include FFI::CExt
+require "app/ice_cpu.rb"
 
 $gtk.show_console
 
@@ -11,7 +10,7 @@ def boot args
   res ||= ice_cpu_get_info(cpu)
   
   # If the function failed to retrieve CPU information, Trace error then terminate the program
-  if (res == -1)
+  if (res == ICE_CPU_FALSE)
     puts("ERROR: failed to retrieve CPU information!")
     return -1
   end
