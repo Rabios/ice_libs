@@ -1,0 +1,231 @@
+##[[
+  cdefine "ICE_FS_IMPL"
+  cinclude "ice_fs.h"
+
+  if ccinfo.is_linux or ccinfo.is_bsd then
+    linklib "c"
+  elseif ccinfo.is_windows then
+    linklib "kernel32"
+  end
+]]
+
+-- ============================== Data Types ============================== --
+
+-- Boolean Enum, To avoid including stdbool.h
+global ice_fs_bool: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_FS_FALSE  = -1,
+  ICE_FS_TRUE   = 0
+}
+
+-- Type of object in path (File, Folder, etc...)
+global ice_fs_object_type: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_FS_OBJECT_TYPE_NONE = -1,   -- Given if path does not exist
+  ICE_FS_OBJECT_TYPE_FILE,        -- File
+  ICE_FS_OBJECT_TYPE_DIR          -- Directory
+}
+
+-- FileSystem Object, Contains information of object in specific path
+global ice_fs_object: type <cimport, nodecl> = @record {
+  name: cstring,                  -- Name of object
+  type: ice_fs_object_type        -- Type of object (File, Folder, etc...)
+}
+
+-- Directory
+global ice_fs_dir: type <cimport, nodecl> = @record {
+  items: *[0]ice_fs_object,       -- List of items in the directory (Files, Folders, etc...)
+  items_count: culong             -- Number of the items in the directory
+}
+
+-- Enumeration for week days
+global ice_fs_date_day: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_FS_DATE_DAY_UNKNOWN = 0,
+  ICE_FS_DATE_DAY_SUNDAY,
+  ICE_FS_DATE_DAY_MONDAY,
+  ICE_FS_DATE_DAY_TUESDAY,
+  ICE_FS_DATE_DAY_WEDNESDAY,
+  ICE_FS_DATE_DAY_THURSDAY,
+  ICE_FS_DATE_DAY_FRIDAY,
+  ICE_FS_DATE_DAY_SATURDAY
+}
+
+-- Enumeration for year months
+global ice_fs_date_month: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_FS_DATE_MONTH_UNKNOWN = 0,
+  ICE_FS_DATE_MONTH_JANUARY,
+  ICE_FS_DATE_MONTH_FEBRUARY,
+  ICE_FS_DATE_MONTH_MARCH,
+  ICE_FS_DATE_MONTH_APRIL,
+  ICE_FS_DATE_MONTH_MAY,
+  ICE_FS_DATE_MONTH_JUNE,
+  ICE_FS_DATE_MONTH_JULY,
+  ICE_FS_DATE_MONTH_AUGUST,
+  ICE_FS_DATE_MONTH_SEPTEMBER,
+  ICE_FS_DATE_MONTH_OCTOBER,
+  ICE_FS_DATE_MONTH_NOVEMBER,
+  ICE_FS_DATE_MONTH_DECEMBER
+}
+
+-- Enumeration for seasons
+global ice_fs_date_season: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_FS_DATE_SEASON_UNKNOWN = 0,
+  ICE_FS_DATE_SEASON_WINTER,
+  ICE_FS_DATE_SEASON_SPRING,
+  ICE_FS_DATE_SEASON_SUMMER,
+  ICE_FS_DATE_SEASON_AUTUMN
+}
+
+-- Struct that contains date info for file/directory
+global ice_fs_date: type <cimport, nodecl> = @record {
+  str: cstring,                   -- Time as string
+  epoch: culong,                  -- Unix timestamp
+  seconds: cuint,
+  minutes: cuint,
+  hour: cuint,
+  week_day: ice_fs_date_day,      -- (ICE_FS_DATE_DAY_SUNDAY - ICE_FS_DATE_DAY_SATURDAY)
+  month_day: cuint,               -- (1 - Month last day number)
+  year_day: cuint,                -- (1 - 365)
+  month: ice_fs_date_month,       -- (ICE_FS_DATE_MONTH_JANUARY - ICE_FS_DATE_MONTH_DECEMBER)
+  season: ice_fs_date_season,     -- (ICE_FS_DATE_SEASON_WINTER - ICE_FS_DATE_SEASON_AUTUMN)
+  year: cuint
+}
+
+-- Enumeration for dates for file/directory (Which can be retrieved)
+global ice_fs_date_type: type <cimport, nodecl, using> = @enum(cint) {
+  ICE_FS_LAST_ACCESS_DATE = 0,    -- Last access date of file/directory
+  ICE_FS_LAST_MODIFICATION_DATE,  -- Last modification date of file/directory
+  ICE_FS_LAST_STATUS_CHANGE_DATE  -- Last status change date of file/directory
+}
+
+-- ============================== Functions ============================== --
+
+-- [INTERNAL] Returns length of string
+global function ice_fs_str_len(str: cstring <const>): culong <cimport, nodecl> end
+
+-- [INTERNAL] Returns ICE_FS_TRUE if string str starts with slash or backslash, Or ICE_FS_FALSE if not
+global function ice_fs_str_starts_with_slash(str: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- [INTERNAL] Returns ICE_FS_TRUE if string str ends with slash or backslash, Or ICE_FS_FALSE if not
+global function ice_fs_str_ends_with_slash(str: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- [INTERNAL] Returns count of slashes in string
+global function ice_fs_str_slashes(str: cstring <const>): culong <cimport, nodecl> end
+
+-- [INTERNAL] Returns count of dots in string
+global function ice_fs_str_dots(str: cstring <const>): culong <cimport, nodecl> end
+
+-- [INTERNAL] Returns ICE_FS_TRUE if string str1 is same to string str2 or ICE_FS_FALSE if not
+global function ice_fs_str_same(str1: cstring <const>, str2: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- [INTERNAL] Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure
+global function ice_fs_str_sub(str: cstring <const>, from_idx: culong, to_idx: culong): cstring <cimport, nodecl> end
+
+-- [INTERNAL] Returns allocated copy of string on allocation success or NULL on allocation failure
+global function ice_fs_str_dots(str: cstring <const>): cstring <cimport, nodecl> end
+
+-- [INTERNAL] Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of resulted array
+global function ice_fs_str_split(str: cstring <const>, delim: cchar, arrlen: *culong): *[0]cstring <cimport, nodecl> end
+
+-- [INTERNAL] Same like ice_fs_str_split but uses new line character '\n' as delimiter
+global function ice_fs_str_splitlines(str: cstring <const>, arrlen: *culong): *[0]cstring <cimport, nodecl> end
+
+-- [INTERNAL] Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes
+global function ice_fs_str_matches(str1: cstring <const>, str2: cstring <const>, idxs: **culong): culong <cimport, nodecl> end
+
+-- Frees/Deallocates a String
+global function ice_fs_free_str(str: cstring): void <cimport, nodecl> end
+
+-- Frees array of strings, arrlen should be set to array length
+global function ice_fs_free_strarr(strs: *[0]cstring, arrlen: culong): void <cimport, nodecl> end
+
+-- Returns root of a path on allocation success or NULL on failure
+global function ice_fs_root(path: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns ICE_FS_TRUE if the path is root or ICE_FS_FALSE if not
+global function ice_fs_is_root(path: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Concats 2 paths and returns result path on allocation success or NULL on failure
+global function ice_fs_concat_path(path1: cstring <const>, path2: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns file name with/without extension from path on allocation success or NULL on failure
+global function ice_fs_root(path: cstring <const>, with_ext: ice_fs_bool): cstring <cimport, nodecl> end
+
+-- Returns file extension from path on allocation success or NULL on failure
+global function ice_fs_ext(path: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns ICE_FS_TRUE if extension of the path is ext or ICE_FS_FALSE if not
+global function ice_fs_is_ext(path: cstring <const>, ext: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Returns previous parent of a path on allocation success or NULL on failure
+global function ice_fs_prev_path(path: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns parents of path in array on allocation success or NULL on failure
+global function ice_fs_path_parents(path: cstring <const>, results: *culong): *[0]cstring <cimport, nodecl> end
+
+-- Returns ICE_FS_TRUE if path exists or ICE_FS_FALSE if not
+global function ice_fs_path_exists(path: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Returns path of current working directory on allocation success or NULL on failure
+global function ice_fs_cwd(): cstring <cimport, nodecl> end
+
+-- Returns path of home on allocation success or NULL on failure
+global function ice_fs_home(): cstring <cimport, nodecl> end
+
+-- Returns formatted path of a path depending on platform on allocation success or NULL on failure
+global function ice_fs_format_path(path: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns full path of a path on allocation success or NULL on failure
+global function ice_fs_fullpath(path: cstring <const>): cstring <cimport, nodecl> end
+
+-- Creates symbolic/hard link for object in path1 at path2, Retruns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_link(path1: cstring <const>, path2: cstring <const>, hard_link: ice_fs_bool): ice_fs_bool <cimport, nodecl> end
+
+-- Reads value from symbolic link file at specific path, Returns value on allocation success or NULL on failure
+global function ice_fs_readlink(path: cstring <const>): cstring <cimport, nodecl> end
+
+-- Returns type of object in specific path, Returns ICE_FS_OBJECT_TYPE_NONE on failure if path does not exist or returns any of values does ice_fs_object_type enumeration has
+global function ice_fs_type(path: cstring <const>): ice_fs_object_type <cimport, nodecl> end
+
+-- Reads content of file and returns the content on allocation success or NULL on failure, file_size is pointer to unsigned long integer that will store number of chars (bytes) the file has
+global function ice_fs_file_content(path: cstring <const>, file_size: *culong): cstring <cimport, nodecl> end
+
+-- Creates file in path with content if doesn't exist or Appends to/Overwrites content of file in specific path if exists, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_file_write(path: cstring <const>, content: cstring <const>, append: ice_fs_bool): ice_fs_bool <cimport, nodecl> end
+
+-- Reads content of file, Returns the content in array of strings for each line on allocation success or NULL on failure, lines should be pointer to unsigned long integer to store count of lines the file has
+global function ice_fs_file_lines(path: cstring <const>, lines: *culong): *[0]cstring <cimport, nodecl> end
+
+-- Changes current directory in the running program to another directory in path, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_chdir(path: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Returns directory informations with list of contents in path on success or NULL on failure
+global function ice_fs_dir_content(path: cstring <const>): ice_fs_dir <cimport, nodecl> end
+
+-- Frees/Deallocates a directory information struct
+global function ice_fs_free_dir_content(dir: ice_fs_dir): void <cimport, nodecl> end
+
+-- Searches in contents of directory for a specific file/directory by string, Returns array of strings that contains full path of founded items on allocation success or NULL on failure, results should be pointer to unsigned long integer that stores number of founded items
+global function ice_fs_dir_search(path: cstring <const>, str: cstring <const>, results: *culong): *[0]cstring <cimport, nodecl> end
+
+-- Creates file/folder in specific path, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_create(path: cstring <const>, type: ice_fs_object_type): ice_fs_bool <cimport, nodecl> end
+
+-- Removes file/folder in specific path, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_remove(path: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Clears content of file/folder in specific path, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_clear(path: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Copies file/folder from path1 to path2, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_copy(path1: cstring <const>, path2: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Moves file/folder from path1 to path2, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_move(path1: cstring <const>, path2: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Renames file/folder from path1 to path2, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_rename(path1: cstring <const>, path2: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Returns ICE_FS_TRUE if file/folder in specific path is empty or ICE_FS_FALSE if not empty
+global function ice_fs_is_empty(path: cstring <const>): ice_fs_bool <cimport, nodecl> end
+
+-- Retrieves [last modification, last status change, last access] date of file/directory and stores info in info struct by pointing to, Returns ICE_FS_TRUE on success or ICE_FS_FALSE on failure
+global function ice_fs_get_date(path: cstring <const>, date_type: ice_fs_date_type, info: *ice_fs_date): ice_fs_bool <cimport, nodecl> end

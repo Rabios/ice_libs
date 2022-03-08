@@ -301,41 +301,45 @@ char ice_cpu_brand[64];
 #    include <sys/param.h>
 #  endif
 #  include <sys/sysctl.h>
+char ice_cpu_brand[128];
 #endif
 
 /* Retrieves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
-ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_info) {
+ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_info) {
 #if defined(ICE_CPU_BSD) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BLACKBERRY)
-    char brand[128];
     unsigned cores;
     int res, mibs[2][2] = {
         { CTL_HW, HW_MODEL },
         { CTL_HW, HW_NCPU }
     };
     size_t len;
+
+    if (cpu_info == 0) return ICE_CPU_FALSE;
     
-    len = sizeof(brand);
-    res = sysctl(mibs[0], 2, &brand, &len, 0, 0);
+    len = sizeof(ice_cpu_brand);
+    res = sysctl(mibs[0], 2, &ice_cpu_brand, &len, 0, 0);
     if (res != 0) goto failure;
     
     len = sizeof(cores);
     res = sysctl(mibs[1], 2, &cores, &len, 0, 0);
     if (res != 0) goto failure;
 
-    cpu_info->name = (const char*) brand;
+    cpu_info->name = (const char*)(ice_cpu_brand);
     cpu_info->cores = cores;
 
 #elif defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX)
 #if defined(ICE_CPU_MICROSOFT)
     unsigned i, cores = 0, count = 0;
     int regs[4];
+    SYSTEM_INFO sysinfo;
 #else
     unsigned cores;
     int res;
 #endif
 
+    if (cpu_info == 0) return ICE_CPU_FALSE;
+
 #if defined(ICE_CPU_MICROSOFT)
-    SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
     cores = (unsigned) sysinfo.dwNumberOfProcessors;
 #elif defined(ICE_CPU_UNIX)
@@ -355,13 +359,12 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info* cpu_inf
         __cpuid(regs, i);
 
         for (j = 0; j < 16; j++) {
-            const char *str = (const char*) regs;
-            ice_cpu_brand[count] = str[j];
+            ice_cpu_brand[count] = ((const char*)(regs))[j];
             count++;
         }
     }
 
-    cpu_info->name = (const char*) &ice_cpu_brand[0];
+    cpu_info->name = (const char*)(ice_cpu_brand);
     cpu_info->cores = cores;
 #else
     res = __get_cpuid_max(0x80000004, 0);

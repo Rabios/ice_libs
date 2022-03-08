@@ -108,7 +108,8 @@ typedef enum ice_time_error {
     ICE_TIME_ERROR_OK = 0,          // OK - no errors
     ICE_TIME_ERROR_UNKNOWN_TIME,    // Occurs when time() function fails
     ICE_TIME_ERROR_UNKNOWN_CLOCK,   // Occurs when clock_gettime() function fails (Linux/Unix only)
-    ICE_TIME_ERROR_SYSCALL_FAILURE  // Occurs when platform-specific call fails
+    ICE_TIME_ERROR_SYSCALL_FAILURE, // Occurs when platform-specific call fails
+    ICE_TIME_ERROR_INVALID_POINTER  // Occurs when passing NULL (Zero) as argument to ice_time_get_info()
 } ice_time_error;
 
 // Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
@@ -467,7 +468,8 @@ typedef enum ice_time_error {
     ICE_TIME_ERROR_OK = 0,          /* OK - no errors */
     ICE_TIME_ERROR_UNKNOWN_TIME,    /* Occurs when time() function fails */
     ICE_TIME_ERROR_UNKNOWN_CLOCK,   /* Occurs when retrieving uptime function fails (Only given on Linux and BSD) */
-    ICE_TIME_ERROR_SYSCALL_FAILURE  /* Occurs when platform-specific call fails */
+    ICE_TIME_ERROR_SYSCALL_FAILURE, /* Occurs when platform-specific call fails */
+    ICE_TIME_ERROR_INVALID_POINTER  /* Occurs when passing NULL (Zero) as argument to ice_time_get_info() */
 } ice_time_error;
 
 /* ============================== Functions ============================== */
@@ -632,13 +634,29 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
 
 #if !defined(ICE_TIME_RPI_PICO)
     time_t t;
-    struct tm* pt;
-    char* tm_str;
+    struct tm *pt;
+    char *tm_str;
+
+#if defined(ICE_TIME_BSD) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BLACKBERRY)
+    struct timeval tv;
+    size_t len;
+    int res, mib[2] = { CTL_KERN, KERN_BOOTTIME };
+#elif defined(ICE_TIME_LINUX)
+    struct sysinfo info;
+    int sysinfo_res;
+#endif
+
 #else
     datetime_t t;
     char tm_str_buf[128], *tm_str = &tm_str_buf[0];
     unsigned i, year_day = 0, year_days[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+    absolute_time_t pico_time;
 #endif
+    
+    if (time_info == 0) {
+        error = ICE_TIME_ERROR_INVALID_POINTER;
+        return error;
+    }
 
 #if defined(ICE_TIME_MICROSOFT)
 #if defined(_WIN32)
@@ -647,10 +665,6 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
     systicks = (ice_time_ulong) GetTickCount64();
 #endif
 #elif defined(ICE_TIME_BSD) || defined(ICE_TIME_APPLE) || defined(ICE_TIME_BLACKBERRY)
-    struct timeval tv;
-    size_t len;
-    int res, mib[2] = { CTL_KERN, KERN_BOOTTIME };
-
     len = sizeof(tv);
     res = sysctl(mib, 2, &tv, &len, 0, 0);
     if (res != 0) {
@@ -662,8 +676,7 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
 #elif defined(ICE_TIME_3DS)
     systicks = (ice_time_ulong) (svcGetSystemTick() / 1000);
 #elif defined(ICE_TIME_LINUX)
-    struct sysinfo info;
-    int sysinfo_res = sysinfo(&info);
+    sysinfo_res = sysinfo(&info);
 
     if (sysinfo_res != 0) {
         error = ICE_TIME_ERROR_SYSCALL_FAILURE;
@@ -673,7 +686,7 @@ ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *t
     systicks = (ice_time_ulong)(info.uptime * 1000);
 
 #elif defined(ICE_TIME_RPI_PICO)
-    absolute_time_t pico_time = get_absolute_time();
+    pico_time = get_absolute_time();
     systicks = (ice_time_ulong) to_ms_since_boot(pico_time);
 #endif
 

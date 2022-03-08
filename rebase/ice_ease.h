@@ -689,7 +689,7 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_out(ice_ease_type ease_type,
 
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return (x == 1.0) ? 1.0 : 1.0 - pow(2.0, -10 * x);
+        return (x == 1) ? 1.0 : 1.0 - pow(2.0, -10 * x);
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
@@ -807,7 +807,7 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in(ice_ease_type ease_typ
         if (t == 0) return b;
         
         t /= d;
-        if (t == 1.0) return b + c;
+        if (t == 1) return b + c;
         
         return -(postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p)) + b;
     }

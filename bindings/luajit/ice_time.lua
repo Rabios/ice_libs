@@ -67,8 +67,9 @@ typedef struct ice_time_info {
 typedef enum ice_time_error {
     ICE_TIME_ERROR_OK = 0,          /* OK - no errors */
     ICE_TIME_ERROR_UNKNOWN_TIME,    /* Occurs when time() function fails */
-    ICE_TIME_ERROR_UNKNOWN_CLOCK,   /* Occurs when clock_gettime() function fails (Linux/Unix only) */
-    ICE_TIME_ERROR_SYSCALL_FAILURE  /* Occurs when platform-specific call fails */
+    ICE_TIME_ERROR_UNKNOWN_CLOCK,   /* Occurs when retrieving uptime function fails (Only given on Linux and BSD) */
+    ICE_TIME_ERROR_SYSCALL_FAILURE, /* Occurs when platform-specific call fails */
+    ICE_TIME_ERROR_INVALID_POINTER  /* Occurs when passing NULL (Zero) as argument to ice_time_get_info() */
 } ice_time_error;
 
 /* ============================== Functions ============================== */

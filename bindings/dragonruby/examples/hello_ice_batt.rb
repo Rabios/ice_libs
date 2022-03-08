@@ -1,5 +1,4 @@
-$gtk.ffi_misc.gtk_dlopen("ice_batt")
-include FFI::CExt
+require "app/ice_batt.rb"
 
 def tick args
   # Struct that contains information about the battery
@@ -9,7 +8,7 @@ def tick args
   err = ice_batt_get_info(batt)
   
   # If the function failed to fetch battery information, Trace error then terminate the program
-  if (err != 0)
+  if (err != ICE_BATT_ERROR_OK)
     puts("ERROR: failed to fetch battery information!")
     return -1
   end
@@ -18,13 +17,13 @@ def tick args
   args.outputs.primitives << {
     x: 5,
     y: 5.from_top,
-    text: "Device has battery: #{((batt.value.exists == 0) ? "YES" : "NO")}"
+    text: "Device has battery: #{((batt.value.exists == ICE_BATT_TRUE) ? "YES" : "NO")}"
   }.to_label
   
   args.outputs.primitives << {
     x: 5,
     y: 30.from_top,
-    text: "Is battery charging: #{((batt.value.charging == 0) ? "YES" : "NO")}"
+    text: "Is battery charging: #{((batt.value.charging == ICE_BATT_TRUE) ? "YES" : "NO")}"
   }.to_label
   
   args.outputs.primitives << {

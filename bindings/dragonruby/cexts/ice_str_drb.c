@@ -641,15 +641,15 @@ static mrb_value drb_ffi_ice_str_free_bytes_Binding(mrb_state *state, mrb_value 
     ice_str_free_bytes(bytes_0);
     return mrb_nil_value();
 }
-static mrb_value drb_ffi_ice_str_arr_free_Binding(mrb_state *state, mrb_value value) {
+static mrb_value drb_ffi_ice_str_free_arr_Binding(mrb_state *state, mrb_value value) {
     mrb_value *args = 0;
     mrb_int argc = 0;
     mrb_get_args_f(state, "*", &args, &argc);
     if (argc != 2)
-        mrb_raisef_f(state, drb_getargument_error_f(state), "'ice_str_arr_free': wrong number of arguments (%d for 2)", argc);
+        mrb_raisef_f(state, drb_getargument_error_f(state), "'ice_str_free_arr': wrong number of arguments (%d for 2)", argc);
     char **arr_0 = drb_ffi__ZTSPPc_FromRuby(state, args[0]);
     unsigned long arrlen_1 = drb_ffi__ZTSm_FromRuby(state, args[1]);
-    ice_str_arr_free(arr_0, arrlen_1);
+    ice_str_free_arr(arr_0, arrlen_1);
     return mrb_nil_value();
 }
 static int drb_ffi_init_indirect_functions(void *(*lookup)(const char *));
@@ -683,7 +683,7 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     mrb_define_module_function_f(state, module, "ice_str_from_bytes", drb_ffi_ice_str_from_bytes_Binding, MRB_ARGS_REQ(2));
     mrb_define_module_function_f(state, module, "ice_str_free", drb_ffi_ice_str_free_Binding, MRB_ARGS_REQ(1));
     mrb_define_module_function_f(state, module, "ice_str_free_bytes", drb_ffi_ice_str_free_bytes_Binding, MRB_ARGS_REQ(1));
-    mrb_define_module_function_f(state, module, "ice_str_arr_free", drb_ffi_ice_str_arr_free_Binding, MRB_ARGS_REQ(2));
+    mrb_define_module_function_f(state, module, "ice_str_free_arr", drb_ffi_ice_str_free_arr_Binding, MRB_ARGS_REQ(2));
     struct RClass *CharPointerClass = mrb_define_class_under_f(state, module, "CharPointer", object_class);
     mrb_define_class_method_f(state, CharPointerClass, "new", drb_ffi__ZTSPc_New, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, CharPointerClass, "value", drb_ffi__ZTSPc_GetValue, MRB_ARGS_REQ(0));

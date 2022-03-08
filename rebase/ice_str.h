@@ -67,7 +67,7 @@ char* ice_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx)
 // Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
 char* ice_str_concat(const char *str1, const char *str2);
 
-// Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure
+// Returns string consists of string str2 inserted in string str1 at index idx on allocation success or NULL on allocation failure
 char* ice_str_insert(const char *str1, const char *str2, unsigned long idx);
 
 // Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes
@@ -131,7 +131,7 @@ void ice_str_free(char *str);
 void ice_str_free_bytes(int *bytes);
 
 // Frees array of strings, arrlen should be set to array length
-void ice_str_arr_free(char **arr, unsigned long arrlen);
+void ice_str_free_arr(char **arr, unsigned long arrlen);
 
 
 ================================== Linking Flags ==================================
@@ -176,7 +176,7 @@ void ice_str_arr_free(char **arr, unsigned long arrlen);
 #define ICE_STR_EXTERN          // externs library functions
 #define ICE_STR_STATIC          // statics library functions
 
-// NOTE: You cannot `#define` both `ICE_STR_EXTERN` and `ICE_STR_STATIC` together in the code...
+// NOTE: You cannot #define both ICE_STR_EXTERN and ICE_STR_STATIC together in the code...
 
 // Define this to customize ICE_STR_MALLOC, ICE_STR_CALLOC, ICE_STR_REALLOC, ICE_STR_FREE
 #define ICE_STR_CUSTOM_MEMORY_ALLOCATORS
@@ -339,7 +339,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long fr
 /* Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char *str1, const char *str2);
 
-/* Concats 2 strings and returns resulted string on allocation success or NULL on allocation failure */
+/* Returns string consists of string str2 inserted in string str1 at index idx on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_insert(const char *str1, const char *str2, unsigned long idx);
 
 /* Returns number of string str2 matches in string str1, idxs can be pointer to array of unsigned long integers (To be Dynamically-Allocated) to store the matching indexes */
@@ -403,7 +403,7 @@ ICE_STR_API void ICE_STR_CALLCONV ice_str_free(char *str);
 ICE_STR_API void ICE_STR_CALLCONV ice_str_free_bytes(int *bytes);
 
 /* Frees array of strings, arrlen should be set to array length */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char **arr, unsigned long arrlen);
+ICE_STR_API void ICE_STR_CALLCONV ice_str_free_arr(char **arr, unsigned long arrlen);
 
 #if defined(__cplusplus)
 }
@@ -425,23 +425,33 @@ ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_len(const char *str) {
 
 /* Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx) {
-    unsigned long i = 0;
-    unsigned long count = 0;
+    unsigned long i = 0,
+                  count = 0,
+                  lenstr = ice_str_len(str),
+                  len,
+                  alloc_size;
     ice_str_bool backwards = (to_idx < from_idx) ? ICE_STR_TRUE : ICE_STR_FALSE;
-    unsigned long len = (backwards == ICE_STR_TRUE) ? ((from_idx - to_idx) + 2) : ((to_idx - from_idx) + 2);
-    unsigned long alloc_size = (len * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
+    char *res = 0;
+
+    if ((str == 0) || ((to_idx >= lenstr) && (backwards == ICE_STR_FALSE))) return 0;
     
-    if (from_idx == to_idx) return ice_str_char_to_str(str[to_idx]);
+    len = (backwards == ICE_STR_TRUE) ? ((from_idx - to_idx) + 2) :
+                                        ((to_idx - from_idx) + 2);
+    alloc_size = (len * sizeof(char));
+
+    if (from_idx == to_idx) {
+        res = ice_str_char_to_str(str[to_idx]);
+        return res;
+    }
+    
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
     
     if (backwards == ICE_STR_TRUE) {
         for (i = to_idx; i <= from_idx; i++) {
-            res[((len - 2) - i)] = str[i];
+            res[count] = str[from_idx - i];
+            count++;
         }
-        
-        count = len - 1;
-
     } else {
         for (i = from_idx; i <= to_idx; i++) {
             res[count] = str[i];
@@ -461,8 +471,11 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char *str1, const char *
     unsigned long count = 0;
     unsigned long alloc_size = ((len1 + len2 + 1) * sizeof(char));
     unsigned long i;
-    char *res = ICE_STR_MALLOC(alloc_size);
-    
+    char *res = 0;
+
+    if ((len1 == 0) && (len2 == 0)) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
     
     for (i = 0; i < len1; i++) {
@@ -480,16 +493,17 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_concat(const char *str1, const char *
     return res;
 }
 
-/* Inserts string str2 into string str1 at specified index and returns result string on allocation success or NULL on allocation failure */
+/* Returns string consists of string str2 inserted in string str1 at index idx on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_insert(const char *str1, const char *str2, unsigned long idx) {
-    unsigned long len1 = ice_str_len(str1);
-    unsigned long len2 = ice_str_len(str2);
-    unsigned long count = 0;
-    unsigned long alloc_size = ((len1 + len2 + 1) * sizeof(char));
-    unsigned long i;
-    
-    char *res = ICE_STR_MALLOC(alloc_size);
-    
+    unsigned long len1 = ice_str_len(str1),
+                  len2 = ice_str_len(str2),
+                  i, count = 0,
+                  alloc_size = ((len1 + len2 + 1) * sizeof(char));
+    char *res = 0;
+
+    if ((len1 == 0) || (len2 == 0)) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
     
     for (i = 0; i < idx; i++) {
@@ -520,6 +534,8 @@ ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_matches(const char *str1, con
     unsigned long matches = 0;
     unsigned long alloc_size;
     unsigned long i;
+
+    if ((len1 == 0) || (len2 == 0)) return 0;
 
     for (i = 0; i < len1; i++) {
         if ((str1[i] == str2[0]) && ((i + (len2 - 1)) < len1)) {
@@ -565,15 +581,15 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char *str, const char *str1
     unsigned long *idxs = 0, matches = 0, alloc_size = 0;
     unsigned long len1, len2, len3, i, count = 0;
     char *res;
-    
-    if ((str == 0) || (str1 == 0) || (str2 == 0)) return 0;
-    
-    matches = ice_str_matches(str, str1, &idxs);
-    if (matches == 0) return 0;
-    
+
     len1 = ice_str_len(str);
     len2 = ice_str_len(str1);
     len3 = ice_str_len(str2);
+    
+    if ((len1 == 0) || (len2 == 0) || (len3 == 0)) return 0;
+    
+    matches = ice_str_matches(str, str1, &idxs);
+    if (matches == 0) return 0;
     
     if (len2 > len3) {
         alloc_size = (len1 + (len2 * matches) - (len3 * matches)) + 1;
@@ -607,7 +623,6 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rep(const char *str, const char *str1
     }
     
     res[count] = 0;
-    
     return res;
 }
 
@@ -616,9 +631,12 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_dup(const char *str, unsigned long ti
     unsigned long len = ice_str_len(str);
     unsigned long count = 0;
     unsigned long alloc_size = (((len * times) + 1) * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
     unsigned long i;
+    char *res = 0;
+
+    if (len == 0) return 0;
     
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
 
     for (i = 0; i < times; i++) {
@@ -639,13 +657,15 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_dup(const char *str, unsigned long ti
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_copy(const char *str) {
     unsigned long len = ice_str_len(str);
     unsigned long alloc_size = ((len + 1) * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
+    char *res = 0;
     unsigned long i;
 
+    if (len == 0) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
 
     for (i = 0; i < len; i++) res[i] = str[i];
-
     res[len] = 0;
 
     return res;
@@ -656,9 +676,12 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(const char *str) {
     unsigned long len = ice_str_len(str);
     unsigned long count = 0;
     unsigned long alloc_size = ((len + 1) * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
     unsigned long i;
+    char *res = 0;
 
+    if (len == 0) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
 
     for (i = 0; i < len; i++) {
@@ -674,8 +697,11 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_rev(const char *str) {
 /* Converts char to string and returns result on allocation success or NULL on allocation failure */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_char_to_str(char ch) {
     unsigned alloc_size = (2 * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
+    char *res = 0;
 
+    if (ch == 0) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
     
     res[0] = ch;
@@ -691,7 +717,7 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_same(const char *str1, const c
     unsigned long count = 0;
     unsigned long i;
     
-    if (len1 != len2) return ICE_STR_FALSE;
+    if ((len1 != len2) || (len1 == 0) || (len2 == 0)) return ICE_STR_FALSE;
 
     for (i = 0; i < len1; i++) {
         if (str1[i] == str2[i]) count++;
@@ -704,19 +730,17 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_same(const char *str1, const c
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(const char *str) {
     unsigned long len = ice_str_len(str);
     unsigned long alloc_size = ((len + 1) * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
     unsigned long i;
+    char *res = 0;
 
+    if (len == 0) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
 
     for (i = 0; i < len; i++) {
-        int c = (int) str[i];
-        
-        if (c >= 97 && c <= 122) {
-            res[i] = (char)(c - 32);
-        } else {
-            res[i] = str[i];
-        }
+        int c = (int)(str[i]);
+        res[i] = ((c >= 97) && (c <= 122)) ? ((char)(c - 32)) : str[i];
     }
     
     res[len] = 0;
@@ -728,19 +752,17 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_upper(const char *str) {
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(const char *str) {
     unsigned long len = ice_str_len(str);
     unsigned long alloc_size = ((len + 1) * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
     unsigned long i;
+    char *res = 0;
 
+    if (len == 0) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
 
     for (i = 0; i < len; i++) {
-        int c = (int) str[i];
-        
-        if (c >= 65 && c <= 90) {
-            res[i] = (char)(c + 32);
-        } else {
-            res[i] = str[i];
-        }
+        int c = (int)(str[i]);
+        res[i] = ((c >= 65) && (c <= 90)) ? ((char)(c + 32)) : str[i];
     }
     
     res[len] = 0;
@@ -752,17 +774,17 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_lower(const char *str) {
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_cap(const char *str) {
     unsigned long len = ice_str_len(str);
     unsigned long alloc_size = ((len + 1) * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
-    int c = (int) str[0];
     unsigned long i;
+    int c = 0;
+    char *res = 0;
+
+    if (len == 0) return 0;
     
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
 
-    if (c >= 97 && c <= 122) {
-        res[0] = (char)(c - 32);
-    } else {
-        res[0] = str[0];
-    }
+    c = (int)(str[0]);
+    res[0] = ((c >= 97) && (c <= 122)) ? ((char)(c - 32)) : str[0];
     
     for (i = 1; i < len; i++) {
         res[i] = str[i];
@@ -782,6 +804,8 @@ ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char *str, char delim, u
     unsigned long i;
     unsigned long repeat_count = 0, count = 0;
     unsigned long i1 = 0, i2 = 0, sets = 0;
+
+    if (len == 0) return 0;
     
     for (i = 0; i < len; i++) {
         unsigned long j = 0;
@@ -835,7 +859,7 @@ ICE_STR_API char** ICE_STR_CALLCONV ice_str_split(const char *str, char delim, u
         res[count] = ice_str_sub(str, i1, len - 1);
     }
     
-    *arrlen = arr_len;
+    if (arrlen != 0) *arrlen = arr_len;
     
     return res;
 }
@@ -853,21 +877,19 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char **strs, unsigned long
     unsigned long alloc_size = ((len + 1) * sizeof(char));
     unsigned long i;
 
-    if (delim != 0) {
-        len += arrlen - 1;
-    }
+    if ((strs == 0) || (arrlen == 0)) return 0;
+
+    if (delim != 0) len += arrlen - 1;
 
     for (i = 0; i < arrlen; i++) {
         len += ice_str_len(strs[i]);
     }
 
     res = ICE_STR_MALLOC(alloc_size);
-
     if (res == 0) return 0;
 
     for (i = 0; i < arrlen; i++) {
-        unsigned long lenstr = ice_str_len(strs[i]);
-        unsigned long j;
+        unsigned long j, lenstr = ice_str_len(strs[i]);
 
         for (j = 0; j < lenstr; j++) {
             res[count] = strs[i][j];
@@ -888,9 +910,15 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char **strs, unsigned long
 /* Returns ICE_STR_TRUE if string str1 starts with string str2, Else returns ICE_STR_FALSE */
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char *str1, const char *str2) {
     unsigned long len = ice_str_len(str2);
-    char *sub = ice_str_sub(str1, 0, len - 1);
-    ice_str_bool res = ice_str_same(sub, str2);
+    char *sub = 0;
+    ice_str_bool res = ICE_STR_FALSE;
+
+    if (len == 0) return ICE_STR_FALSE;
     
+    sub = ice_str_sub(str1, 0, len - 1);
+    if (sub == 0) return ICE_STR_FALSE;
+    
+    res = ice_str_same(sub, str2);
     ice_str_free(sub);
 
     return res;
@@ -898,11 +926,17 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char *str1, const
 
 /* Returns ICE_STR_TRUE if string str1 ends with string str2, Else returns ICE_STR_FALSE */
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char *str1, const char *str2) {
-    unsigned long len1 = ice_str_len(str1);
-    unsigned long len2 = ice_str_len(str2);
-    char *sub = ice_str_sub(str1, (len1 - len2), len1 - 1);
-    ice_str_bool res = ice_str_same(sub, str2);
+    unsigned long len1 = ice_str_len(str1),
+                  len2 = ice_str_len(str2);
+    char *sub = 0;
+    ice_str_bool res = ICE_STR_FALSE;
+
+    if ((len1 == 0) || (len2 == 0)) return ICE_STR_FALSE;
+
+    sub = ice_str_sub(str1, (len1 - len2), len1 - 1);
+    if (sub == 0) return ICE_STR_FALSE;
     
+    res = ice_str_same(sub, str2);
     ice_str_free(sub);
 
     return res;
@@ -911,6 +945,7 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char *str1, const c
 /* Returns ICE_STR_TRUE if string str ends with char ch, Else returns ICE_STR_FALSE */
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_last_char(const char *str, char ch) {
     unsigned long len = ice_str_len(str);
+    if (len == 0) return ICE_STR_FALSE;
 
     return (str[len - 1] == ch) ? ICE_STR_TRUE : ICE_STR_FALSE;
 }
@@ -919,16 +954,16 @@ ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_last_char(const char *str, cha
 ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char *str, unsigned long *arrlen) {
     unsigned long len = ice_str_len(str);
     unsigned long alloc_size = (len * sizeof(int));
-    int *res = ICE_STR_MALLOC(alloc_size);
     unsigned long i;
+    int *res = 0;
+
+    if (len == 0) return 0;
     
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
     
-    for (i = 0; i < len; i++) {
-        res[i] = (int) str[i];
-    }
-
-    *arrlen = len;
+    for (i = 0; i < len; i++) res[i] = (int)(str[i]);
+    if (arrlen != 0) *arrlen = len;
     
     return res;
 }
@@ -936,15 +971,15 @@ ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char *str, unsigned lon
 /* Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int *chars, unsigned long arrlen) {
     unsigned long alloc_size = ((arrlen + 1) * sizeof(char));
-    char *res = ICE_STR_MALLOC(alloc_size);
     unsigned long i;
-    
+    char *res = 0;
+
+    if ((chars == 0) || (arrlen == 0)) return 0;
+
+    res = ICE_STR_MALLOC(alloc_size);
     if (res == 0) return 0;
     
-    for (i = 0; i < arrlen; i++) {
-        res[i] = (char) chars[i];
-    }
-    
+    for (i = 0; i < arrlen; i++) res[i] = ((char)(chars[i]));
     res[arrlen] = 0;
     
     return res;
@@ -963,8 +998,10 @@ ICE_STR_API void ICE_STR_CALLCONV ice_str_free_bytes(int *bytes) {
 }
 
 /* Frees array of strings, arrlen should be set to array length */
-ICE_STR_API void ICE_STR_CALLCONV ice_str_arr_free(char **arr, unsigned long arrlen) {
+ICE_STR_API void ICE_STR_CALLCONV ice_str_free_arr(char **arr, unsigned long arrlen) {
     unsigned long i;
+
+    if ((arr == 0) && (arrlen > 0)) return;
     
     for (i = 0; i < arrlen; i++) {
         ICE_STR_FREE(arr[i]);

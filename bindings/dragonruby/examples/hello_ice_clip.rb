@@ -1,11 +1,10 @@
-$gtk.ffi_misc.gtk_dlopen("ice_clip")
-include FFI::CExt
+require "app/ice_clip.rb"
 
 $gtk.show_console
 
 def boot args
   # To store result of called functions
-  res = nil
+  res ||= nil
   
   # String to copy to clipboard later...
   str ||= "SPEED!"
@@ -24,7 +23,7 @@ def boot args
   res = ice_clip_clear()
   
   # If the function failed to clear the Clipboard, Trace error then terminate the program
-  if (res == -1)
+  if (res == ICE_CLIP_FALSE)
     puts("ERROR: failed to clear the Clipboard!")
     return -1
   end
@@ -33,9 +32,9 @@ def boot args
   res = ice_clip_set(str)
   
   # If the function failed to copy text to the Clipboard, Trace error then terminate the program
-  if (res == -1)
+  if (res == ICE_CLIP_FALSE)
     puts("ERROR: Failed to copy text to Clipboard!")
-    return
+    return -1
   end
     
   puts("Text copied to the Clipboard: #{str}")

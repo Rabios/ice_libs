@@ -1,7 +1,6 @@
 ====================== SCHEDULE ======================
 
-[WIP] ice_fs.h
+[WIP] Documentation updates!
 [WIP] Python, C#, Rust support!
-[WIP] Security and Documentation updates!
 
 To be continued...

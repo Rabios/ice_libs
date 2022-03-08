@@ -13,7 +13,7 @@ local function main()
   
   -- If function failed to fetch RAM info, Trace error then terminate the program
   if (res == ICE_RAM_FALSE) then
-    print("ERROR: failed to get RAM info!")
+    print("ERROR: failed to retrieve RAM informations!")
     return -1
   end
   

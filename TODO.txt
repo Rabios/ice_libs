@@ -31,8 +31,9 @@ Use megabytes instead of bytes for ice_ram.h (Thus we have to use double type in
 
 ==== ice_str.h ====
 
-1. ice_str_is_one_of_chars/ice_str_has_one_of_chars to indicate if character belongs to collection of chars from string...
+1. ice_str_is_one_of_chars/ice_str_has_one_of_chars? to indicate if character belongs to collection of chars from string...
 2. Embedded mode option? To use stack allocation instead of heap allocation...
+3. Shall i add function to check if char is number?
 
 ==== ice_batt.h ====
 
@@ -44,7 +45,7 @@ Linux, Palm, Tizen, and Symbian implementations...
 
 ==== ice_math.h ====
 
-Add these?
+1. Add these:
 
 ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erf(double n);
 ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erfc(double n);
@@ -58,18 +59,19 @@ ICE_MATH_API double ICE_MATH_CALLCONV ice_math_y0(double n);
 ICE_MATH_API double ICE_MATH_CALLCONV ice_math_y1(double n);
 ICE_MATH_API double ICE_MATH_CALLCONV ice_math_yn(int b, double n);
 
-================= CURRENT WIP LIBRARIES =================
+2. Allow usage of SIMD intrinsics (MMX, SSE, SSE2, SSE3, AVX, AVX2, etc...)
 
-ice_fs.h (Complete the lib)
+==== ice_cpu.h ====
+
+Add booleans for instructions support. (MMX, SSE, SSE2, SSE3, AVX, AVX2, etc...)
+
+=======================================================
 
 ice_math.h (Complete the lib)
 ice_vecmath.h (Complete the lib)
-
 ice_arr.h (Complete the lib)
-
 ice_steam.h (Complete the lib)
 ice_hashmap.h (Fix the implementation)
-
 ice_joy.h
 ice_mouse.h
 ice_kbd.h

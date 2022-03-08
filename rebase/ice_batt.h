@@ -64,7 +64,8 @@ typedef struct ice_batt_info {
 typedef enum ice_batt_error {
     ICE_BATT_ERROR_OK = 0,          // OK - no errors
     ICE_BATT_ERROR_UNKNOWN_STATUS,  // Occurs when failed to get battery status, Or if battery status is undefined, Or device doesn't have battery
-    ICE_BATT_ERROR_SYSCALL_FAILURE  // Occurs when platform-specific function fails
+    ICE_BATT_ERROR_SYSCALL_FAILURE, // Occurs when platform-specific function fails
+    ICE_BATT_ERROR_INVALID_POINTER  // Occurs when passing NULL (Zero) as argument to ice_batt_get_info()
 } ice_batt_error;
 
 // [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
@@ -326,7 +327,8 @@ typedef struct ice_batt_info {
 typedef enum ice_batt_error {
     ICE_BATT_ERROR_OK = 0,          /* OK - no errors */
     ICE_BATT_ERROR_UNKNOWN_STATUS,  /* Occurs when failed to get battery status, Or if battery status is undefined, Or device doesn't have battery */
-    ICE_BATT_ERROR_SYSCALL_FAILURE  /* Occurs when platform-specific function fails */
+    ICE_BATT_ERROR_SYSCALL_FAILURE, /* Occurs when platform-specific function fails */
+    ICE_BATT_ERROR_INVALID_POINTER  /* Occurs when passing NULL (Zero) as argument to ice_batt_get_info() */
 } ice_batt_error;
 
 /* ============================== Functions ============================== */
@@ -345,8 +347,15 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_info(ice_batt_info *b
 
 #if defined(ICE_BATT_IMPL)
 
-/* [INTERNAL] Check if bitmask contains bit, Returns true if contains or false if does not contain */
+/* [INTERNAL] Checks if bitmask contains bit, Returns true if contains or false if does not contain */
 #define ICE_BATT_BITFLAG_EXIST(a, b) ((a & b) == b)
+
+/* [INTERNAL] Checks if NULL (Zero) passed as argument to ice_batt_get_info() */
+#define ICE_BATT_CHECK_INVALID_POINTER          \
+    if (batt_info == 0) {                       \
+        error = ICE_BATT_ERROR_INVALID_POINTER; \
+        return error;                           \
+    }
 
 /* Implementation of bool */
 #if !defined(__STDC_VERSION__)
@@ -452,6 +461,8 @@ ICE_BATT_API ice_batt_error ICE_BATT_CALLCONV ice_batt_get_info(ice_batt_info *b
     float batt_level;
     ice_batt_bool failed = ICE_BATT_FALSE;
 
+    ICE_BATT_CHECK_INVALID_POINTER
+
     mid = env->GetStaticMethodID(env, activity_class, "getContext", "()Landroid/content/Context;");
     ice_batt_android_null_check(mid);
 
@@ -537,6 +548,8 @@ goto finish:
 #elif defined(ICE_BATT_TIZEN)
     int res, batt_level;
     bool batt_charging;
+
+    ICE_BATT_CHECK_INVALID_POINTER
     
     res = device_battery_get_percent(&batt_level);
     if (res != 0) {
@@ -563,8 +576,11 @@ goto finish:
 #endif
     int batt_level;
     long batt_state;
+    UIDevice *device; 
     
-    UIDevice *device = [UIDevice currentDevice];
+    ICE_BATT_CHECK_INVALID_POINTER
+
+    device = [UIDevice currentDevice];
     [device setBatteryMonitoringEnabled:YES];
     
     batt_level = (int) ([device batteryLevel] * 100.0f);
@@ -601,6 +617,8 @@ goto finish:
     float batt_level;
     ice_batt_bool batt_charging;
     
+    ICE_BATT_CHECK_INVALID_POINTER
+
     if (srcs > 0) {
         psrc = IOPSGetPowerSourceDescription(blob, CFArrayGetValueAtIndex(sources, 0));
         
@@ -660,6 +678,8 @@ goto finish:
     bb::device::BatteryChargingState::Type charge_state;
     ice_batt_bool batt_charging;
     int batt_level;
+
+    ICE_BATT_CHECK_INVALID_POINTER
     
     batt_info->exists = info.isPresent() ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_level = info.level();
@@ -683,6 +703,8 @@ goto finish:
     EmscriptenBatteryEvent status;
     double batt_level;
 
+    ICE_BATT_CHECK_INVALID_POINTER
+
     /* It should [goto failure] if device has no battery! */
     if (emscripten_get_battery_status(&status) != 0) {
         error = ICE_BATT_ERROR_UNKNOWN_STATUS;
@@ -700,6 +722,8 @@ goto finish:
     Windows::Devices::Power::BatteryReport ^batt_state = Windows::Devices::Power::Battery::AggregateBattery->GetReport();
     float batt_level;
 
+    ICE_BATT_CHECK_INVALID_POINTER
+
     batt_info->exists = (batt_state->Status != Windows::System::Power::BatteryStatus::NotPresent) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_info->charging = (batt_state->Status == Windows::System::Power::BatteryStatus::Charging) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_level = ((float)(batt_state->RemainingCapacityInMilliwattHours->Value / batt_state->FullChargeCapacityInMilliwattHours->Value) * 100.0f);
@@ -712,6 +736,8 @@ goto finish:
 #elif defined(ICE_BATT_MICROSOFT)
     SYSTEM_POWER_STATUS status;
     unsigned batt_level;
+
+    ICE_BATT_CHECK_INVALID_POINTER
     
     if (GetSystemPowerStatus(&status) == 0) {
         error = ICE_BATT_ERROR_UNKNOWN_STATUS;
@@ -729,6 +755,8 @@ goto finish:
     Result res;
     unsigned batt_level;
     ChargerType chtype;
+
+    ICE_BATT_CHECK_INVALID_POINTER
     
     res = psmInitialize();
     if (R_FAILED(res)) {
@@ -761,6 +789,8 @@ goto finish:
 #elif defined(ICE_BATT_PSP)
     int batt_level;
 
+    ICE_BATT_CHECK_INVALID_POINTER
+
     batt_info->exists = (scePowerIsBatteryExist() == SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_info->charging = (scePowerIsBatteryCharging() SCE_TRUE) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
 
@@ -771,6 +801,9 @@ goto finish:
 
 #elif defined(ICE_BATT_PSVITA)
     int batt_level = scePowerGetBatteryLifePercent();
+
+    ICE_BATT_CHECK_INVALID_POINTER
+
     batt_info->exists = ICE_BATT_TRUE;
 
     if (!(batt_level >= 0 && batt_level <= 100)) {
@@ -785,6 +818,8 @@ goto finish:
 #if defined(__FreeBSD__) || defined(__DragonFly__)
     int batt_life, batt_state, fd, res = 0;
     size_t len;
+
+    ICE_BATT_CHECK_INVALID_POINTER
 
     len = sizeof(batt_life);
     res = sysctlbyname("hw.acpi.battery.life", &batt_life, &len, 0, 0);
@@ -803,9 +838,12 @@ goto finish:
     batt_info->exists = !ICE_BATT_BITFLAG_EXIST(batt_state, (0x0001 | 0x0002 | 0x0004)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_info->charging = ICE_BATT_BITFLAG_EXIST(batt_state, 0x0002)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_info->level = (unsigned) batt_level;
+
 #elif defined(__OpenBSD__) || defined(__NetBSD__)
     struct apm_power_info info;
     int fd, res;
+
+    ICE_BATT_CHECK_INVALID_POINTER
 
     fd = open("/dev/apm", O_RDONLY);
     if (fd != 0) {
@@ -830,10 +868,13 @@ goto finish:
     batt_info->exists = !((info.battery_state == APM_BATT_UNKNOWN) || (info.battery_state == APM_BATT_ABSENT)) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_info->charging = (info.battery_state == APM_BATT_CHARGING) ? ICE_BATT_TRUE : ICE_BATT_FALSE;
     batt_info->level = (unsigned) info.battery_life;
+
 #endif
 #elif defined(ICE_BATT_UNIX)
     int handle, res, readlen;
     char buf[513];
+
+    ICE_BATT_CHECK_INVALID_POINTER
     
     handle = open("/sys/class/power_supply/BAT0/capacity", O_RDONLY);
     if (handle == -1) {
