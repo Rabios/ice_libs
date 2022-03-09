@@ -28,7 +28,7 @@ int main(void) {
     lib = ice_ffi_load(path);
     
     /* If the function failed to load the shared library/object, Trace error then terminate the program */
-    if (lib == NULL) {
+    if (lib == 0) {
         trace("ice_ffi_load", "ERROR: failed to load shared library/object!");
         return -1;
     }
@@ -37,7 +37,7 @@ int main(void) {
     *(unsigned**)(&F42) = ice_ffi_get(lib, "F42");
     
     /* If the function failed to get symbol from shared library/object, Trace error then terminate the program */
-    if (F42 == NULL) {
+    if (F42 == 0) {
         trace("ice_ffi_get", "ERROR: failed to get symbol from shared library/object!");
         return -1;
     }
@@ -46,7 +46,7 @@ int main(void) {
     printf("F42 call result: %u\n", F42());
     
     /* When done, Unload symbols and the shared library/object */
-    F42 = NULL;
+    F42 = 0;
     unload_res = ice_ffi_unload(lib);
     
     /* If the function failed to unload shared library/object, Trace error then terminate the program */

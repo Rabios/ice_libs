@@ -13,7 +13,7 @@ local function main()
   
   -- If the function failed to fetch time information, Trace error then terminate the program!
   if (res ~= ICE_TIME_ERROR_OK) then
-    print("ERROR: failed to get time info!")
+    print("ERROR: failed to retrieve time info!")
     return -1
   end
   

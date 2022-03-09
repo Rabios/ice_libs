@@ -18,7 +18,7 @@ int main(void) {
     const char *text = ice_clip_get();
 
     /* If the function failed to retrieve Clipboard text or Clipboard has no text then trace log a note, Else print the retrieved text... */
-    if (text == NULL) {
+    if (text == 0) {
         trace("ice_clip_get", "LOG: failed to retrieve Clipboard text, Maybe the Clipboard does not contain text?");
     } else {
         printf("Text from the Clipboard: %s\n", text);

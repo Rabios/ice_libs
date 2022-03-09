@@ -19,7 +19,7 @@ typedef struct ice_cpu_info {
 
 /* ============================== Functions ============================== */
 
-/* Retreves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
+/* Retrieves info about CPU and stores info into ice_cpu_info struct by pointing to, Returns ICE_CPU_TRUE on success or ICE_CPU_FALSE on failure */
 ice_cpu_bool ice_cpu_get_info(ice_cpu_info *cpu_info);
 ]])
 
