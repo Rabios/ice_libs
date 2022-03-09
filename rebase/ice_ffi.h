@@ -367,7 +367,7 @@ ICE_FFI_API ice_ffi_handle ICE_FFI_CALLCONV ice_ffi_get(ice_ffi_handle lib, cons
 #elif defined(ICE_FFI_BEOS)
     call_res = get_image_symbol((isize) lib, symbol, B_SYMBOL_TYPE_ANY, &sym);
     if (call_res != 0) return 0;
-#elif defined(ICE_FS_UNIX)
+#elif defined(ICE_FFI_UNIX)
     sym = dlsym(lib, symbol);
 #endif
 

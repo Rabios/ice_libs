@@ -6,6 +6,7 @@
 2. Extended string length for `ice_cpu_brand` (CPU Name) on Microsoft Platforms
 3. Fixed `ice_fs_type` function in `ice_fs.h` to be compatible with MSVC!
 4. Improved some samples...
+5. Removed `zip` and `unzip` packages installation from `check_packages.sh` as we don't use them locally...
 
 ### March 8, 2022
 
