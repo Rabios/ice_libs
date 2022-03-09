@@ -1600,7 +1600,7 @@ ICE_FS_API ice_fs_object_type ICE_FS_CALLCONV ice_fs_type(const char *path) {
     res = stat(path, &info);
     if (res == -1) return ICE_FS_OBJECT_TYPE_NONE;
 
-    return ((int)(S_ISDIR(info.st_mode)) == 1) ? ICE_FS_OBJECT_TYPE_DIR : ICE_FS_OBJECT_TYPE_FILE;
+    return ((int)((info.st_mode & S_IFMT) == S_IFDIR)) ? ICE_FS_OBJECT_TYPE_DIR : ICE_FS_OBJECT_TYPE_FILE;
 }
 
 /* Reads content of file and returns the content on allocation success or NULL on failure, file_size is pointer to unsigned long integer that will store number of chars (bytes) the file has */

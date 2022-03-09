@@ -16,7 +16,7 @@ int main(void) {
 
     /* If the function failed to fetch time information, Trace error then terminate the program! */
     if (res != ICE_TIME_ERROR_OK) {
-        trace("ice_time_get_info", "ERROR: failed to get time info!");
+        trace("ice_time_get_info", "ERROR: failed to retrieve time info!");
         return -1;
     }
 

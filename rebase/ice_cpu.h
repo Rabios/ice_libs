@@ -292,7 +292,7 @@ unsigned ice_cpu_brand[12];
 #  else
 #    include <sysinfoapi.h>
 #  endif
-char ice_cpu_brand[64];
+char ice_cpu_brand[128];
 #elif defined(ICE_CPU_BSD) || defined(ICE_CPU_APPLE) || defined(ICE_CPU_BLACKBERRY)
 #  include <stddef.h>
 #  if defined(__FreeBSD__) || defined(__DragonFly__) || defined(ICE_CPU_APPLE)

@@ -31,7 +31,7 @@ int main(void) {
     }
     
     /* Get the default OpenAL audio device and initialize it */
-    device_name = alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER);
+    device_name = alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER);
     dev = alcOpenDevice(device_name);
     
     /* If the function failed to initialize the default OpenAL device, Trace error then terminate the program */
