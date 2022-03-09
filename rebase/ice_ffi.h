@@ -315,17 +315,25 @@ ICE_FFI_API ice_ffi_handle ICE_FFI_CALLCONV ice_ffi_get(ice_ffi_handle lib, cons
 
 /* Loads shared library from path, Returns handle of loaded shared library on success or NULL on failure */
 ICE_FFI_API ice_ffi_handle ICE_FFI_CALLCONV ice_ffi_load(const char *path) {
-#if defined(ICE_FFI_MICROSOFT)
-    return LoadLibraryA(path);
-#elif defined(ICE_FFI_BEOS)
-    isize lib = load_add_on(path);
-
-    if (lib < 0) return 0;
-    
-    return (ice_ffi_handle) lib;
-#elif defined(ICE_FFI_UNIX)
-    return dlopen(path, RTLD_NOW | RTLD_GLOBAL);
+    ice_ffi_handle lib;
+#if defined(ICE_FFI_BEOS)
+    isize libsize;
 #endif
+
+    if (path == 0) return 0;
+
+#if defined(ICE_FFI_MICROSOFT)
+    lib = LoadLibraryA(path);
+#elif defined(ICE_FFI_BEOS)
+    libsize = load_add_on(path);
+    if (libsize < 0) return 0;
+    
+    lib = (ice_ffi_handle)(libsize);
+#elif defined(ICE_FFI_UNIX)
+    lib = dlopen(path, RTLD_NOW | RTLD_GLOBAL);
+#endif
+
+    return lib;
 }
 
 /* Unloads shared library loaded via ice_ffi_load, Returns ICE_FFI_TRUE on success or ICE_FFI_FALSE on failure */
@@ -347,16 +355,23 @@ ICE_FFI_API ice_ffi_bool ICE_FFI_CALLCONV ice_ffi_unload(ice_ffi_handle lib) {
 
 /* Loads symbol from shared library loaded via ice_ffi_load, Returns pointer to loaded symbol on success or NULL on failure */
 ICE_FFI_API ice_ffi_handle ICE_FFI_CALLCONV ice_ffi_get(ice_ffi_handle lib, const char *symbol) {
-#if defined(ICE_FFI_MICROSOFT)
-    return GetProcAddress(lib, symbol);
-#elif defined(ICE_FFI_BEOS)
     ice_ffi_handle sym;
-    int res = get_image_symbol((isize) lib, symbol, B_SYMBOL_TYPE_ANY, &sym);
-
-    return (res == 0) ? sym : 0;
-#elif defined(ICE_FFI_UNIX)
-    return dlsym(lib, symbol);
+#if defined(ICE_FFI_BEOS)
+    int call_res;
 #endif
+
+    if (symbol == 0) return 0;
+
+#if defined(ICE_FFI_MICROSOFT)
+    sym = GetProcAddress(lib, symbol);
+#elif defined(ICE_FFI_BEOS)
+    call_res = get_image_symbol((isize) lib, symbol, B_SYMBOL_TYPE_ANY, &sym);
+    if (call_res != 0) return 0;
+#elif defined(ICE_FS_UNIX)
+    sym = dlsym(lib, symbol);
+#endif
+
+    return sym;
 }
 
 #endif  /* ICE_FFI_IMPL */

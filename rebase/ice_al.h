@@ -557,33 +557,42 @@ static ice_al_handle ice_al_lib;
 
 /* [INTERNAL] Loads symbol from loaded OpenAL shared library, Which can be casted to a function to call */
 ICE_AL_API ice_al_handle ICE_AL_CALLCONV ice_al_proc(const char *symbol) {
-#if defined(ICE_AL_MICROSOFT)
-    return GetProcAddress(ice_al_lib, symbol);
-#elif defined(ICE_AL_BEOS)
     ice_al_handle sym;
-    int res = get_image_symbol((isize) ice_al_lib, symbol, B_SYMBOL_TYPE_ANY, &sym);
-    
-    if (res != 0) return 0;
-
-#elif defined(ICE_AL_UNIX)
-    return dlsym(ice_al_lib, symbol);
+#if defined(ICE_AL_BEOS)
+    int call_res;
 #endif
+
+    if (symbol == 0) return 0;
+
+#if defined(ICE_AL_MICROSOFT)
+    sym = GetProcAddress(ice_al_lib, symbol);
+#elif defined(ICE_AL_BEOS)
+    call_res = get_image_symbol((isize)(ice_al_lib), symbol, B_SYMBOL_TYPE_ANY, &sym);
+    if (call_res != 0) return 0;
+#elif defined(ICE_AL_UNIX)
+    sym = dlsym(ice_al_lib, symbol);
+#endif
+    
+    return sym;
 }
 
 /* Loads OpenAL API from shared library path (ex. openal32.dll on Windows), Returns ICE_AL_TRUE on success or ICE_AL_FALSE on failure */
 ICE_AL_API ice_al_bool ICE_AL_CALLCONV ice_al_load(const char *path) {
+#if defined(ICE_AL_BEOS)
+    isize libsize;
+#endif
+
+    if (path == 0) return ICE_AL_FALSE;
+
 #if defined(ICE_AL_MICROSOFT)
     ice_al_lib = LoadLibraryA(path);
-    if (ice_al_lib == 0) return ICE_AL_FALSE;
 #elif defined(ICE_AL_BEOS)
-    isize lib = load_add_on(path);
-    if (lib < 0) return ICE_AL_FALSE;
+    libsize = load_add_on(path);
+    if (libsize < 0) return ICE_AL_FALSE;
     
-    ice_al_lib = (ice_al_handle) lib;
-
+    ice_al_lib = (ice_al_handle)(libsize);
 #elif defined(ICE_AL_UNIX)
     ice_al_lib = dlopen(path, RTLD_NOW | RTLD_GLOBAL);
-    if (ice_al_lib == 0) return ICE_AL_FALSE;
 #endif
 
     ICE_AL_LOAD_PROC(alDopplerFactor);

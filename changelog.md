@@ -1,5 +1,12 @@
 # Changelog
 
+### March 9, 2022
+
+1. Security improvements have been done for `ice_al.h` and `ice_ffi.h`
+2. Extended string length for `ice_cpu_brand` (CPU Name) on Microsoft Platforms
+3. Fixed `ice_fs_type` function in `ice_fs.h` to be compatible with MSVC!
+4. Improved some samples...
+
 ### March 8, 2022
 
 1. ice_libs have passed 1 year on GitHub! (Happy Anniversary!)
