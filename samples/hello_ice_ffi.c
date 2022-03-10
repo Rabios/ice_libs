@@ -1,5 +1,5 @@
 /* Define the implementation of the library and include it */
-#define ICE_FFI_IMPL
+#define ICE_FFI_IMPL 1
 #include "ice_ffi.h"
 
 #include <stdio.h>
