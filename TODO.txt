@@ -7,6 +7,8 @@
 
 [ ] sokol-style for private functions
 [ ] Macro to ease definition of the APIs
+[ ] Inline assembly backend for best performance... (Later...)
+[ ] Refactor source code and add features...
 
 ====================== TODO [LIBRARIES] ======================
 
@@ -27,13 +29,15 @@ testfile2.c:40:6: warning: dereferencing type-punned pointer will break strict-a
 
 ==== ice_ram.h ====
 
-Use megabytes instead of bytes for ice_ram.h (Thus we have to use double type instead...)
+1. Use megabytes instead of bytes for ice_ram.h? (Thus we have to use double type instead...)
+2. Add another struct for memory pages count info
 
 ==== ice_str.h ====
 
 1. ice_str_is_one_of_chars/ice_str_has_one_of_chars? to indicate if character belongs to collection of chars from string...
 2. Embedded mode option? To use stack allocation instead of heap allocation...
 3. Shall i add function to check if char is number?
+4. ice_str_cmp and implement any possible stuff from string.h
 
 ==== ice_batt.h ====
 
@@ -41,9 +45,10 @@ Maybe add BeOS/Haiku support?
 
 ==== ice_clip.h ====
 
-Linux, Palm, Tizen, and Symbian implementations...
+1. Linux, Palm, Tizen, and Symbian implementations...
+2. Ability to free retrieved clipboard string
 
-==== ice_math.h ====
+==== ice_math.h and ice_vecmath.h ====
 
 1. Add these:
 
@@ -64,6 +69,21 @@ ICE_MATH_API double ICE_MATH_CALLCONV ice_math_yn(int b, double n);
 ==== ice_cpu.h ====
 
 Add booleans for instructions support. (MMX, SSE, SSE2, SSE3, AVX, AVX2, etc...)
+
+==== ice_fs.h ====
+
+File Lock/Unlock functions...
+
+================== Python Bindings ==================
+
+[ ] ice_al.py
+[ ] ice_cpu.py
+[ ] ice_time.py
+[ ] ice_fs.py
+[ ] ice_str.py
+
+1. Format strings in Python examples and review bindings along their examples...
+2. Fix ice_al for Python if possible...
 
 =======================================================
 
