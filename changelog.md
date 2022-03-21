@@ -1,5 +1,11 @@
 # Changelog
 
+### March 21, 2022
+
+1. Redesigned marcros for `ice_al.h`
+2. Unit Tests for `ice_batt.h` and `ice_clip.h` and `ice_cpu.h` and `ice_ram.h`
+3. Updated TODO for next goals, Also currently working on `ice_vecmath.h` and the bindings and also the site! :D
+
 ### March 9, 2022
 
 1. Security improvements have been done for `ice_al.h` and `ice_ffi.h`
