@@ -59,7 +59,7 @@ You can support or contribute to ice_libs project by possibly one of following t
 /*and now we finich including */
 #endif
 /*
-ice_ffi.h is dual-licensed, Choose the one you prefer!
+ice.h is dual-licensed, Choose the one you prefer!
 
 ------------------------------------------------------------------------
 LICENSE A - PUBLIC DOMAIN LICENSE
