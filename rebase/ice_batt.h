@@ -442,7 +442,7 @@ static ANativeActivity *ice_batt_native_activity;
 
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions */
 ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(const void *activity) {
-    ice_batt_native_activity = (ANativeActivity*) activity;
+    ice_batt_native_activity = (ANativeActivity*)(activity);
 }
 #endif
 

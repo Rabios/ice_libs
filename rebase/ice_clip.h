@@ -316,12 +316,12 @@ typedef enum ice_clip_bool {
 
 #if defined(ICE_CLIP_ANDROID)
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_clip on Android, This Should be called first before other ice_clip.h functions */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(void *activity);
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(const void *activity);
 #endif
 
 #if defined(ICE_CLIP_MICROSOFT)
 /* [WINDOWS-ONLY, OPTIONAL] Sets the Window to be used with ice_clip, This is optional feature as the Windows implementation do not need Window by default */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(void *window);
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(const void *window);
 #endif
 
 /* Retrieves the text from Clipboard, Returns the text on success or NULL on failure */
@@ -396,8 +396,8 @@ typedef enum bool { false, true } bool;
 static ANativeActivity *ice_clip_native_activity;
 
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_clip on Android, This Should be called first before other ice_clip.h functions */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(void *activity) {
-    ice_clip_native_activity = (ANativeActivity*) activity;
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(const void *activity) {
+    ice_clip_native_activity = (ANativeActivity*)(activity);
 }
 #endif
 
@@ -406,8 +406,8 @@ ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_native_activity(void *activity)
 static void *ice_clip_hwnd = 0;
 
 /* [WINDOWS-ONLY, OPTIONAL] Sets the Window to be used with ice_clip, This is optional feature as the Windows implementation do not need Window by default */
-ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(void *window) {
-    ice_clip_hwnd = window;
+ICE_CLIP_API void ICE_CLIP_CALLCONV ice_clip_use_window(const void *window) {
+    ice_clip_hwnd = (void*)(window);
 }
 #endif
 
