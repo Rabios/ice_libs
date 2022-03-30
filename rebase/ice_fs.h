@@ -269,8 +269,8 @@ ice_fs_bool ice_fs_chdir(const char *path);
 // Returns directory informations with list of contents in path on success or NULL on failure
 ice_fs_dir ice_fs_dir_content(const char *path);
 
-// Frees/Deallocates a directory information struct
-void ice_fs_free_dir_content(ice_fs_dir dir);
+// Frees/Deallocates a directory information struct, dir should be pointer to the directory information struct that will be freed
+void ice_fs_free_dir_content(ice_fs_dir *dir);
 
 // Searches in contents of directory for a specific file/directory by string, Returns array of strings that contains full path of founded items on allocation success or NULL on failure, results should be pointer to unsigned long integer that stores number of founded items
 char** ice_fs_dir_search(const char *path, const char *str, unsigned long *results);
@@ -704,8 +704,8 @@ ICE_FS_API ice_fs_bool ICE_FS_CALLCONV ice_fs_chdir(const char *path);
 /* Returns directory informations with list of contents in path on success or NULL on failure */
 ICE_FS_API ice_fs_dir ICE_FS_CALLCONV ice_fs_dir_content(const char *path);
 
-/* Frees/Deallocates a directory information struct */
-ICE_FS_API void ICE_FS_CALLCONV ice_fs_free_dir_content(ice_fs_dir dir);
+/* Frees/Deallocates a directory information struct, dir should be pointer to the directory information struct that will be freed */
+ICE_FS_API void ICE_FS_CALLCONV ice_fs_free_dir_content(ice_fs_dir *dir);
 
 /* Searches in contents of directory for a specific file/directory by string, Returns array of strings that contains full path of founded items on allocation success or NULL on failure, results should be pointer to unsigned long integer that stores number of founded items */
 ICE_FS_API char** ICE_FS_CALLCONV ice_fs_dir_search(const char *path, const char *str, unsigned long *results);
@@ -1837,17 +1837,19 @@ failure:
     return res;
 }
 
-/* Frees/Deallocates a directory information struct */
-ICE_FS_API void ICE_FS_CALLCONV ice_fs_free_dir_content(ice_fs_dir dir) {
+/* Frees/Deallocates a directory information struct, dir should be pointer to the directory information struct that will be freed */
+ICE_FS_API void ICE_FS_CALLCONV ice_fs_free_dir_content(ice_fs_dir *dir) {
     unsigned long i;
 
-    for (i = 0; i < dir.items_count; i++) {
-        ice_fs_free_str((char*)(dir.items[i].name));
+    if (dir == 0) return;
+
+    for (i = 0; i < dir->items_count; i++) {
+        ice_fs_free_str((char*)(dir->items[i].name));
     }
 
-    ICE_FS_FREE(dir.items);
-    dir.items = (ice_fs_object*)(0);
-    dir.items_count = 0;
+    ICE_FS_FREE(dir->items);
+    dir->items = 0;
+    dir->items_count = 0;
 }
 
 /* Searches in contents of directory for a specific file/directory by string, Returns array of strings that contains full path of founded items on allocation success or NULL on failure, results should be pointer to unsigned long integer that stores number of founded items */
@@ -1906,7 +1908,7 @@ lookup:
     }
     
     if (lookup_state == 2) {
-        if (d.items_count > 0) ice_fs_free_dir_content(d);
+        if (d.items_count > 0) ice_fs_free_dir_content(&d);
         if (results != 0) *results = items_count;
         
         return res;
@@ -1917,7 +1919,7 @@ lookup:
     goto lookup;
 
 end:
-    if (d.items_count > 0) ice_fs_free_dir_content(d);
+    if (d.items_count > 0) ice_fs_free_dir_content(&d);
     if (results != 0) *results = 0;
     return 0;
 }
@@ -2009,7 +2011,7 @@ ICE_FS_API ice_fs_bool ICE_FS_CALLCONV ice_fs_clear(const char *path) {
             if (res == ICE_FS_FALSE) break;
         }
         
-        ice_fs_free_dir_content(d);
+        ice_fs_free_dir_content(&d);
     }
 
     return res;
@@ -2055,7 +2057,7 @@ ICE_FS_API ice_fs_bool ICE_FS_CALLCONV ice_fs_copy(const char *path1, const char
             if (cp == ICE_FS_FALSE) break;
         }
         
-        ice_fs_free_dir_content(d);
+        ice_fs_free_dir_content(&d);
         
         return cp;
         

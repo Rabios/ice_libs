@@ -1,16 +1,15 @@
-====================== TODO [IMPORTANT] ======================
+====================== TODO ======================
 
-[o] Continue working on the libs
-[o] Complete the website
-
-====================== TODO [UNIMPORTANT] ====================
-
+[ ] Continue working on the libs
+[ ] Doxygen-like docs...
+[ ] Complete the website
 [ ] sokol-style for private functions
 [ ] Macro to ease definition of the APIs
 [ ] Inline assembly backend for best performance... (Later...)
 [ ] Refactor source code and add features...
+[ ] Python/C#/Rust bindings
 
-====================== TODO [LIBRARIES] ======================
+NOTE: Not scheduled and each one might be done in specific time...
 
 ==== ice_al.h ====
 
@@ -37,16 +36,17 @@ testfile2.c:40:6: warning: dereferencing type-punned pointer will break strict-a
 1. ice_str_is_one_of_chars/ice_str_has_one_of_chars? to indicate if character belongs to collection of chars from string...
 2. Embedded mode option? To use stack allocation instead of heap allocation...
 3. Shall i add function to check if char is number?
-4. ice_str_cmp and implement any possible stuff from string.h
+4. ice_str_cmp and implement any possible stuff from string.h and ctypes.h (isdigit, isctrl, etc...)
+5. Kill parts that you don't have to allocate memory for...
 
 ==== ice_batt.h ====
 
-Maybe add BeOS/Haiku support?
+Maybe add BeOS/Haiku support? (Might not possible but still a concept...)
 
 ==== ice_clip.h ====
 
-1. Linux, Palm, Tizen, and Symbian implementations...
-2. Ability to free retrieved clipboard string
+1. Linux, Palm, Tizen, and Symbian implementations... (Might not possible but still a concept...)
+2. Ability to free retrieved clipboard string (ice_clip_free)
 
 ==== ice_math.h and ice_vecmath.h ====
 
@@ -76,14 +76,7 @@ File Lock/Unlock functions...
 
 ================== Python Bindings ==================
 
-[ ] ice_al.py
-[ ] ice_cpu.py
-[ ] ice_time.py
-[ ] ice_fs.py
-[ ] ice_str.py
-
-1. Format strings in Python examples and review bindings along their examples...
-2. Fix ice_al for Python if possible...
+Fix string encoding/decode before releasing the bindings with fixing ice_al bindings if possible...
 
 =======================================================
 

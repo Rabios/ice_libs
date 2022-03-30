@@ -69,7 +69,7 @@ typedef enum ice_batt_error {
 } ice_batt_error;
 
 // [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions
-void ice_batt_use_native_activity(void *activity);
+void ice_batt_use_native_activity(const void *activity);
 
 // Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure!
 ice_batt_error ice_batt_get_info(ice_batt_info *batt_info);
@@ -335,7 +335,7 @@ typedef enum ice_batt_error {
 
 #if defined(ICE_BATT_ANDROID)
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions */
-ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(void *activity);
+ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(const void *activity);
 #endif
 
 /* Fetches battery info and stores info into ice_batt_info struct by pointing to, Returns ICE_BATT_ERROR_OK on success or any other values from ice_batt_error enum on failure! */
@@ -441,7 +441,7 @@ typedef enum bool { false, true } bool;
 static ANativeActivity *ice_batt_native_activity;
 
 /* [ANDROID-ONLY, REQUIRED] Sets native activity to be used by ice_batt on Android, This Should be called first before other ice_batt.h functions */
-ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(void *activity) {
+ICE_BATT_API void ICE_BATT_CALLCONV ice_batt_use_native_activity(const void *activity) {
     ice_batt_native_activity = (ANativeActivity*) activity;
 }
 #endif

@@ -194,8 +194,8 @@ ice_fs_bool ice_fs_chdir(const char *path);
 /* Returns directory informations with list of contents in path on success or NULL on failure */
 ice_fs_dir ice_fs_dir_content(const char *path);
 
-/* Frees/Deallocates a directory information struct */
-void ice_fs_free_dir_content(ice_fs_dir dir);
+/* Frees/Deallocates a directory information struct, dir should be pointer to the directory information struct that will be freed */
+void ice_fs_free_dir_content(ice_fs_dir *dir);
 
 /* Searches in contents of directory for a specific file/directory by string, Returns array of strings that contains full path of founded items on allocation success or NULL on failure, results should be pointer to unsigned long integer that stores number of founded items */
 char** ice_fs_dir_search(const char *path, const char *str, unsigned long *results);

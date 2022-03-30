@@ -324,9 +324,6 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_inf
     res = sysctl(mibs[1], 2, &cores, &len, 0, 0);
     if (res != 0) goto failure;
 
-    cpu_info->name = (const char*)(ice_cpu_brand);
-    cpu_info->cores = cores;
-
 #elif defined(ICE_CPU_MICROSOFT) || defined(ICE_CPU_UNIX) || defined(ICE_CPU_HPUX) || defined(ICE_CPU_IRIX)
 #if defined(ICE_CPU_MICROSOFT)
     unsigned i, cores = 0, count = 0;
@@ -363,9 +360,6 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_inf
             count++;
         }
     }
-
-    cpu_info->name = (const char*)(ice_cpu_brand);
-    cpu_info->cores = cores;
 #else
     res = __get_cpuid_max(0x80000004, 0);
     if (res == 0) goto failure;
@@ -373,10 +367,10 @@ ICE_CPU_API ice_cpu_bool ICE_CPU_CALLCONV ice_cpu_get_info(ice_cpu_info *cpu_inf
     __get_cpuid(0x80000002, ice_cpu_brand + 0x0, ice_cpu_brand + 0x1, ice_cpu_brand + 0x2, ice_cpu_brand + 0x3);
     __get_cpuid(0x80000003, ice_cpu_brand + 0x4, ice_cpu_brand + 0x5, ice_cpu_brand + 0x6, ice_cpu_brand + 0x7);
     __get_cpuid(0x80000004, ice_cpu_brand + 0x8, ice_cpu_brand + 0x9, ice_cpu_brand + 0xa, ice_cpu_brand + 0xb);
-    
+#endif
+
     cpu_info->name = (const char*)(ice_cpu_brand);
     cpu_info->cores = cores;
-#endif
 
     return ICE_CPU_TRUE;
 
