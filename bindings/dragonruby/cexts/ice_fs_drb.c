@@ -201,6 +201,31 @@ static mrb_value drb_ffi__ZTS10ice_fs_dir_ToRuby(mrb_state *state, ice_fs_dir va
     struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTS10ice_fs_dir);
     return mrb_obj_value(rdata);
 }
+struct drb_foreign_object_ZTSP10ice_fs_dir {
+    drb_foreign_object_kind kind;
+    ice_fs_dir *value;
+    int should_free;
+};
+static mrb_data_type ForeignObjectType_ZTSP10ice_fs_dir = {"ice_fs_dir*", drb_free_foreign_object_indirect};
+static ice_fs_dir *drb_ffi__ZTSP10ice_fs_dir_FromRuby(mrb_state *state, mrb_value self) {
+    if (mrb_nil_p(self))
+        return 0;
+    struct RClass *FFI = mrb_module_get_f(state, "FFI");
+    struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_FS_DIR_PTR");
+    drb_typecheck_aggregate_f(state, self, klass, &ForeignObjectType_ZTSP10ice_fs_dir);
+    return ((struct drb_foreign_object_ZTSP10ice_fs_dir *)DATA_PTR(self))->value;
+}
+static mrb_value drb_ffi__ZTSP10ice_fs_dir_ToRuby(mrb_state *state, ice_fs_dir *value) {
+    struct drb_foreign_object_ZTSP10ice_fs_dir *ptr = calloc(1, sizeof(struct drb_foreign_object_ZTSP10ice_fs_dir));
+    ptr->value = value;
+    ptr->kind = drb_foreign_object_kind_pointer;
+    struct RClass *FFI = mrb_module_get_f(state, "FFI");
+    struct RClass *module = mrb_module_get_under_f(state, FFI, "CExt");
+    struct RClass *klass = mrb_class_get_under_f(state, module, "ICE_FS_DIR_PTR");
+    struct RData *rdata = mrb_data_object_alloc_f(state, klass, ptr, &ForeignObjectType_ZTSP10ice_fs_dir);
+    return mrb_obj_value(rdata);
+}
 static ice_fs_date_type drb_ffi__ZTS16ice_fs_date_type_FromRuby(mrb_state *state, mrb_value self) {
     drb_typecheck_int_f(state, self);
     return mrb_fixnum(self);
@@ -475,6 +500,42 @@ static mrb_value drb_ffi__ZTSPPm_SetAt(mrb_state *mrb, mrb_value self) {
     int index = drb_ffi__ZTSi_FromRuby(mrb, args[0]);
     unsigned long *new_value = drb_ffi__ZTSPm_FromRuby(mrb, args[1]);
     drb_ffi__ZTSPPm_FromRuby(mrb, self)[index] = new_value;
+    return mrb_nil_value();
+}
+static mrb_value drb_ffi__ZTSP10ice_fs_dir_New(mrb_state *mrb, mrb_value self) {
+    struct drb_foreign_object_ZTSP10ice_fs_dir *ptr = calloc(1, sizeof(struct drb_foreign_object_ZTSP10ice_fs_dir));
+    ptr->kind = drb_foreign_object_kind_pointer;
+    ptr->value = calloc(1, sizeof(ice_fs_dir));
+    ptr->should_free = 1;
+    struct RClass *FFI = mrb_module_get_f(mrb, "FFI");
+    struct RClass *module = mrb_module_get_under_f(mrb, FFI, "CExt");
+    struct RClass *klass = mrb_class_get_under_f(mrb, module, "ICE_FS_DIR_PTR");
+    struct RData *rdata = mrb_data_object_alloc_f(mrb, klass, ptr, &ForeignObjectType_ZTSP10ice_fs_dir);
+    return mrb_obj_value(rdata);
+}
+static mrb_value drb_ffi__ZTSP10ice_fs_dir_GetValue(mrb_state *mrb, mrb_value value) {
+    return drb_ffi__ZTS10ice_fs_dir_ToRuby(mrb, *drb_ffi__ZTSP10ice_fs_dir_FromRuby(mrb, value));
+}
+static mrb_value drb_ffi__ZTSP10ice_fs_dir_IsNil(mrb_state *state, mrb_value self) {
+    if (drb_ffi__ZTSP10ice_fs_dir_FromRuby(state, self) == 0)
+        return mrb_true_value();
+    else
+        return mrb_false_value();
+}
+static mrb_value drb_ffi__ZTSP10ice_fs_dir_GetAt(mrb_state *mrb, mrb_value self) {
+    mrb_value *args = 0;
+    mrb_int argc = 0;
+    mrb_get_args_f(mrb, "*", &args, &argc);
+    int index = drb_ffi__ZTSi_FromRuby(mrb, args[0]);
+    return drb_ffi__ZTS10ice_fs_dir_ToRuby(mrb, drb_ffi__ZTSP10ice_fs_dir_FromRuby(mrb, self)[index]);
+}
+static mrb_value drb_ffi__ZTSP10ice_fs_dir_SetAt(mrb_state *mrb, mrb_value self) {
+    mrb_value *args = 0;
+    mrb_int argc = 0;
+    mrb_get_args_f(mrb, "*", &args, &argc);
+    int index = drb_ffi__ZTSi_FromRuby(mrb, args[0]);
+    ice_fs_dir new_value = drb_ffi__ZTS10ice_fs_dir_FromRuby(mrb, args[1]);
+    drb_ffi__ZTSP10ice_fs_dir_FromRuby(mrb, self)[index] = new_value;
     return mrb_nil_value();
 }
 static mrb_value drb_ffi__ZTSP11ice_fs_date_New(mrb_state *mrb, mrb_value self) {
@@ -1116,7 +1177,7 @@ static mrb_value drb_ffi_ice_fs_free_dir_content_Binding(mrb_state *state, mrb_v
     mrb_get_args_f(state, "*", &args, &argc);
     if (argc != 1)
         mrb_raisef_f(state, drb_getargument_error_f(state), "'ice_fs_free_dir_content': wrong number of arguments (%d for 1)", argc);
-    ice_fs_dir dir_0 = drb_ffi__ZTS10ice_fs_dir_FromRuby(state, args[0]);
+    ice_fs_dir *dir_0 = drb_ffi__ZTSP10ice_fs_dir_FromRuby(state, args[0]);
     ice_fs_free_dir_content(dir_0);
     return mrb_nil_value();
 }
@@ -1294,6 +1355,12 @@ void drb_register_c_extensions(void *(*lookup)(const char *), mrb_state *state, 
     mrb_define_method_f(state, Unsigned_longPointerPointerClass, "[]", drb_ffi__ZTSPPm_GetAt, MRB_ARGS_REQ(1));
     mrb_define_method_f(state, Unsigned_longPointerPointerClass, "[]=", drb_ffi__ZTSPPm_SetAt, MRB_ARGS_REQ(2));
     mrb_define_method_f(state, Unsigned_longPointerPointerClass, "nil?", drb_ffi__ZTSPPm_IsNil, MRB_ARGS_REQ(0));
+    struct RClass *ice_fs_dir_ptr_class = mrb_define_class_under_f(state, module, "ICE_FS_DIR_PTR", object_class);
+    mrb_define_class_method_f(state, ice_fs_dir_ptr_class, "new", drb_ffi__ZTSP10ice_fs_dir_New, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_fs_dir_ptr_class, "value", drb_ffi__ZTSP10ice_fs_dir_GetValue, MRB_ARGS_REQ(0));
+    mrb_define_method_f(state, ice_fs_dir_ptr_class, "[]", drb_ffi__ZTSP10ice_fs_dir_GetAt, MRB_ARGS_REQ(1));
+    mrb_define_method_f(state, ice_fs_dir_ptr_class, "[]=", drb_ffi__ZTSP10ice_fs_dir_SetAt, MRB_ARGS_REQ(2));
+    mrb_define_method_f(state, ice_fs_dir_ptr_class, "nil?", drb_ffi__ZTSP10ice_fs_dir_IsNil, MRB_ARGS_REQ(0));
     struct RClass *ice_fs_date_ptr_class = mrb_define_class_under_f(state, module, "ICE_FS_DATE_PTR", object_class);
     mrb_define_class_method_f(state, ice_fs_date_ptr_class, "new", drb_ffi__ZTSP11ice_fs_date_New, MRB_ARGS_REQ(0));
     mrb_define_method_f(state, ice_fs_date_ptr_class, "value", drb_ffi__ZTSP11ice_fs_date_GetValue, MRB_ARGS_REQ(0));

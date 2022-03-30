@@ -200,8 +200,8 @@ global function ice_fs_chdir(path: cstring <const>): ice_fs_bool <cimport, nodec
 -- Returns directory informations with list of contents in path on success or NULL on failure
 global function ice_fs_dir_content(path: cstring <const>): ice_fs_dir <cimport, nodecl> end
 
--- Frees/Deallocates a directory information struct
-global function ice_fs_free_dir_content(dir: ice_fs_dir): void <cimport, nodecl> end
+-- Frees/Deallocates a directory information struct, dir should be pointer to the directory information struct that will be freed
+global function ice_fs_free_dir_content(dir: *ice_fs_dir): void <cimport, nodecl> end
 
 -- Searches in contents of directory for a specific file/directory by string, Returns array of strings that contains full path of founded items on allocation success or NULL on failure, results should be pointer to unsigned long integer that stores number of founded items
 global function ice_fs_dir_search(path: cstring <const>, str: cstring <const>, results: *culong): *[0]cstring <cimport, nodecl> end

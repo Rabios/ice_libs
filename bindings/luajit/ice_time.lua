@@ -48,7 +48,7 @@ typedef enum ice_time_season {
 
 /* Struct that contains patched current time info, Including ticks */
 typedef struct ice_time_info {
-    const char* str;                /* Time as string */
+    const char *str;                /* Time as string */
     ice_time_ulong clock_ticks;     /* Clock Ticks (Nanoseconds) */
     ice_time_ulong uptime;          /* Ticks since system started (Milliseconds) */
     ice_time_ulong epoch;           /* Unix timestamp */
@@ -74,14 +74,14 @@ typedef enum ice_time_error {
 
 /* ============================== Functions ============================== */
 
-/* Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
-ice_time_ulong ice_time_diff(ice_time_info t1, ice_time_info t2);
+/* Returns difference between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct */
+ice_time_ulong ice_time_diff(const ice_time_info *t1, const ice_time_info *t2);
 
-/* Returns difference between clock tick of current time and clock time of specific time */
-ice_time_ulong ice_time_since(ice_time_info t);
+/* Returns difference between clock tick of current time and clock time of specific time, t is passed as pointer to ice_time_info struct for the specific time */
+ice_time_ulong ice_time_since(const ice_time_info *t);
 
-/* Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
-double ice_time_dt(ice_time_info t1, ice_time_info t2);
+/* Returns Delta Time between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct */
+double ice_time_dt(const ice_time_info *t1, const ice_time_info *t2);
 
 /* Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure! */
 ice_time_error ice_time_get_info(ice_time_info *time_info);

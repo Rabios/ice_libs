@@ -112,14 +112,14 @@ typedef enum ice_time_error {
     ICE_TIME_ERROR_INVALID_POINTER  // Occurs when passing NULL (Zero) as argument to ice_time_get_info()
 } ice_time_error;
 
-// Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
-ice_time_ulong ice_time_diff(ice_time_info t1, ice_time_info t2);
+// Returns difference between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct
+ice_time_ulong ice_time_diff(const ice_time_info *t1, const ice_time_info *t2);
 
-// Returns difference between clock tick of current time and clock time of specific time
-ice_time_ulong ice_time_since(ice_time_info t);
+// Returns difference between clock tick of current time and clock time of specific time, t is passed as pointer to ice_time_info struct for the specific time
+ice_time_ulong ice_time_since(const ice_time_info *t);
 
-// Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
-double ice_time_dt(ice_time_info t1, ice_time_info t2);
+// Returns Delta Time between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct
+double ice_time_dt(const ice_time_info *t1, const ice_time_info *t2);
 
 // Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure!
 ice_time_error ice_time_get_info(ice_time_info *time_info);
@@ -474,14 +474,14 @@ typedef enum ice_time_error {
 
 /* ============================== Functions ============================== */
 
-/* Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
-ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_diff(ice_time_info t1, ice_time_info t2);
+/* Returns difference between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct */
+ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_diff(const ice_time_info *t1, const ice_time_info *t2);
 
-/* Returns difference between clock tick of current time and clock time of specific time */
-ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_since(ice_time_info t);
+/* Returns difference between clock tick of current time and clock time of specific time, t is passed as pointer to ice_time_info struct for the specific time */
+ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_since(const ice_time_info *t);
 
-/* Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
-ICE_TIME_API double ICE_TIME_CALLCONV ice_time_dt(ice_time_info t1, ice_time_info t2);
+/* Returns Delta Time between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_dt(const ice_time_info *t1, const ice_time_info *t2);
 
 /* Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure! */
 ICE_TIME_API ice_time_error ICE_TIME_CALLCONV ice_time_get_info(ice_time_info *time_info);
@@ -602,27 +602,36 @@ typedef enum bool { false, true } bool;
 #  include <3ds.h>
 #endif
 
-/* Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
-ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_diff(ice_time_info t1, ice_time_info t2) {
-    long diff = t1.clock_ticks - t2.clock_ticks;
+/* Returns difference between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct */
+ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_diff(const ice_time_info *t1, const ice_time_info *t2) {
+    long diff;
+    if ((t1 == 0) || (t2 == 0)) return 0;
+    diff = t1->clock_ticks - t2->clock_ticks;
     return (ice_time_ulong)((diff < 0) ? 1 : diff);
 }
 
-/* Returns difference between clock tick of current time and clock time of specific time */
-ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_since(ice_time_info t) {
+/* Returns difference between clock tick of current time and clock time of specific time, t is passed as pointer to ice_time_info struct for the specific time */
+ICE_TIME_API ice_time_ulong ICE_TIME_CALLCONV ice_time_since(const ice_time_info *t) {
     ice_time_info current_time;
-    ice_time_error error = ice_time_get_info(&current_time);
+    ice_time_error error; 
     long diff;
 
+    if (t == 0) return 0;
+
+    error = ice_time_get_info(&current_time);
+
     if (error != ICE_TIME_ERROR_OK) return 0;
-    diff = t.clock_ticks - current_time.clock_ticks;
+    diff = t->clock_ticks - current_time.clock_ticks;
     
     return (ice_time_ulong)((diff < 0) ? 1 : diff);
 }
 
-/* Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info */
-ICE_TIME_API double ICE_TIME_CALLCONV ice_time_dt(ice_time_info t1, ice_time_info t2) {
-    return (double)((t1.clock_ticks - t2.clock_ticks) / 1000000.0);
+/* Returns Delta Time between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct */
+ICE_TIME_API double ICE_TIME_CALLCONV ice_time_dt(const ice_time_info *t1, const ice_time_info *t2) {
+    double dt;
+    if ((t1 == 0) || (t2 == 0)) return 0;
+    dt = (double)((t1->clock_ticks - t2->clock_ticks) / 1000000.0);
+    return dt;
 }
 
 /* Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure! */

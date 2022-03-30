@@ -9,7 +9,7 @@ def tick args
   
   # If the function failed to fetch time information, Trace error then terminate the program!
   if (res != ICE_TIME_ERROR_OK)
-    puts("ERROR: failed to retrieve time info!")
+    puts("ERROR: failed to get time info!")
     return -1
   end
   
@@ -19,4 +19,6 @@ def tick args
     y: 5.from_top,
     text: "Current Time: #{current_time.value.str.str}"
   }.to_label
+  
+  return 0
 end

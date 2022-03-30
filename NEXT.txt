@@ -1,6 +1,5 @@
 ====================== SCHEDULE ======================
 
-[WIP] Documentation updates!
 [WIP] Python, C#, Rust support!
 
 To be continued...

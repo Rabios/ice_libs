@@ -377,10 +377,10 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in_out(ice_ease_type ease_
 
 /* [INTERNAL] Generates the 4 variables (t, b, c, d) from array */
 #define ICE_EASE_LOAD_FOUR_ARGS         \
-    double t = args[0];                 \
-    double b = args[1];                 \
-    double c = args[2];                 \
-    double d = args[3];                 \
+    double t = args[0],                 \
+           b = args[1],                 \
+           c = args[2],                 \
+           d = args[3];                 \
 
 /* Functions for Linear Easing */
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_linear(ice_ease_type ease_type, ...) {
@@ -828,10 +828,10 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_out(ice_ease_type ease_ty
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double p = d * 0.3;
-        double a = c;
-        double s = p / 4.0;
-        double postFix;
+        double p = d * 0.3,
+               a = c,
+               s = p / 4.0,
+               postFix;
 
         if (t == 0) return 0;
         else if (t == 1) return 1;
@@ -867,10 +867,10 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in_out(ice_ease_type ease
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double p = d * (0.3 * 1.5);
-        double a = c;
-        double s = p / 4.0;
-        double postFix;
+        double p = d * (0.3 * 1.5),
+               a = c,
+               s = p / 4.0,
+               postFix;
 
         if (t == 0) return 0;
         else if (t == 1) return 1;
@@ -897,8 +897,8 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in(ice_ease_type ease_type, 
 
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        double c1 = 1.70158;
-        double c3 = c1 + 1.0;
+        double c1 = 1.70158,
+               c3 = c1 + 1.0;
 
         return c3 * x * x * x - c1 * x * x;
 
@@ -918,8 +918,8 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_out(ice_ease_type ease_type,
 
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        double c1 = 1.70158;
-        double c3 = c1 + 1.0;
+        double c1 = 1.70158, c3 = c1 + 1.0;
+        
         return 1.0 + c3 * pow(x - 1.0, 3) + c1 * pow(x - 1.0, 2);
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
@@ -938,16 +938,14 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in_out(ice_ease_type ease_ty
 
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        double c1 = 1.70158;
-        double c2 = c1 * 1.525;
+        double c1 = 1.70158, c2 = c1 * 1.525;
 
         if (x < 0.5) return (pow(2.0 * x, 2) * ((c2 + 1.0) * 2.0 * x - c2)) / 2.0;
         return (pow(2.0 * x - 2.0, 2) * ((c2 + 1.0) * (x * 2.0 - 2.0) + c2) + 2.0) / 2.0;
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double s = 1.70158;
-        double v = 1.525;
+        double s = 1.70158, v = 1.525;
         t /= d;
 
         if (t < 1.0) {
@@ -984,8 +982,7 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_out(ice_ease_type ease_typ
 
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        double n1 = 7.5625;
-        double d1 = 2.75;
+        double n1 = 7.5625, d1 = 2.75;
 
         if (x < 1.0 / d1) {
             return n1 * x * x;
@@ -1002,8 +999,7 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_out(ice_ease_type ease_typ
 
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double n1 = 7.5625;
-        double d1 = 2.75;
+        double n1 = 7.5625, d1 = 2.75;
 
         t /= d;
 

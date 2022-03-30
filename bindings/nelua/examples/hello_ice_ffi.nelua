@@ -37,7 +37,7 @@ local function main(): cint
   end
   
   -- Call the function and print the result!
-  print("F42 cal result: " .. F42())
+  print("F42 call result: " .. F42())
   
   -- When done, Unload symbols and the shared library/object
   unload_res = ice_ffi_unload(lib)

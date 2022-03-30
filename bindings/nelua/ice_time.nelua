@@ -12,7 +12,7 @@
     linklib "ctru"
   elseif ccinfo.is_rpi2040 then
     linklib "pico_time"
-    linklib "lpico_util"
+    linklib "pico_util"
     linklib "hardware_timer"
     linklib "hardware_rtc"
   end
@@ -89,14 +89,14 @@ global ice_time_error: type <cimport, nodecl, using> = @enum(cint) {
 
 -- ============================== Functions ============================== --
 
--- Returns difference between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
-global function ice_time_diff(t1: ice_time_info, t2: ice_time_info): ice_time_ulong <cimport, nodecl> end
+-- Returns difference between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct
+global function ice_time_diff(t1: *ice_time_info <const>, t2: *ice_time_info <const>): ice_time_ulong <cimport, nodecl> end
 
--- Returns difference between clock tick of current time and clock time of specific time
-global function ice_time_since(t: ice_time_info): ice_time_ulong <cimport, nodecl> end
+-- Returns difference between clock tick of current time and clock time of specific time, t is passed as pointer to ice_time_info struct for the specific time
+global function ice_time_since(t: *ice_time_info <const>): ice_time_ulong <cimport, nodecl> end
 
--- Returns Delta Time between 2 clock ticks, Each one can be acquired via clock_ticks from struct ice_time_info
-global function ice_time_dt(t1: ice_time_info, t2: ice_time_info): float64 <cimport, nodecl> end
+-- Returns Delta Time between 2 clock ticks, Each one can be acquired from the pointer to ice_time_info struct
+global function ice_time_dt(t1: *ice_time_info <const>, t2: *ice_time_info <const>): float64 <cimport, nodecl> end
 
 -- Retrieves current time info (eg. Ticks, Seconds, Days, Months, Year, Month, etc...) and stores info in ice_time_info struct by pointing to, Returns ICE_TIME_ERROR_OK on success or any other values from ice_time_error enum on failure!
 global function ice_time_get_info(time_info: *ice_time_info): ice_time_error <cimport, nodecl> end
