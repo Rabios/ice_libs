@@ -12,7 +12,7 @@
     linklib "ctru"
   elseif ccinfo.is_rpi2040 then
     linklib "pico_time"
-    linklib "lpico_util"
+    linklib "pico_util"
     linklib "hardware_timer"
     linklib "hardware_rtc"
   end
