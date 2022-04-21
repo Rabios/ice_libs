@@ -1,5 +1,0 @@
-====================== SCHEDULE ======================
-
-[WIP] Python, C#, Rust support!
-
-To be continued...

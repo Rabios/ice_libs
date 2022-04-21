@@ -1,13 +1,13 @@
 ====================== TODO ======================
 
-[ ] Continue working on the libs
-[ ] Doxygen-like docs...
-[ ] Complete the website
-[ ] sokol-style for private functions
-[ ] Macro to ease definition of the APIs
-[ ] Inline assembly backend for best performance... (Later...)
-[ ] Refactor source code and add features...
-[ ] Python/C#/Rust bindings
+1. Continue working on the libs
+2. Doxygen-like docs... (JavaDoc style)
+3. Complete the website
+4. sokol-style for private functions
+5. Macro to ease definition of the APIs
+6. Inline assembly backend for best performance... (Later...)
+7. Refactor source code and add features...
+8. Python/C#/Rust bindings
 
 NOTE: Not scheduled and each one might be done in specific time...
 
@@ -15,29 +15,10 @@ NOTE: Not scheduled and each one might be done in specific time...
 
 Extend loader to support EFX and XRAM stuff?
 
-==== ice_ffi.h ====
-
-ice_ffi.h: In function 'ice_ffi_get':
-ice_ffi.h:305:17: warning: ISO C forbids initialization between function pointer and 'void *' [-Wpedantic]
-  305 |     void* sym = GetProcAddress(lib, symbol);
-      |                 ^~~~~~~~~~~~~~
-testfile2.c: In function 'main':
-testfile2.c:40:6: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-   40 |     *(unsigned**)(&F42) = sym;
-      |      ^~~~~~~~~~~~~~~~~~
-
 ==== ice_ram.h ====
 
 1. Use megabytes instead of bytes for ice_ram.h? (Thus we have to use double type instead...)
 2. Add another struct for memory pages count info
-
-==== ice_str.h ====
-
-1. ice_str_is_one_of_chars/ice_str_has_one_of_chars? to indicate if character belongs to collection of chars from string...
-2. Embedded mode option? To use stack allocation instead of heap allocation...
-3. Shall i add function to check if char is number?
-4. ice_str_cmp and implement any possible stuff from string.h and ctypes.h (isdigit, isctrl, etc...)
-5. Kill parts that you don't have to allocate memory for...
 
 ==== ice_batt.h ====
 
@@ -48,31 +29,9 @@ Maybe add BeOS/Haiku support? (Might not possible but still a concept...)
 1. Linux, Palm, Tizen, and Symbian implementations... (Might not possible but still a concept...)
 2. Ability to free retrieved clipboard string (ice_clip_free)
 
-==== ice_math.h and ice_vecmath.h ====
-
-1. Add these:
-
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erf(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erfc(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_erfi(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_gamma(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_lgamma(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_j0(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_j1(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_jn(int b, double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_y0(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_y1(double n);
-ICE_MATH_API double ICE_MATH_CALLCONV ice_math_yn(int b, double n);
-
-2. Allow usage of SIMD intrinsics (MMX, SSE, SSE2, SSE3, AVX, AVX2, etc...)
-
 ==== ice_cpu.h ====
 
-Add booleans for instructions support. (MMX, SSE, SSE2, SSE3, AVX, AVX2, etc...)
-
-==== ice_fs.h ====
-
-File Lock/Unlock functions...
+Test default struct values and new cpuid features...
 
 ================== Python Bindings ==================
 
