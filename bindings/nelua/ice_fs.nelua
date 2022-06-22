@@ -116,11 +116,14 @@ global function ice_fs_str_dots(str: cstring <const>): culong <cimport, nodecl> 
 -- [INTERNAL] Returns ICE_FS_TRUE if string str1 is same to string str2 or ICE_FS_FALSE if not
 global function ice_fs_str_same(str1: cstring <const>, str2: cstring <const>): ice_fs_bool <cimport, nodecl> end
 
+-- [INTERNAL] Converts char to string and returns result on allocation success or NULL on allocation failure
+global function ice_fs_str_char_to_str(ch: cchar): cstring <cimport, nodecl> end
+
 -- [INTERNAL] Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure
 global function ice_fs_str_sub(str: cstring <const>, from_idx: culong, to_idx: culong): cstring <cimport, nodecl> end
 
 -- [INTERNAL] Returns allocated copy of string on allocation success or NULL on allocation failure
-global function ice_fs_str_dots(str: cstring <const>): cstring <cimport, nodecl> end
+global function ice_fs_str_copy(str: cstring <const>): cstring <cimport, nodecl> end
 
 -- [INTERNAL] Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of resulted array
 global function ice_fs_str_split(str: cstring <const>, delim: cchar, arrlen: *culong): *[0]cstring <cimport, nodecl> end

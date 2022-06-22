@@ -2,12 +2,11 @@
 
 1. Continue working on the libs
 2. Doxygen-like docs... (JavaDoc style)
-3. Complete the website
-4. sokol-style for private functions
-5. Macro to ease definition of the APIs
-6. Inline assembly backend for best performance... (Later...)
-7. Refactor source code and add features...
-8. Python/C#/Rust bindings
+3. sokol-style for private functions
+4. Macro to ease definition of the APIs
+5. Inline assembly backend for best performance... (Later...)
+6. Refactor source code and add features...
+7. Python/C#/Rust bindings
 
 NOTE: Not scheduled and each one might be done in specific time...
 

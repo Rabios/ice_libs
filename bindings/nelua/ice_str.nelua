@@ -83,11 +83,56 @@ global function ice_str_to_bytes(str: cstring <const>, arrlen: *culong): *[0]cin
 -- Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length
 global function ice_str_from_bytes(chars: *[0]cint <const>, arrlen: culong): cstring <cimport, nodecl> end
 
+-- Returns ICE_STR_TRUE if string str contains character ch, Else returns ICE_STR_FALSE
+global function ice_str_contains_char(str: cstring <const>, ch: cchar): ice_str_bool <cimport, nodecl>
+
+-- Compares 2 string by length, Returns 1 if string str1 is longer than string str2, -1 if string str2 is longer than string str1, Or zero if both string have same length
+global function ice_str_cmp(str1: cstring <const>, str2: cstring <const>): cint <cimport, nodecl> end
+
+-- Returns digit from the character if the character is a digit, Else returns -1
+global function ice_str_char_to_digit(ch: cchar): cint <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is alphanumeric, Else returns ICE_STR_FALSE
+global function ice_str_is_alnum_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is alphabetic, Else returns ICE_STR_FALSE
+global function ice_str_is_alpha_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a lowercase character, Else returns ICE_STR_FALSE
+global function ice_str_is_lower_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a uppercase character, Else returns ICE_STR_FALSE
+global function ice_str_is_upper_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a digit, Else returns ICE_STR_FALSE
+global function ice_str_is_digit_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a hexadecimal character, Else returns ICE_STR_FALSE
+global function ice_str_is_xdigit_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a control character, Else returns ICE_STR_FALSE
+global function ice_str_is_cntrl_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a graphical character, Else returns ICE_STR_FALSE
+global function ice_str_is_graph_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a space character, Else returns ICE_STR_FALSE
+global function ice_str_is_space_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a blank character, Else returns ICE_STR_FALSE
+global function ice_str_is_blank_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a printing character, Else returns ICE_STR_FALSE
+global function ice_str_is_print_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
+-- Returns ICE_STR_TRUE if the character is a punctuation character, Else returns ICE_STR_FALSE
+global function ice_str_is_punct_char(ch: cchar): ice_str_bool <cimport, nodecl> end
+
 -- Frees a String
 global function ice_str_free(str: cstring): void <cimport, nodecl> end
 
 -- Frees array of char codes
-global function ice_str_free(bytes: cstring): void <cimport, nodecl> end
+global function ice_str_free_bytes(bytes: *[0]cint): void <cimport, nodecl> end
 
 -- Frees array of strings, arrlen should be set to array length
 global function ice_str_free_arr(arr: *[0]cstring, arrlen: culong): void <cimport, nodecl> end
