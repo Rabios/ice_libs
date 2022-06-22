@@ -1,5 +1,10 @@
 # Changelog
 
+### June 22, 2022
+
+1. Added a couple of functions to `ice_str.h` similar to those ones from `string.h` and `ctype.h`
+2. Fixed bugs in existing functions of `ice_str.h` so now it should perform very well as expected!
+
 ### March 30, 2022
 
 1. Removed unit tests folder temporarily till unit tests are written completely (Will back soon...)

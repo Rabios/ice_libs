@@ -124,6 +124,51 @@ int* ice_str_to_bytes(const char *str, unsigned long *arrlen);
 // Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length
 char* ice_str_from_bytes(const int *chars, unsigned long arrlen);
 
+// Returns ICE_STR_TRUE if string str contains character ch, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_contains_char(const char *str, char ch);
+
+// Compares 2 string by length, Returns 1 if string str1 is longer than string str2, -1 if string str2 is longer than string str1, Or zero if both string have same length
+int ice_str_cmp(const char *str1, const char *str2);
+
+// Returns digit from the character if the character is a digit, Else returns -1
+int ice_str_char_to_digit(char ch);
+
+// Returns ICE_STR_TRUE if the character is alphanumeric, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_alnum_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is alphabetic, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_alpha_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a lowercase character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_lower_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a uppercase character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_upper_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a digit, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_digit_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a hexadecimal character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_xdigit_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a control character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_cntrl_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a graphical character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_graph_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a space character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_space_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a blank character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_blank_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a printing character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_print_char(char ch);
+
+// Returns ICE_STR_TRUE if the character is a punctuation character, Else returns ICE_STR_FALSE
+ice_str_bool ice_str_is_punct_char(char ch);
+
 // Frees a String
 void ice_str_free(char *str);
 
@@ -396,6 +441,51 @@ ICE_STR_API int* ICE_STR_CALLCONV ice_str_to_bytes(const char *str, unsigned lon
 /* Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length */
 ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int *chars, unsigned long arrlen);
 
+/* Returns ICE_STR_TRUE if string str contains character ch, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_contains_char(const char *str, char ch);
+
+/* Compares 2 string by length, Returns 1 if string str1 is longer than string str2, -1 if string str2 is longer than string str1, Or zero if both string have same length */
+ICE_STR_API int ICE_STR_CALLCONV ice_str_cmp(const char *str1, const char *str2);
+
+/* Returns digit from the character if the character is a digit, Else returns -1 */
+ICE_STR_API int ICE_STR_CALLCONV ice_str_char_to_digit(char ch);
+
+/* Returns ICE_STR_TRUE if the character is alphanumeric, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_alnum_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is alphabetic, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_alpha_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a lowercase character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_lower_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a uppercase character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_upper_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a digit, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_digit_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a hexadecimal character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_xdigit_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a control character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_cntrl_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a graphical character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_graph_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a space character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_space_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a blank character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_blank_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a printing character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_print_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a punctuation character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_punct_char(char ch);
+
 /* Frees a String */
 ICE_STR_API void ICE_STR_CALLCONV ice_str_free(char *str);
 
@@ -414,6 +504,8 @@ ICE_STR_API void ICE_STR_CALLCONV ice_str_free_arr(char **arr, unsigned long arr
 #if !defined(ICE_STR_CUSTOM_MEMORY_ALLOCATORS)
 #  include <stdlib.h>
 #endif
+
+#include <stdio.h>
 
 /* Returns string length */
 ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_len(const char *str) {
@@ -449,7 +541,7 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_sub(const char *str, unsigned long fr
     
     if (backwards == ICE_STR_TRUE) {
         for (i = to_idx; i <= from_idx; i++) {
-            res[count] = str[from_idx - i];
+            res[from_idx - i] = str[i];
             count++;
         }
     } else {
@@ -550,14 +642,14 @@ ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_matches(const char *str1, con
             if (char_matches == len2) {
                 matches++;
                 char_matches = 0;
+                i += len2;
             }
         }
     }
     
     if (idxs != 0) {
-        unsigned long *matches_idxs,
-                      count = 0;
-
+        unsigned long count = 0, *matches_idxs;
+        
         alloc_size = (matches * sizeof(unsigned long));
         matches_idxs = ICE_STR_MALLOC(alloc_size);
 
@@ -565,11 +657,24 @@ ICE_STR_API unsigned long ICE_STR_CALLCONV ice_str_matches(const char *str1, con
 
         for (i = 0; i < len1; i++) {
             if ((str1[i] == str2[0]) && ((i + (len2 - 1)) < len1)) {
-                matches_idxs[count] = i;
+                unsigned long j;
+                
+                for (j = 0; j < len2; j++) {
+                    if (str1[i + j] == str2[j]) {
+                        char_matches++;
+                    }
+                }
+                
+                if (char_matches == len2) {
+                    char_matches = 0;
+                    matches_idxs[count] = i;
+                    i += len2;
+                }
+                
                 count++;
             }
         }
-
+        
         *idxs = matches_idxs;
     }
 
@@ -886,36 +991,38 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_join(const char **strs, unsigned long
 
 /* Returns ICE_STR_TRUE if string str1 starts with string str2, Else returns ICE_STR_FALSE */
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_begins(const char *str1, const char *str2) {
-    unsigned long len = ice_str_len(str2);
-    char *sub = 0;
     ice_str_bool res = ICE_STR_FALSE;
+    unsigned long len = ice_str_len(str2),
+                  matches = 0,
+                  i;
 
     if (len == 0) return ICE_STR_FALSE;
+
+    for (i = 0; i < len; i++) {
+        if (str1[i] == str2[i]) matches++;
+    }
     
-    sub = ice_str_sub(str1, 0, len - 1);
-    if (sub == 0) return ICE_STR_FALSE;
-    
-    res = ice_str_same(sub, str2);
-    ice_str_free(sub);
+    if (matches == len) res = ICE_STR_TRUE;
 
     return res;
 }
 
 /* Returns ICE_STR_TRUE if string str1 ends with string str2, Else returns ICE_STR_FALSE */
 ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_ends(const char *str1, const char *str2) {
-    unsigned long len1 = ice_str_len(str1),
-                  len2 = ice_str_len(str2);
-    char *sub = 0;
     ice_str_bool res = ICE_STR_FALSE;
-
-    if ((len1 == 0) || (len2 == 0)) return ICE_STR_FALSE;
-
-    sub = ice_str_sub(str1, (len1 - len2), len1 - 1);
-    if (sub == 0) return ICE_STR_FALSE;
+    unsigned long len1 = ice_str_len(str1),
+                  len2 = ice_str_len(str2),
+                  matches = 0,
+                  i;
     
-    res = ice_str_same(sub, str2);
-    ice_str_free(sub);
-
+    if ((len1 == 0) || (len2 == 0)) return ICE_STR_FALSE;
+    
+    for (i = 0; i < len2; i++) {
+        if (str1[(len1 - len2) + i] == str2[i]) matches++;
+    }
+    
+    if (matches == len2) res = ICE_STR_TRUE;
+    
     return res;
 }
 
@@ -957,6 +1064,134 @@ ICE_STR_API char* ICE_STR_CALLCONV ice_str_from_bytes(const int *chars, unsigned
     for (i = 0; i < arrlen; i++) res[i] = ((char)(chars[i]));
     res[arrlen] = 0;
     
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if string str contains character ch, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_contains_char(const char *str, char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    unsigned long len = ice_str_len(str), i;
+    
+    if (len == 0) return ICE_STR_FALSE;
+
+    for (i = 0; i < len; i++) {
+        if (str[i] == ch) {
+            res = ICE_STR_TRUE;
+            break;
+        }
+    }
+
+    return res;
+}
+
+/* Compares 2 string by length, Returns 1 if string str1 is longer than string str2, -1 if string str2 is longer than string str1, Or zero if both string have same length */
+ICE_STR_API int ICE_STR_CALLCONV ice_str_cmp(const char *str1, const char *str2) {
+    int res = 0;
+    
+    unsigned long len1 = ice_str_len(str1),
+                  len2 = ice_str_len(str2);
+    
+    if (len1 != len2) res = ((len1 > len2) ? 1 : -1);
+    
+    return res;
+}
+
+/* Returns digit from the character if the character is a digit, Else returns -1 */
+ICE_STR_API int ICE_STR_CALLCONV ice_str_char_to_digit(char ch) {
+    int res = -1;
+    if ((ch >= 48) && (ch <= 57)) res = (int)(ch - 48);
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is alphanumeric, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_alnum_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if (((ch >= 48) && (ch <= 57)) ||
+        ((ch >= 65) && (ch <= 90)) ||
+        ((ch >= 97) && (ch <= 122))) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is alphabetic, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_alpha_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if (((ch >= 65) && (ch <= 90)) ||
+        ((ch >= 97) && (ch <= 122))) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a lowercase character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_lower_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch >= 97) && (ch <= 122)) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a uppercase character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_upper_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch >= 65) && (ch <= 90)) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a digit, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_digit_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch >= 48) && (ch <= 57)) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a hexadecimal character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_xdigit_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if (((ch >= 48) && (ch <= 57)) ||
+        ((ch >= 65) && (ch <= 70)) ||
+        ((ch >= 97) && (ch <= 102))) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a control character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_cntrl_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch == 127) || ((ch >= 0) && (ch <= 31))) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a graphical character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_graph_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch >= 33) && (ch <= 126)) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a space character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_space_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch == 32) || ((ch >= 9) && (ch <= 13))) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a blank character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_blank_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch == 9) || (ch == 32)) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a printing character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_print_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if ((ch >= 32) && (ch <= 126)) res = ICE_STR_TRUE;
+    return res;
+}
+
+/* Returns ICE_STR_TRUE if the character is a punctuation character, Else returns ICE_STR_FALSE */
+ICE_STR_API ice_str_bool ICE_STR_CALLCONV ice_str_is_punct_char(char ch) {
+    ice_str_bool res = ICE_STR_FALSE;
+    if (((ch >= 33) && (ch <= 47)) ||
+        ((ch >= 58) && (ch <= 64)) ||
+        ((ch >= 91) && (ch <= 96)) ||
+        ((ch >= 123) && (ch <= 126))) res = ICE_STR_TRUE;
     return res;
 }
 
