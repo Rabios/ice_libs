@@ -4,6 +4,8 @@
 
 1. Added a couple of functions to `ice_str.h` similar to those ones from `string.h` and `ctype.h`
 2. Fixed bugs in existing functions of `ice_str.h` so now it should perform very well as expected!
+3. Fixed internal string functions in `ice_fs.h` which used by the library's functions!
+4. Updated the LuaJIT, Nelua, DragonRuby bindings of each library!
 
 ### March 30, 2022
 

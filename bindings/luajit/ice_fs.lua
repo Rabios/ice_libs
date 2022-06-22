@@ -110,6 +110,9 @@ unsigned long ice_fs_str_dots(const char *str);
 /* [INTERNAL] Returns ICE_FS_TRUE if string str1 is same to string str2 or ICE_FS_FALSE if not */
 ice_fs_bool ice_fs_str_same(const char *str1, const char *str2);
 
+/* [INTERNAL] Converts char to string and returns result on allocation success or NULL on allocation failure */
+char* ice_fs_str_char_to_str(char ch);
+
 /* [INTERNAL] Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure */
 char* ice_fs_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx);
 

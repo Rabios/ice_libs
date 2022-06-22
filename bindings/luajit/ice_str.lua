@@ -79,6 +79,51 @@ int* ice_str_to_bytes(const char *str, unsigned long *arrlen);
 /* Returns string from char codes on allocation success or NULL on allocation failure, arrlen should be set to array length */
 char* ice_str_from_bytes(const int *chars, unsigned long arrlen);
 
+/* Returns ICE_STR_TRUE if string str contains character ch, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_contains_char(const char *str, char ch);
+
+/* Compares 2 string by length, Returns 1 if string str1 is longer than string str2, -1 if string str2 is longer than string str1, Or zero if both string have same length */
+int ice_str_cmp(const char *str1, const char *str2);
+
+/* Returns digit from the character if the character is a digit, Else returns -1 */
+int ice_str_char_to_digit(char ch);
+
+/* Returns ICE_STR_TRUE if the character is alphanumeric, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_alnum_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is alphabetic, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_alpha_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a lowercase character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_lower_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a uppercase character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_upper_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a digit, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_digit_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a hexadecimal character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_xdigit_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a control character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_cntrl_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a graphical character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_graph_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a space character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_space_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a blank character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_blank_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a printing character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_print_char(char ch);
+
+/* Returns ICE_STR_TRUE if the character is a punctuation character, Else returns ICE_STR_FALSE */
+ice_str_bool ice_str_is_punct_char(char ch);
+
 /* Frees a String */
 void ice_str_free(char *str);
 

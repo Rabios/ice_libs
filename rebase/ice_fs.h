@@ -185,6 +185,9 @@ unsigned long ice_fs_str_dots(const char *str);
 // [INTERNAL] Returns ICE_FS_TRUE if string str1 is same to string str2 or ICE_FS_FALSE if not
 ice_fs_bool ice_fs_str_same(const char *str1, const char *str2);
 
+// [INTERNAL] Converts char to string and returns result on allocation success or NULL on allocation failure
+char* ice_fs_str_char_to_str(char ch);
+
 // [INTERNAL] Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure
 char* ice_fs_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx);
 
@@ -620,6 +623,9 @@ ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_dots(const char *str);
 /* [INTERNAL] Returns ICE_FS_TRUE if string str1 is same to string str2 or ICE_FS_FALSE if not */
 ICE_FS_API ice_fs_bool ICE_FS_CALLCONV ice_fs_str_same(const char *str1, const char *str2);
 
+/* [INTERNAL] Converts char to string and returns result on allocation success or NULL on allocation failure */
+ICE_FS_API char* ICE_FS_CALLCONV ice_fs_str_char_to_str(char ch);
+
 /* [INTERNAL] Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure */
 ICE_FS_API char* ICE_FS_CALLCONV ice_fs_str_sub(const char *str, unsigned long from_idx, unsigned long to_idx);
 
@@ -812,8 +818,9 @@ ICE_FS_API ice_fs_bool ICE_FS_CALLCONV ice_fs_str_ends_with_slash(const char *st
 
 /* [INTERNAL] Returns count of slashes in string */
 ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_slashes(const char *str) {
-    unsigned long slashes = 0, lenstr = ice_fs_str_len(str);
-    unsigned long i;
+    unsigned long slashes = 0,
+                  lenstr = ice_fs_str_len(str),
+                  i;
 
     if (lenstr == 0) return 0;
 
@@ -827,8 +834,9 @@ ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_slashes(const char *str) {
 
 /* [INTERNAL] Returns count of dots in string */
 ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_dots(const char *str) {
-    unsigned long dots = 0, lenstr = ice_fs_str_len(str);
-    unsigned long i;
+    unsigned long dots = 0,
+                  lenstr = ice_fs_str_len(str),
+                  i;
 
     if (lenstr == 0) return 0;
 
@@ -842,18 +850,33 @@ ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_dots(const char *str) {
 
 /* [INTERNAL] Returns ICE_FS_TRUE if string str1 is same to string str2 or ICE_FS_FALSE if not */
 ICE_FS_API ice_fs_bool ICE_FS_CALLCONV ice_fs_str_same(const char *str1, const char *str2) {
-    unsigned long lenstr1 = ice_fs_str_len(str1),
-                  lenstr2 = ice_fs_str_len(str2),
-                  matches = 0, i;
+    unsigned long len1 = ice_fs_str_len(str1),
+                  len2 = ice_fs_str_len(str2),
+                  count = 0, i;
     
-    if ((lenstr1 != lenstr2) || (lenstr1 == 0) || (lenstr2 == 0)) return ICE_FS_FALSE;
+    if ((len1 != len2) || (len1 == 0) || (len2 == 0)) return ICE_FS_FALSE;
 
-    for (i = 0; i < lenstr1; i++) {
-        char ch1 = str1[i], ch2 = str2[i];
-        if (ch1 == ch2) matches++;
+    for (i = 0; i < len1; i++) {
+        if (str1[i] == str2[i]) count++;
     }
+    
+    return (count == len1) ? ICE_FS_TRUE : ICE_FS_FALSE;
+}
 
-    return (matches == lenstr1) ? ICE_FS_TRUE : ICE_FS_FALSE;
+/* [INTERNAL] Converts char to string and returns result on allocation success or NULL on allocation failure */
+ICE_FS_API char* ICE_FS_CALLCONV ice_fs_str_char_to_str(char ch) {
+    unsigned alloc_size = (2 * sizeof(char));
+    char *res = 0;
+
+    if (ch == 0) return 0;
+
+    res = ICE_FS_MALLOC(alloc_size);
+    if (res == 0) return 0;
+    
+    res[0] = ch;
+    res[1] = 0;
+    
+    return res;
 }
 
 /* [INTERNAL] Returns substring of string from index from_idx to index to_idx on allocation success or NULL on allocation failure */
@@ -873,11 +896,7 @@ ICE_FS_API char* ICE_FS_CALLCONV ice_fs_str_sub(const char *str, unsigned long f
     alloc_size = (len * sizeof(char));
 
     if (from_idx == to_idx) {
-        res = ICE_FS_MALLOC(2 * sizeof(char));
-        
-        res[0] = str[to_idx];
-        res[1] = 0;
-        
+        res = ice_fs_str_char_to_str(str[to_idx]);
         return res;
     }
     
@@ -886,7 +905,7 @@ ICE_FS_API char* ICE_FS_CALLCONV ice_fs_str_sub(const char *str, unsigned long f
     
     if (backwards == ICE_FS_TRUE) {
         for (i = to_idx; i <= from_idx; i++) {
-            res[count] = str[from_idx - i];
+            res[from_idx - i] = str[i];
             count++;
         }
     } else {
@@ -920,19 +939,13 @@ ICE_FS_API char* ICE_FS_CALLCONV ice_fs_str_copy(const char *str) {
 /* [INTERNAL] Splits string into array of strings for each delimiter and returns it on allocation success or NULL on allocation failure, arrlen is pointer to unsigned long integer to store length of resulted array */
 ICE_FS_API char** ICE_FS_CALLCONV ice_fs_str_split(const char *str, char delim, unsigned long *arrlen) {
     unsigned long len = ice_fs_str_len(str),
-                  alloc_size,
-                  i,
-                  arr_len = 0,
-                  repeat_count = 0,
-                  count = 0,
-                  i1 = 0,
-                  i2 = 0,
-                  sets = 0;
-    
-    char **res = 0;
+                  arr_len = 0, repeat_count = 0, count = 0,
+                  i1 = 0, i2 = 0, sets = 0,
+                  i, alloc_size;
+    char **res;
 
     if (len == 0) return 0;
-
+    
     for (i = 0; i < len; i++) {
         unsigned long j = 0;
         
@@ -1004,10 +1017,7 @@ ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_matches(const char *str1, co
                   alloc_size,
                   i;
 
-    if ((len1 == 0) || (len2 == 0)) {
-        if (idxs != 0) *idxs = 0;
-        return 0;
-    }
+    if ((len1 == 0) || (len2 == 0)) return 0;
 
     for (i = 0; i < len1; i++) {
         if ((str1[i] == str2[0]) && ((i + (len2 - 1)) < len1)) {
@@ -1022,13 +1032,14 @@ ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_matches(const char *str1, co
             if (char_matches == len2) {
                 matches++;
                 char_matches = 0;
+                i += len2;
             }
         }
     }
     
     if (idxs != 0) {
-        unsigned long *matches_idxs, count = 0;
-
+        unsigned long count = 0, *matches_idxs;
+        
         alloc_size = (matches * sizeof(unsigned long));
         matches_idxs = ICE_FS_MALLOC(alloc_size);
 
@@ -1036,11 +1047,24 @@ ICE_FS_API unsigned long ICE_FS_CALLCONV ice_fs_str_matches(const char *str1, co
 
         for (i = 0; i < len1; i++) {
             if ((str1[i] == str2[0]) && ((i + (len2 - 1)) < len1)) {
-                matches_idxs[count] = i;
+                unsigned long j;
+                
+                for (j = 0; j < len2; j++) {
+                    if (str1[i + j] == str2[j]) {
+                        char_matches++;
+                    }
+                }
+                
+                if (char_matches == len2) {
+                    char_matches = 0;
+                    matches_idxs[count] = i;
+                    i += len2;
+                }
+                
                 count++;
             }
         }
-
+        
         *idxs = matches_idxs;
     }
 
