@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO: fix the build script, so it won't build ice_test.h
-
 # Create directories for each platform...
 mkdir -p ice_libs_builds/{win32,win64,linux32,linux64}
 
