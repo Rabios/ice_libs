@@ -1,5 +1,9 @@
 # Changelog
 
+### June 24, 2022
+
+Removed building `ice_test` by accident from `build.sh`
+
 ### June 22, 2022
 
 1. Added a couple of functions to `ice_str.h` similar to those ones from `string.h` and `ctype.h`
