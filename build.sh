@@ -1,19 +1,21 @@
 #!/usr/bin/env bash
 
+# TODO: fix the build script, so it won't build ice_test.h
+
 # Create directories for each platform...
 mkdir -p ice_libs_builds/{win32,win64,linux32,linux64}
 
 cp -rf rebase/*.h ice_libs_builds
 
-libs=("ice_al" "ice_ffi" "ice_fs" "ice_batt" "ice_cpu" "ice_ease" "ice_ram" "ice_str" "ice_test" "ice_time" "ice_clip")
+libs=("ice_al" "ice_ffi" "ice_fs" "ice_batt" "ice_cpu" "ice_ease" "ice_ram" "ice_str" "ice_time" "ice_clip")
 
 for l in ${libs[@]}; do
   x=$(echo "${l}"|tr '[:lower:]' '[:upper:]')
   printf "#define ${x}_IMPL 1\n#include \"${l}.h\"\n" > ice_libs_builds/${l}.c
 done
 
-win_link_flags=("-lkernel32" "-lkernel32" "-lkernel32" "-lkernel32" "-lm" "-lkernel32" "-lkernel32" "" "" "-lkernel32" "-lkernel32 -luser32")
-linux_link_flags=("-ldl" "-lc" "-lc" "-lc" "-lm" "-ldl" "-lc" "-lc" "-lc")
+win_link_flags=("-lkernel32" "-lkernel32" "-lkernel32" "-lkernel32" "-lm" "-lkernel32" "-lkernel32" "" "-lkernel32" "-lkernel32 -luser32")
+linux_link_flags=("-ldl" "-ldl" "-lc" "-lc" "-lc" "-lm" "-lc" "-lc" "-lc")
 
 for i in ${!libs[@]}; do
   # ========== Build: Microsoft Windows (x86/i386, x86_64) ========== #
@@ -22,7 +24,7 @@ for i in ${!libs[@]}; do
   if [ "$i" -gt "1" ]; then
     if [ "$i" -eq "6" ]; then
       compile_flags_win="-std=c99 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Werror -Ofast"
-    elif [ "$i" -ne "6" ]; then
+    else
       compile_flags_win="-std=c89 -pedantic -Wall -Wextra -Wundef -Wcast-align -Wwrite-strings -Wlogical-op -Wmissing-declarations -Wredundant-decls -Wshadow -Werror -Ofast"
     fi
   fi
@@ -31,7 +33,7 @@ for i in ${!libs[@]}; do
   x86_64-w64-mingw32-gcc -shared ice_libs_builds/${libs[$i]}.c -o ice_libs_builds/win64/${libs[$i]}.dll ${compile_flags_win} ${win_link_flags[$i]}
   
   # ========== Build: Linux (x86/i386, x86_64) ========== #
-  if [ "$i" -ne "10" ]; then
+  if [ "$i" -ne "9" ]; then
     compile_flags_linux="-Ofast"
     
     if [ "$i" -eq "0" ] || [ "$i" -eq "4" ]; then
