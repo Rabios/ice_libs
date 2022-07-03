@@ -16,14 +16,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     
+    - name: Update Permissions
+      shell: bash
+      run: |
+        git update-index --chmod +x ${{ github.workspace }}/check_packages.sh ${{ github.workspace }}/build.sh
+    
     - name: Toolchain Checks
       shell: bash
-      run: sh ${{ github.workspace }}/check_packages.sh
+      run: ${{ github.workspace }}/check_packages.sh
 
     - name: Build (Microsoft Windows, Linux)
       shell: bash
       run: |
-        sh ${{ github.workspace }}/build.sh
+        ${{ github.workspace }}/build.sh
         
         cd ${{ github.workspace }}/ice_libs_builds
         zip -r ice_libs_builds.zip *
