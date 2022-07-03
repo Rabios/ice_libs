@@ -1,5 +1,9 @@
 # Changelog
 
+### July 3, 2022
+
+Updated the workflow for GitHub Actions to run `check_packages.sh` and `build.sh`
+
 ### June 24, 2022
 
 Removed building `ice_test` by accident from `build.sh`
