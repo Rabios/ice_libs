@@ -2,7 +2,8 @@
 
 ### July 3, 2022
 
-Updated the workflow for GitHub Actions to run `check_packages.sh` and `build.sh`
+1. Updated the workflow for GitHub Actions to run `check_packages.sh` and `build.sh`
+2. Updated the TODO to comply with latest development plans...
 
 ### June 24, 2022
 
