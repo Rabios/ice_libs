@@ -18,12 +18,12 @@ jobs:
     
     - name: Toolchain Checks
       shell: bash
-      run: sudo ${{ github.workspace }}/check_packages.sh
+      run: sudo .${{ github.workspace }}/check_packages.sh
 
     - name: Build (Microsoft Windows, Linux)
       shell: bash
       run: |
-        sudo ${{ github.workspace }}/build.sh
+        sudo .${{ github.workspace }}/build.sh
         
         cd ${{ github.workspace }}/ice_libs_builds
         zip -r ice_libs_builds.zip *
