@@ -21,7 +21,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 #include <stdio.h>
 
 // Helper
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+#define trace(fname, str) (void) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(void) {
     // Struct that contains RAM information
@@ -37,7 +37,7 @@ int main(void) {
     }
     
     // Print RAM info (free, used, total) in bytes
-    printf("%s %llu bytes\n%s %llu bytes\n%s %llu bytes\n",
+    (void) printf("%s %llu bytes\n%s %llu bytes\n%s %llu bytes\n",
             "Free RAM:", ram.free,
             "Used RAM:", ram.used,
             "Total RAM:", ram.total);

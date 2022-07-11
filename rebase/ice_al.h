@@ -21,7 +21,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 #include <stdio.h>
 
 // Helper
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+#define trace(fname, str) (void) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(void) {
     ice_al_bool res;
