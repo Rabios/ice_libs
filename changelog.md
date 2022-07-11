@@ -6,6 +6,7 @@
 2. Added `ICE_EASE_TAU` and `ICE_EASE_HALF_PI` for `ice_ease.h`
 3. Updated samples to discard return type when calling `printf` function.
 4. Updated workflow to be more explained...
+5. Updated `TODO.txt` to comply with latest commits done...
 
 ### July 3, 2022
 
