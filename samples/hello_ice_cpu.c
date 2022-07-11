@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 /* Helper */
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+#define trace(fname, str) (void) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(void) {
     /* Struct that contains CPU information */
@@ -21,7 +21,7 @@ int main(void) {
     }
     
     /* Print the informations */
-    printf("CPU Name: %s\nCPU Cores: %u\n", cpu.name, cpu.cores);
+    (void) printf("CPU Name: %s\nCPU Cores: %u\n", cpu.name, cpu.cores);
     
     return 0;
 }

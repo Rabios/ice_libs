@@ -16,20 +16,19 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     
-    - name: Update Permissions
-      shell: bash
-      run: |
-        chmod +x ${{ github.workspace }}/check_packages.sh ${{ github.workspace }}/build.sh
-    
-    - name: Toolchain Checks
-      shell: bash
-      run: ${{ github.workspace }}/check_packages.sh
-
     - name: Build (Microsoft Windows, Linux)
       shell: bash
       run: |
+        # Updating permissions for the shell scripts
+        chmod +x ${{ github.workspace }}/check_packages.sh ${{ github.workspace }}/build.sh
+        
+        # Checking required toolchains and packages
+        ${{ github.workspace }}/check_packages.sh
+        
+        # Building the libraries
         ${{ github.workspace }}/build.sh
         
+        # ZIP the builds to upload them
         cd ${{ github.workspace }}/ice_libs_builds
         zip -r ice_libs_builds.zip *
         

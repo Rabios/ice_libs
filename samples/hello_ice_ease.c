@@ -14,7 +14,7 @@ int main(void) {
     linear4 = ice_ease_linear(ICE_EASE_TYPE_PENNER, 1.0, 2.0, 3.0, 4.0);
 
     /* Print the results... */
-    printf("Linear easing with one variable: %f\nLinear easing with four variables: %f\n",
+    (void) printf("Linear easing with one variable: %f\nLinear easing with four variables: %f\n",
            linear1, linear4);
 
     return 0;

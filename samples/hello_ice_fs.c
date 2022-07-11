@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 /* Helper */
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+#define trace(fname, str) (void) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(void) {
     /* Struct that contains modification date information */
@@ -51,7 +51,7 @@ int main(void) {
     }
 
     /* Print the modification date of the created file */
-    printf("modification date of surprise/ice_secret_message.txt: %s\n", mod_date.str);
+    (void) printf("modification date of surprise/ice_secret_message.txt: %s\n", mod_date.str);
 
     return 0;
 }
