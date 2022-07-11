@@ -21,7 +21,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 #include <stdio.h>
 
 // Helper
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+#define trace(fname, str) (void) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(void) {
     // To store result of called functions
@@ -37,7 +37,7 @@ int main(void) {
     if (text == NULL) {
         trace("ice_clip_get", "LOG: failed to retrieve Clipboard text, Maybe the Clipboard does not contain text?");
     } else {
-        printf("Text from the Clipboard: %s\n", text);
+        (void) printf("Text from the Clipboard: %s\n", text);
     }
 
     // Clear the Clipboard
@@ -58,7 +58,7 @@ int main(void) {
         return -1;
     }
     
-    printf("Text copied to the Clipboard: %s\n", str);
+    (void) printf("Text copied to the Clipboard: %s\n", str);
     
     return 0;
 }

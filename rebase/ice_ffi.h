@@ -21,7 +21,7 @@ Check out "Linking Flags" to know which libs required to link for compilation de
 #include <stdio.h>
 
 // Helper
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+#define trace(fname, str) (void) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(void) {
     // To store result of unloading the shared library/object
@@ -59,7 +59,7 @@ int main(void) {
     }
     
     // Call the function and print the result!
-    printf("F42 call result: %u\n", F42());
+    (void) printf("F42 call result: %u\n", F42());
     
     // When done, Unload symbols and the shared library/object
     F42 = NULL;
