@@ -2,6 +2,9 @@ WIP:
 
 [o] ice_math.h
 [o] ice_vecmath.h
+
+NEXT:
+
 [o] ice_arr.h
 [o] ice_steam.h
 [o] ice_hashmap.h
@@ -9,7 +12,7 @@ WIP:
 [o] ice_kbd.h
 [o] ice_mouse.h
 
-NEXT:
+TODO:
 
 [ ] ice_app.h
 [ ] ice_arc.h

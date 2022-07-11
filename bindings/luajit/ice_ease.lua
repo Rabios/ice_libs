@@ -8,61 +8,72 @@ ffi_cdef([[
 
 /* Easing Types */
 typedef enum ice_ease_type {
-    ICE_EASE_TYPE_PROGRESS  = 1,
-    ICE_EASE_TYPE_PENNER    = 4
+    ICE_EASE_TYPE_PROGRESS = 0,
+    ICE_EASE_TYPE_PENNER
 } ice_ease_type;
 
 /* ============================== Functions ============================== */
 
-/* Functions for Linear Easing */
+/* ------------------------------- Linear ------------------------------- */
+
 double ice_ease_linear(ice_ease_type ease_type, ...);
 
-/* Functions for Quadratic Easing */
-double ice_ease_quad_in(ice_ease_type ease_type, ...);
-double ice_ease_quad_out(ice_ease_type ease_type, ...);
-double ice_ease_quad_in_out(ice_ease_type ease_type, ...);
+/* ------------------------------ Sinusoidal ------------------------------ */
 
-/* Functions for Cubic Easing */
-double ice_ease_cubic_in(ice_ease_type ease_type, ...);
-double ice_ease_cubic_out(ice_ease_type ease_type, ...);
-double ice_ease_cubic_in_out(ice_ease_type ease_type, ...);
-
-/* Functions for Quartic Easing */
-double ice_ease_quart_in(ice_ease_type ease_type, ...);
-double ice_ease_quart_out(ice_ease_type ease_type, ...);
-double ice_ease_quart_in_out(ice_ease_type ease_type, ...);
-
-/* Functions for Quintic Easing */
-double ice_ease_quint_in(ice_ease_type ease_type, ...);
-double ice_ease_quint_out(ice_ease_type ease_type, ...);
-double ice_ease_quint_in_out(ice_ease_type ease_type, ...);
-
-/* Functions for Sinusoidal Easing */
 double ice_ease_sine_in(ice_ease_type ease_type, ...);
 double ice_ease_sine_out(ice_ease_type ease_type, ...);
 double ice_ease_sine_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Exponential Easing */
+/* ------------------------------ Quadratic ------------------------------ */
+
+double ice_ease_quad_in(ice_ease_type ease_type, ...);
+double ice_ease_quad_out(ice_ease_type ease_type, ...);
+double ice_ease_quad_in_out(ice_ease_type ease_type, ...);
+
+/* -------------------------------- Cubic -------------------------------- */
+
+double ice_ease_cubic_in(ice_ease_type ease_type, ...);
+double ice_ease_cubic_out(ice_ease_type ease_type, ...);
+double ice_ease_cubic_in_out(ice_ease_type ease_type, ...);
+
+/* ------------------------------- Quartic ------------------------------- */
+
+double ice_ease_quart_in(ice_ease_type ease_type, ...);
+double ice_ease_quart_out(ice_ease_type ease_type, ...);
+double ice_ease_quart_in_out(ice_ease_type ease_type, ...);
+
+/* ------------------------------- Quintic ------------------------------- */
+
+double ice_ease_quint_in(ice_ease_type ease_type, ...);
+double ice_ease_quint_out(ice_ease_type ease_type, ...);
+double ice_ease_quint_in_out(ice_ease_type ease_type, ...);
+
+/* ----------------------------- Exponential ----------------------------- */
+
 double ice_ease_expo_in(ice_ease_type ease_type, ...);
 double ice_ease_expo_out(ice_ease_type ease_type, ...);
 double ice_ease_expo_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Circular Easing */
+/* ------------------------------ Circular ------------------------------ */
+
 double ice_ease_circ_in(ice_ease_type ease_type, ...);
 double ice_ease_circ_out(ice_ease_type ease_type, ...);
 double ice_ease_circ_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Elastic Easing */
+/* ------------------------------ Elastic ------------------------------ */
+
 double ice_ease_elastic_in(ice_ease_type ease_type, ...);
 double ice_ease_elastic_out(ice_ease_type ease_type, ...);
 double ice_ease_elastic_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Back Easing */
+/* ------------------------------- Back -------------------------------- */
+
 double ice_ease_back_in(ice_ease_type ease_type, ...);
 double ice_ease_back_out(ice_ease_type ease_type, ...);
 double ice_ease_back_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Bounce Easing */
+/* ------------------------------ Bounce ------------------------------- */
+
 double ice_ease_bounce_in(ice_ease_type ease_type, ...);
 double ice_ease_bounce_out(ice_ease_type ease_type, ...);
 double ice_ease_bounce_in_out(ice_ease_type ease_type, ...);
@@ -72,6 +83,8 @@ local l = ffi_load("ice_ease")
 local mt = { __index = l }
 local lib = _setmetatable({}, mt)
 
-lib.ICE_EASE_PI = 3.14159265358979323846
+lib.ICE_EASE_PI       = 3.1415926535897932384626433832795 -- Pi
+lib.ICE_EASE_TAU      = 6.283185307179586476925286766559  -- Tau (Double Pi)
+lib.ICE_EASE_HALF_PI  = 1.5707963267948966192313216916398 -- Half of Pi
 
 return lib

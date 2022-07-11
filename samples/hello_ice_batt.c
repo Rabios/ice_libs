@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 /* Helper */
-#define trace(fname, str) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
+#define trace(fname, str) (void) printf("[%s : line %d] %s() => %s\n", __FILE__, __LINE__, fname, str);
 
 int main(void) {
     /* Struct that contains information about the battery */
@@ -21,7 +21,7 @@ int main(void) {
     }
 
     /* Print the informations */
-    printf("Device has battery: %s\nIs battery charging: %s\nBattery Level: %u\n",
+    (void) printf("Device has battery: %s\nIs battery charging: %s\nBattery Level: %u\n",
       (batt.exists == ICE_BATT_TRUE) ? "YES" : "NO",
       (batt.charging == ICE_BATT_TRUE) ? "YES" : "NO",
       batt.level);

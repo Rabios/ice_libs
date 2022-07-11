@@ -21,7 +21,7 @@ int main(void) {
     }
 
     /* Print current time! */
-    printf("Current Time: %s\n", current_time.str);
+    (void) printf("Current Time: %s\n", current_time.str);
 
     return 0;
 }

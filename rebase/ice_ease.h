@@ -30,7 +30,7 @@ int main(void) {
     linear4 = ice_ease_linear(ICE_EASE_TYPE_PENNER, 1.0, 2.0, 3.0, 4.0);
 
     // Print the results...
-    printf("Linear easing with one variable: %f\nLinear easing with four variables: %f\n",
+    (void) printf("Linear easing with one variable: %f\nLinear easing with four variables: %f\n",
            linear1, linear4);
 
     return 0;
@@ -39,70 +39,83 @@ int main(void) {
 
 =================================== Library API ===================================
 
-// PI definition
-#define ICE_EASE_PI 3.14159265358979323846
+#define ICE_EASE_PI         3.1415926535897932384626433832795   // Pi
+#define ICE_EASE_TAU        6.283185307179586476925286766559    // Tau (Double Pi)
+#define ICE_EASE_HALF_PI    1.5707963267948966192313216916398   // Half of Pi
 
 // Easing Types
 typedef enum ice_ease_type {
-    ICE_EASE_TYPE_PROGRESS  = 1,
-    ICE_EASE_TYPE_PENNER    = 4
+    ICE_EASE_TYPE_PROGRESS = 0,
+    ICE_EASE_TYPE_PENNER
 } ice_ease_type;
 
 // NOTE: You can use Robert Penner's Easings or Easings that take one value, To use Robert one argc should be 4 and to use Single-Value ones it should be 1 (Arguments Number)
 
 // Examples:
-// ice_ease_linear(ICE_EASE_TYPE_PROGRESS, 5);         // Progress-Based easings take 1 argument
-// ice_ease_linear(ICE_EASE_TYPE_PENNER, 1, 2, 3, 4);  // Penner easings take 4 arguments
+// ice_ease_linear(ICE_EASE_TYPE_PROGRESS, 5.0);                // Progress-Based easings take 1 argument
+// ice_ease_linear(ICE_EASE_TYPE_PENNER, 1.0, 2.0, 3.0, 4.0);   // Penner easings take 4 arguments
 
-// Functions for Linear Easing
+
+// ------------------------------- Linear ------------------------------- //
+
 double ice_ease_linear(ice_ease_type ease_type, ...);
 
-// Functions for Quadratic Easing
-double ice_ease_quad_in(ice_ease_type ease_type, ...);
-double ice_ease_quad_out(ice_ease_type ease_type, ...);
-double ice_ease_quad_in_out(ice_ease_type ease_type, ...);
+// ------------------------------ Sinusoidal ------------------------------ //
 
-// Functions for Cubic Easing
-double ice_ease_cubic_in(ice_ease_type ease_type, ...);
-double ice_ease_cubic_out(ice_ease_type ease_type, ...);
-double ice_ease_cubic_in_out(ice_ease_type ease_type, ...);
-
-// Functions for Quartic Easing
-double ice_ease_quart_in(ice_ease_type ease_type, ...);
-double ice_ease_quart_out(ice_ease_type ease_type, ...);
-double ice_ease_quart_in_out(ice_ease_type ease_type, ...);
-
-// Functions for Quintic Easing
-double ice_ease_quint_in(ice_ease_type ease_type, ...);
-double ice_ease_quint_out(ice_ease_type ease_type, ...);
-double ice_ease_quint_in_out(ice_ease_type ease_type, ...);
-
-// Functions for Sinusoidal Easing
 double ice_ease_sine_in(ice_ease_type ease_type, ...);
 double ice_ease_sine_out(ice_ease_type ease_type, ...);
 double ice_ease_sine_in_out(ice_ease_type ease_type, ...);
 
-// Functions for Exponential Easing
+// ------------------------------ Quadratic ------------------------------ //
+
+double ice_ease_quad_in(ice_ease_type ease_type, ...);
+double ice_ease_quad_out(ice_ease_type ease_type, ...);
+double ice_ease_quad_in_out(ice_ease_type ease_type, ...);
+
+// -------------------------------- Cubic -------------------------------- //
+
+double ice_ease_cubic_in(ice_ease_type ease_type, ...);
+double ice_ease_cubic_out(ice_ease_type ease_type, ...);
+double ice_ease_cubic_in_out(ice_ease_type ease_type, ...);
+
+// ------------------------------- Quartic ------------------------------- //
+
+double ice_ease_quart_in(ice_ease_type ease_type, ...);
+double ice_ease_quart_out(ice_ease_type ease_type, ...);
+double ice_ease_quart_in_out(ice_ease_type ease_type, ...);
+
+// ------------------------------- Quintic ------------------------------- //
+
+double ice_ease_quint_in(ice_ease_type ease_type, ...);
+double ice_ease_quint_out(ice_ease_type ease_type, ...);
+double ice_ease_quint_in_out(ice_ease_type ease_type, ...);
+
+// ----------------------------- Exponential ----------------------------- //
+
 double ice_ease_expo_in(ice_ease_type ease_type, ...);
 double ice_ease_expo_out(ice_ease_type ease_type, ...);
 double ice_ease_expo_in_out(ice_ease_type ease_type, ...);
 
-// Functions for Circular Easing
+// ------------------------------ Circular ------------------------------ //
+
 double ice_ease_circ_in(ice_ease_type ease_type, ...);
 double ice_ease_circ_out(ice_ease_type ease_type, ...);
 double ice_ease_circ_in_out(ice_ease_type ease_type, ...);
 
-// Functions for Elastic Easing
+// ------------------------------ Elastic ------------------------------ //
+
 double ice_ease_elastic_in(ice_ease_type ease_type, ...);
 double ice_ease_elastic_out(ice_ease_type ease_type, ...);
 double ice_ease_elastic_in_out(ice_ease_type ease_type, ...);
 
-// Functions for Back Easing
+// ------------------------------- Back -------------------------------- //
+
 double ice_ease_back_in(ice_ease_type ease_type, ...);
 double ice_ease_back_out(ice_ease_type ease_type, ...);
 double ice_ease_back_in_out(ice_ease_type ease_type, ...);
 
-// Functions for Bounce Easing
+// ------------------------------ Bounce ------------------------------- //
+
 double ice_ease_bounce_in(ice_ease_type ease_type, ...);
 double ice_ease_bounce_out(ice_ease_type ease_type, ...);
 double ice_ease_bounce_in_out(ice_ease_type ease_type, ...);
@@ -278,72 +291,88 @@ Else, Just define API as extern C code!
 extern "C" {
 #endif
 
-/* =============================== Macros =============================== */
+/* =============================== Defines =============================== */
 
-/* PI definition */
 #if !defined(ICE_EASE_PI)
-#  define ICE_EASE_PI 3.14159265358979323846
+#  define ICE_EASE_PI           3.1415926535897932384626433832795   /* Pi */
+#endif
+#if !defined(ICE_EASE_TAU)
+#  define ICE_EASE_TAU          6.283185307179586476925286766559    /* Tau (Double Pi) */
+#endif
+#if !defined(ICE_EASE_HALF_PI)
+#  define ICE_EASE_HALF_PI      1.5707963267948966192313216916398   /* Half of Pi */
 #endif
 
 /* ============================== Data Types ============================== */
 
 /* Easing Types */
 typedef enum ice_ease_type {
-    ICE_EASE_TYPE_PROGRESS  = 1,
-    ICE_EASE_TYPE_PENNER    = 4
+    ICE_EASE_TYPE_PROGRESS = 0,
+    ICE_EASE_TYPE_PENNER
 } ice_ease_type;
 
 /* ============================== Functions ============================== */
 
-/* Functions for Linear Easing */
+/* ------------------------------- Linear ------------------------------- */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_linear(ice_ease_type ease_type, ...);
 
-/* Functions for Quadratic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_out(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in_out(ice_ease_type ease_type, ...);
+/* ------------------------------ Sinusoidal ------------------------------ */
 
-/* Functions for Cubic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_out(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in_out(ice_ease_type ease_type, ...);
-
-/* Functions for Quartic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_out(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in_out(ice_ease_type ease_type, ...);
-
-/* Functions for Quintic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_out(ice_ease_type ease_type, ...);
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in_out(ice_ease_type ease_type, ...);
-
-/* Functions for Sinusoidal Easing */
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_sine_in(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_sine_out(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_sine_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Exponential Easing */
+/* ------------------------------ Quadratic ------------------------------ */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_out(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in_out(ice_ease_type ease_type, ...);
+
+/* -------------------------------- Cubic -------------------------------- */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_out(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in_out(ice_ease_type ease_type, ...);
+
+/* ------------------------------- Quartic ------------------------------- */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_out(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in_out(ice_ease_type ease_type, ...);
+
+/* ------------------------------- Quintic ------------------------------- */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_out(ice_ease_type ease_type, ...);
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in_out(ice_ease_type ease_type, ...);
+
+/* ----------------------------- Exponential ----------------------------- */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_in(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_out(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Circular Easing */
+/* ------------------------------ Circular ------------------------------ */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_in(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_out(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Elastic Easing */
+/* ------------------------------ Elastic ------------------------------ */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_out(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Back Easing */
+/* ------------------------------- Back -------------------------------- */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_out(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in_out(ice_ease_type ease_type, ...);
 
-/* Functions for Bounce Easing */
+/* ------------------------------ Bounce ------------------------------- */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_out(ice_ease_type ease_type, ...);
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in_out(ice_ease_type ease_type, ...);
@@ -357,686 +386,746 @@ ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in_out(ice_ease_type ease_
 #include <stdarg.h>
 #include <math.h>
 
-/* [INTERNAL] Assigns variable arguments to array */
-#define ICE_EASE_ASSIGN_ARGS            \
-    double args[4];                     \
-    va_list argv;                       \
-    unsigned i;                         \
-                                        \
-    va_start(argv, ease_type);          \
-                                        \
-    for (i = 0; i < ease_type; i++) {   \
-        args[i] = va_arg(argv, double); \
-    }                                   \
-                                        \
-    va_end(argv);                       \
+/* [INTERNAL] Fetches x from the variable arguments */
+#define ICE_EASE_LOAD_ARG       \
+    double x;                   \
+    va_list argv;               \
+    va_start(argv, ease_type);  \
+    x = va_arg(argv, double);   \
+    va_end(argv);
 
-/* [INTERNAL] Generates the variable x from array */
-#define ICE_EASE_LOAD_ARG               \
-    double x = args[0];                 \
+/* [INTERNAL] Fetches (t, b, c, d) from the variable arguments */
+#define ICE_EASE_LOAD_FOUR_ARGS \
+    double t, b, c, d;          \
+    va_list argv;               \
+    va_start(argv, ease_type);  \
+    t = va_arg(argv, double);   \
+    b = va_arg(argv, double);   \
+    c = va_arg(argv, double);   \
+    d = va_arg(argv, double);   \
+    va_end(argv);
 
-/* [INTERNAL] Generates the 4 variables (t, b, c, d) from array */
-#define ICE_EASE_LOAD_FOUR_ARGS         \
-    double t = args[0],                 \
-           b = args[1],                 \
-           c = args[2],                 \
-           d = args[3];                 \
+/* ------------------------------- Linear ------------------------------- */
 
-/* Functions for Linear Easing */
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_linear(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return x;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        return c * t / d + b;
-    }
-
-    return 0;
-}
-
-/* Functions for Quadratic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return x * x;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d;
-
-        return c * t * t + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
+    double res = 0;
     
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return 1.0 - (1.0 - x) * (1.0 - x);
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d;
-
-        return -c * t * (t - 2.0) + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return (x < 0.5) ? 2.0 * x * x : 1.0 - pow(-2.0 * x + 2.0, 2) / 2.0;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d / 2.0;
-
-        if (t < 1.0) return c / 2.0 * t * t + b;
         
-        --t;
-        return -c / 2.0 * (t * (t - 2.0) - 1.0) + b;
-    }
-
-    return 0;
-}
-
-/* Functions for Cubic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return x * x * x;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d;
-
-        return c * t * t * t + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return 1.0 - pow(1.0 - x, 3);
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t = t / d - 1.0;
-
-        return c * (t * t * t + 1.0) + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        if (x < 0.5) return 4.0 * x * x * x;
-        return 1.0 - pow(-2.0 * x + 2.0, 3) / 2.0;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d / 2.0;
-
-        if (t < 1.0) return c / 2.0 * t * t * t + b;
+        res = x;
         
-        t -= 2.0;
-        return c / 2.0 * (t * t * t + 2.0) + b;
-    }
-
-    return 0;
-}
-
-/* Functions for Quartic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return x * x * x * x;
-
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        t /= d;
-
-        return c * t * t * t * t + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return 1.0 - pow(1.0 - x, 4);
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t = t / d - 1.0;
-
-        return -c * (t * t * t * t - 1.0) + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        if (x < 0.5) return 8.0 * x * x * x * x;
-        return 1.0 - pow(-2.0 * x + 2.0, 4) / 2.0;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d / 2.0;
-
-        if (t < 1.0) return c / 2.0 * t * t * t * t + b;
         
-        t -= 2.0;
-        return -c / 2.0 * (t * t * t * t - 2.0) + b;
+        res = c * (t / d) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
-/* Functions for Quintic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
+/* ------------------------------ Sinusoidal ------------------------------ */
 
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return x * x * x * x * x;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d;
-
-        return c * t * t * t * t * t + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        return 1.0 - pow(1.0 - x, 5);
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t = t / d - 1.0;
-
-        return c * (t * t * t * t * t + 1.0) + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        if (x < 0.5) return 16.0 * x * x * x * x * x;
-        return 1.0 - pow(-2.0 * x + 2.0, 5) / 2.0;
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        t /= d / 2.0;
-
-        if (t < 1.0) return c / 2.0 * t * t * t * t * t + b;
-        t -= 2.0;
-
-        return c / 2.0 * (t * t * t * t * t + 2.0) + b;
-    }
-
-    return 0;
-}
-
-/* Functions for Sinusoidal Easing */
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_sine_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return 1.0 - cos((x * ICE_EASE_PI) / 2.0);
-
+        
+        res = 1 - cos(x * ICE_EASE_HALF_PI);
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return -c * cos(t / d * (ICE_EASE_PI / 2.0)) + c + b;
+        
+        res = -c * cos((t / d) * ICE_EASE_HALF_PI) + c + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_sine_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return sin((x * ICE_EASE_PI) / 2.0);
-
+        
+        res = sin(x * ICE_EASE_HALF_PI);
+    
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return c * sin(t / d * (ICE_EASE_PI / 2.0)) + b;
+        
+        res = c * sin((t / d) * ICE_EASE_HALF_PI) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_sine_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return -(cos(ICE_EASE_PI * x) - 1.0) / 2.0;
-
+        
+        res = -(cos(ICE_EASE_PI * x) - 1) * 0.5;
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        return -c / 2.0 * (cos(ICE_EASE_PI * t / d) - 1.0) + b;
+        
+        res = -c * 0.5 * (cos(ICE_EASE_PI * (t / d)) - 1) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
-/* Functions for Exponential Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
+/* ------------------------------ Quadratic ------------------------------ */
 
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return (x == 0) ? 0 : pow(2.0, 10 * x - 10);
-
+        
+        res = x * x;
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        if (t == 0) return b;
-        return c * pow(2.0, 10 * (t / d - 1.0)) + b;
+        
+        t /= d;
+        res = c * t * t + b;
     }
+    
+    return res;
+}
 
-    return 0;
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y;
+        ICE_EASE_LOAD_ARG
+        
+        y = 1 - x;
+        res = 1 - y * y;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t /= d;
+        res = -c * t * (t - 2) + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quad_in_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        if (x < 0.5) {
+            res = 2 * x * x;
+        } else {
+            double y = -2 * x + 2;
+            res = 1 - y * y * 0.5;
+        }
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double x, y = 0, z = 0;
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        x = c * 0.5, t /= d * 0.5;
+        if (!(t < 1)) t -= 1, x = -x, y = -2, z = -1;
+        
+        res = x * (t * (t + y) + z) + b;
+    }
+    
+    return res;
+}
+
+/* -------------------------------- Cubic -------------------------------- */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        res = x * x * x;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t /= d;
+        res = c * t * t * t + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y;
+        ICE_EASE_LOAD_ARG
+        
+        y = 1 - x;
+        res = 1 - y * y * y;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t = t / d - 1;
+        res = c * (t * t * t + 1) + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_cubic_in_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        if (x < 0.5) {
+            res = 4 * x * x * x;
+        } else {
+            double y = -2 * x + 2;
+            res = 1 - y * y * y * 0.5;
+        }
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double x, y = 0;
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        x = c * 0.5, t /= d * 0.5;
+        if (!(t < 1)) t -= 2, y = 2;
+        
+        res = x * (t * t * t + y) + b;
+    }
+    
+    return res;
+}
+
+/* ------------------------------- Quartic ------------------------------- */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        res = x * x * x * x;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t /= d;
+        res = c * t * t * t * t + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y;
+        ICE_EASE_LOAD_ARG
+        
+        y = 1 - x;
+        res = 1 - y * y * y * y;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t = t / d - 1;
+        res = -c * (t * t * t * t - 1) + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quart_in_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        if (x < 0.5) {
+            res = 8 * x * x * x * x;
+        } else {
+            double y = -2 * x + 2;
+            
+            res = 1 - y * y * y * y * 0.5;
+        }
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double x, y = 0;
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        x = c * 0.5, t /= d * 0.5;
+        if (!(t < 1)) t -= 2, x = -x, y = -2;
+        
+        res = x * (t * t * t * t + y) + b;
+    }
+    
+    return res;
+}
+
+/* ------------------------------- Quintic ------------------------------- */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        res = x * x * x * x * x;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t /= d;
+        res = c * t * t * t * t * t + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y;
+        ICE_EASE_LOAD_ARG
+        
+        y = 1 - x;
+        res = 1 - y * y * y * y * y;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t = t / d - 1;
+        res = c * (t * t * t * t * t + 1) + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_quint_in_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        if (x < 0.5) {
+            res = 16 * x * x * x * x * x;
+        } else {
+            double y = -2 * x + 2;
+            res = 1 - y * y * y * y * y * 0.5;
+        }
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double x, y = 0;
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        x = c * 0.5, t /= d * 0.5;
+        if (!(t < 1)) t -= 2, y = 2;
+        
+        res = x * (t * t * t * t * t + y) + b;
+    }
+    
+    return res;
+}
+
+/* ----------------------------- Exponential ----------------------------- */
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_in(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        ICE_EASE_LOAD_ARG
+        
+        res = ((x == 0) ? 0 : pow(2, 10 * x - 10));
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        res = ((t == 0) ? b : (c * pow(2, 10 * (t / d - 1)) + b));
+    }
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return (x == 1) ? 1.0 : 1.0 - pow(2.0, -10 * x);
-
+        
+        res = ((x == 1) ? 1 : 1 - pow(2, -10 * x));
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        if (t == d) return b + c;
-        return c * (-pow(2.0, -10 * t / d) + 1.0) + b;
+        
+        res = ((t == d) ? (b + c) : (c * (-pow(2, -10 * t / d) + 1) + b));
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_expo_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-
-        if (x == 0) return 0;
-        else if (x == 1) return 1;
-
-        if (x < 0.5) return pow(2.0, 20 * x - 10) / 2.0;
-        return (2.0 - pow(2.0, -20 * x + 10)) / 2.0;
-
+        
+        if ((x == 0) || (x == 1)) {
+            res = x;
+        } else {
+            double y = 20 * x - 10, z = pow(2, y);
+            res = ((x < 0.5) ? (z * 0.5) : ((2 - (1 / z)) * 0.5));
+        }
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-
-        if (t == 0) return b;
-        else if (t == d) return b + c;
-        else if ((t /= d / 2.0) < 1.0) return c / 2.0 * pow(2.0, 10 * (t - 1.0)) + b;
-        return c / 2.0 * (-pow(2.0, -10 * --t) + 2.0) + b;
+        
+        if (t == 0) {
+            res = b;
+        } else if (t == d) {
+            res = b + c;
+        } else if ((t /= d * 0.5) < 1) {
+            res = c * 0.5 * pow(2, 10 * (t - 1)) + b;
+        } else {
+            t -= 1;
+            res = c * 0.5 * (-pow(2, -10 * t) + 2) + b;
+        }
     }
-
-    return 0;
+    
+    return res;
 }
 
-/* Functions for Circular Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
+/* ------------------------------ Circular ------------------------------ */
 
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_in(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return 1.0 - sqrt(1.0 - pow(x, 2));
-
+        
+        res = 1 - sqrt(1 - x * x);
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
+        
         t /= d;
-
-        return -c * (sqrt(1.0 - t * t) - 1.0) + b;
+        res = -c * (sqrt(1 - t * t) - 1) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y;
         ICE_EASE_LOAD_ARG
-        return sqrt(1.0 - pow(x - 1.0, 2));
-
+        
+        y = x - 1;
+        res = sqrt(1 - y * y);
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        t = t / d - 1.0;
-
-        return c * sqrt(1.0 - t * t) + b;
+        
+        t = t / d - 1;
+        res = c * sqrt(1 - t * t) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_circ_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
         
-        if (x < 0.5) return (1.0 - sqrt(1.0 - pow(2.0 * x, 2))) / 2.0;
-        return (sqrt(1.0 - pow(-2.0 * x + 2.0, 2)) + 1.0) / 2.0;
-
+        if (x < 0.5) {
+            res = (1 - sqrt(1 - (4 * x * x))) * 0.5;
+        } else {
+            double y = -2 * x + 2;
+            res = (sqrt(1 - y * y) + 1) * 0.5;
+        }
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double x, y, z = -1;
         ICE_EASE_LOAD_FOUR_ARGS
-        t /= d / 2.0;
-
-        if (t < 1.0) return -c / 2.0 * (sqrt(1.0 - t * t) - 1.0) + b;
-
-        t -= 2.0;
-        return c / 2.0 * (sqrt(1.0 - t * t) + 1.0) + b;
+        
+        x = -c * 0.5, t /= d * 0.5;
+        if (!(t < 1)) t -= 2, x = -x, z = 1;
+        
+        y = sqrt(1 - t * t);
+        res = x * (y + z) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
-/* Functions for Elastic Easing */
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
+/* ------------------------------ Elastic ------------------------------ */
 
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        double c4 = (2.0 * ICE_EASE_PI) / 3.0;
-
-        if (x == 0) return 0;
-        else if (x == 1) return 1;
-
-        return -pow(2.0, 10 * x - 10) * sin((x * 10.0 - 10.75) * c4);
-
+        
+        if ((x == 0) || (x == 1)) {
+            res = x;
+        } else {
+            res = -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * 2.0943951023931954923084289221863);
+        }
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        double p, a, s, postFix;
         ICE_EASE_LOAD_FOUR_ARGS
-
-        p = d * 0.3;
-        a = c;
-        s = p / 4.0;
-        t -= 1.0;
-        postFix = a * pow(2.0, 10 * t);
-
-        if (t == 0) return b;
         
-        t /= d;
-        if (t == 1) return b + c;
-        
-        return -(postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p)) + b;
+        if (t == 0) {
+            res = b;
+        } else if ((t /= d) == 1) {
+            res = b + c;
+        } else {
+            double p = d * 0.3f, s = p * 0.25f;
+            
+            t -= 1;
+            res = -(c * pow(2, 10 * t) * sin((t * d - s) * ICE_EASE_TAU / p)) + b;
+        }
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        double c4 = (2.0 * ICE_EASE_PI) / 3.0;
-
-        if (x == 0) return 0;
-        else if (x == 1) return 1;
-        return pow(2.0, -10 * x) * sin((x * 10.0 - 0.75) * c4) + 1.0;
-
+        
+        if ((x == 0) || (x == 1)) {
+            res = x;
+        } else {
+            res = pow(2, -10 * x) * sin((x * 10 - 0.75) * 2.0943951023931954923084289221863) + 1;
+        }
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double p = d * 0.3,
-               a = c,
-               s = p / 4.0,
-               postFix;
-
-        if (t == 0) return 0;
-        else if (t == 1) return 1;
-
-        if (t < 1.0) {
-            t -= 1.0;
-            postFix = a * pow(2.0, 10 * t);
-
-            return -0.5 * (postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p)) + b;
-        }
-
-        t -= 1.0;
-        postFix = a * pow(2.0, -10 * t);
         
-        return postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p) * 0.5 + c + b;
+        if (t == 0) {
+            res = b;
+        } else if ((t /= d) == 1) {
+            res = b + c;
+        } else {
+            double p = d * 0.3, s = p * 0.25;
+            res = (c * pow(2, -10 * t) * sin((t * d - s) * ICE_EASE_TAU / p) + c + b);
+        }
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_elastic_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        double c5 = (2.0 * ICE_EASE_PI) / 4.5;
-
-        if (x == 0) return 0;
-        else if (x == 1) return 1;
-
-        if (x < 0.5) return -(pow(2.0, 20 * x - 10) * sin((20.0 * x - 11.125) * c5)) / 2.0;
-        return (pow(2.0, -20 * x + 10) * sin((20.0 * x - 11.125) * c5)) / 2.0 + 1.0;
-
+        
+        if ((x == 0) || (x == 1)) {
+            res = x;
+        } else {
+            double y = 20 * x - 10,
+                   z = sin((20 * x - 11.125) * 1.3962634015954636615389526147909) * 0.5,
+                   w = -pow(2, y), n = 0;
+            
+            if (!(x < 0.5)) w = 1 / -w, z = 1;
+            
+            res = (w * z + n);
+        }
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double p = d * (0.3 * 1.5),
-               a = c,
-               s = p / 4.0,
-               postFix;
-
-        if (t == 0) return 0;
-        else if (t == 1) return 1;
-
-        if (t < 1.0) {
-            t -= 1.0;
-            postFix = a * pow(2.0, 10 * t);
-
-            return -0.5 * (postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p)) + b;
-        }
-
-        t -= 1.0;
-        postFix = a * pow(2.0, -10 * t);
-
-        return postFix * sin((t * d - s) * (2.0 * ICE_EASE_PI) / p) * 0.5 + c + b;
+        
+        if (t == 0) {
+            res = b;
+        } else if ((t /= d * 0.5) == 2) {
+            res = b + c;
+        } else {
+            double p = d * 0.45, s = p * 0.25, x, y, z, w, n;
+            
+            t -= 1, x = 10 * t, y = sin((t * d - s) * ICE_EASE_TAU / p),
+            z = -0.5 * c, w = pow(2, x), n = b;
+            
+            if (!((t + 1) < 1)) w = 1 / w, z = -z, n += c;
+            
+            res = z * w * y + n;
+        }	
     }
-
-    return 0;
+    
+    return res;
 }
 
-/* Functions for Back Easing */
+/* ------------------------------- Back -------------------------------- */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y;
         ICE_EASE_LOAD_ARG
-        double c1 = 1.70158,
-               c3 = c1 + 1.0;
-
-        return c3 * x * x * x - c1 * x * x;
-
+        
+        y = x * x;
+        res = 2.70158 * x * y - 1.70158 * y;
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double s = 1.70158;
+        
         t /= d;
-
-        return c * t * t * ((s + 1.0) * t - s) + b;
+        res = c * t * t * (2.70158 * t - 1.70158) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y, z;
         ICE_EASE_LOAD_ARG
-        double c1 = 1.70158, c3 = c1 + 1.0;
         
-        return 1.0 + c3 * pow(x - 1.0, 3) + c1 * pow(x - 1.0, 2);
-
+        y = x - 1, z = y * y;
+        res = 1 + 2.70158 * z * y + 1.70158 * z;
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
-        double s = 1.70158;
-        t = t / d - 1.0;
-
-        return c * (t * t * ((s + 1.0) * t + s) + 1.0) + b;
+        
+        t = t / d - 1;
+        res = c * (t * t * (2.70158 * t + 1.70158) + 1) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_back_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y, z = 0;
         ICE_EASE_LOAD_ARG
-        double c1 = 1.70158, c2 = c1 * 1.525;
-
-        if (x < 0.5) return (pow(2.0 * x, 2) * ((c2 + 1.0) * 2.0 * x - c2)) / 2.0;
-        return (pow(2.0 * x - 2.0, 2) * ((c2 + 1.0) * (x * 2.0 - 2.0) + c2) + 2.0) / 2.0;
-
+        
+        y = 2 * x;
+        if (!(x < 0.5)) y -= 2, z = 2;
+        
+        res = (y * y * (3.5949095 * y + 2.5949095) + z) * 0.5;
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double x, y, z = -2.5949095;
         ICE_EASE_LOAD_FOUR_ARGS
-        double s = 1.70158, v = 1.525;
-        t /= d;
-
-        if (t < 1.0) {
-            s *= v;
-            return c / 2.0 * (t * t * ((s + 1.0) * t - s)) + b;
-        }
-
-        t -= 2.0;
-        s *= v;
-        return c / 2.0 * (t * t * ((s + 1.0) * t + s) + 2.0) + b;
+        
+        x = c * 0.5, t /= d * 0.5;
+        if (!(t < 1)) t -= 2, y = 2, z = -z;
+        
+        res = x * (t * t * (3.5949095 * t + z) + y) + b;
     }
-
-    return 0;
+    
+    return res;
 }
 
-/* Functions for Bounce Easing */
+/* ------------------------------ Bounce ------------------------------- */
+
 ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
+    double res = 0;
+    
     if (ease_type == ICE_EASE_TYPE_PROGRESS) {
         ICE_EASE_LOAD_ARG
-        return 1.0 - ice_ease_bounce_out(ease_type, 1.0 - x);
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        return c - ice_ease_bounce_out(ease_type, d - t, 0.0, c, d) + b;
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-        double n1 = 7.5625, d1 = 2.75;
-
-        if (x < 1.0 / d1) {
-            return n1 * x * x;
-        } else if (x < 2.0 / d1) {
-            x -= 1.5 / d1;
-            return n1 * x * x + 0.75;
-        } else if (x < 2.5 / d1) {
-            x -= 2.25 / d1;
-            return n1 * x * x + 0.9375;
-        } else {
-            x -= 2.625 / d1;
-            return n1 * x * x + 0.984375;
-        }
-
-    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
-        ICE_EASE_LOAD_FOUR_ARGS
-        double n1 = 7.5625, d1 = 2.75;
-
-        t /= d;
-
-        if (t < (1.0 / d1)) {
-            return c * (n1 * t * t) + b;
-        } else if (t < (2.0 / d1)) {
-            t -= (1.5 / d1);
-            return c * (n1 * t * t + 0.75) + b;
-        } else if (t < (2.5 / d1)) {
-            t -= (2.25 / d1);
-            return c * (n1 * t * t + 0.9375) + b;
-        } else {
-            t -= (2.625 / d1);
-            return c * (n1 * t * t + 0.984375) + b;
-        }
-    }
-
-    return 0;
-}
-
-ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in_out(ice_ease_type ease_type, ...) {
-    ICE_EASE_ASSIGN_ARGS
-
-    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
-        ICE_EASE_LOAD_ARG
-
-        if (x < 0.5) return (1.0 - ice_ease_bounce_out(ease_type, 1.0 - 2.0 * x)) / 2.0;
-        return (1.0 + ice_ease_bounce_out(ease_type, 2.0 * x - 1.0)) / 2.0;
-
+        
+        res = 1 - ice_ease_bounce_out(ICE_EASE_TYPE_PROGRESS, 1 - x);
+        
     } else if (ease_type == ICE_EASE_TYPE_PENNER) {
         ICE_EASE_LOAD_FOUR_ARGS
         
-        if (t < d / 2.0) return ice_ease_bounce_in(ease_type, t * 2.0, 0.0, c, d) * 0.5 + b;
-        return ice_ease_bounce_out(ease_type, t * 2.0 - d, 0.0, c, d) * 0.5 + c * 0.5 + b;
+        res = c - ice_ease_bounce_out(ICE_EASE_TYPE_PENNER, d - t, 0, c, d) + b;
     }
+    
+    return res;
+}
 
-    return 0;
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y;
+        ICE_EASE_LOAD_ARG
+        
+        if (x < 0.36363636363636363636363636363636) {
+            y = 0;
+        } else if (x < 0.72727272727272727272727272727273) {
+            x -= 0.54545454545454545454545454545455, y = 0.75;
+        } else if (x < 0.90909090909090909090909090909091) {
+            x -= 0.81818181818181818181818181818182, y = 0.9375;
+        } else {
+            x -= 0.95454545454545454545454545454545, y = 0.984375;
+        }
+        
+        res = 7.5625 * x * x + y;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        double x;
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        t /= d;
+        
+        if (t < 0.36363636363636363636363636363636) {
+            x = 0;
+        } else if (t < 0.72727272727272727272727272727273) {
+            t -= 0.54545454545454545454545454545455, x = 0.75;
+        } else if (t < 0.90909090909090909090909090909091) {
+            t -= 0.81818181818181818181818181818182, x = 0.9375;
+        } else {
+            t -= 0.95454545454545454545454545454545, x = 0.984375;
+        }
+        
+        res = c * (7.5625 * t * t + x) + b;
+    }
+    
+    return res;
+}
+
+ICE_EASE_API double ICE_EASE_CALLCONV ice_ease_bounce_in_out(ice_ease_type ease_type, ...) {
+    double res = 0;
+    
+    if (ease_type == ICE_EASE_TYPE_PROGRESS) {
+        double y, z = -1;
+        ICE_EASE_LOAD_ARG
+        
+        y = 1 - 2 * x;
+        if (!(x < 0.5)) y = -y, z = -z;
+        
+        res = (1 + z * ice_ease_bounce_out(ICE_EASE_TYPE_PROGRESS, y)) * 0.5;
+        
+    } else if (ease_type == ICE_EASE_TYPE_PENNER) {
+        ICE_EASE_LOAD_FOUR_ARGS
+        
+        if (t < (d * 0.5)) {
+            res = ice_ease_bounce_in(ICE_EASE_TYPE_PENNER, t * 2, 0, c, d) * 0.5 + b;
+        } else {
+            res = ice_ease_bounce_out(ICE_EASE_TYPE_PENNER, t * 2 - d, 0, c, d) * 0.5 + c * 0.5f + b;
+        }
+    }
+    
+    return res;
 }
 
 #endif  /* ICE_EASE_IMPL */
