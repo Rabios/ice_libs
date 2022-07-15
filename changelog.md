@@ -1,12 +1,16 @@
 # Changelog
 
+### July 15, 2022
+
+Added `ice_ease.h` bindings for DragonRuby!
+
 ### July 11, 2022
 
 1. Rewrote `ice_ease.h` for best performance (Faster than old `ice_ease.h` by over 20% when using `-Ofast` flag )
 2. Added `ICE_EASE_TAU` and `ICE_EASE_HALF_PI` for `ice_ease.h`
 3. Updated samples to discard return type when calling `printf` function.
-4. Updated workflow to be more explained...
-5. Updated `TODO.txt` to comply with latest commits done...
+4. Added `tree.c` in `samples` folder which is program that implements `tree` command!
+5. Updated workflow to be more explained...
 
 ### July 3, 2022
 
