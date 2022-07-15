@@ -12,28 +12,17 @@
   => ice_ram.h:
     1. Use megabytes instead of bytes for ice_ram.h? (Thus we have to use double type instead...)
     2. Add another struct for memory pages count info
+    3. refactor source for calling functions in right time...
 
 2. C/C++ autocompletion (Visual Studio, Notepad++, etc...)
-3. Upload tree.c and some samples in examples folder
-4. C#, Python, Rust, Nim, Pascal bindings
-5. Cheatsheet
-6. Site Redesign
-7. Unit Tests
-8. Doxygen-like docs... (JavaDoc style)
-9. sokol-style for private functions
-10. Macro to ease definition of the APIs
-11. Inline assembly backend for best performance... (Later...)
-12. Refactor source code and add features...
+3. C#, Python, Rust, Nim, Pascal bindings
+4. Cheatsheet
+5. Site Redesign
+6. Unit Tests
+7. Doxygen-like docs... (JavaDoc style)
+8. sokol-style for private functions
+9. Macro to ease definition of the APIs
+10. Inline assembly backend for best performance... (Later...)
+11. Refactor source code and add features...
 
 NOTE: Not scheduled and each one might be done in specific time...
-
-=======================================================
-
-ice_math.h (Complete the lib)
-ice_vecmath.h (Complete the lib)
-ice_steam.h (Complete the lib)
-ice_arr.h (Complete the lib)
-ice_hashmap.h (Fix the implementation)
-ice_joy.h
-ice_mouse.h
-ice_kbd.h
