@@ -18,7 +18,7 @@ static drb_api_t *drb_api;
         }                                                                           \
 
 #define drb_bind_ease_func(fname)                                                                                                                   \
-static mrb_value drb_##fname(mrb_state *mrb, mrb_value self) {                                                                                    \
+static mrb_value drb_##fname(mrb_state *mrb, mrb_value self) {                                                                                      \
     int ease_type = -1;                                                                                                                             \
     double res = 0;                                                                                                                                 \
     mrb_value *args = 0;                                                                                                                            \
