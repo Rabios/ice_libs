@@ -1,6 +1,8 @@
 # ice_libs
 
-> NOTE: This project is into continuous development in [`dev`](https://github.com/Rabios/ice_libs/tree/dev) branch and everyone are welcome to join development, Thanks for patience...
+> NOTE 1: This project is into continuous development in [`dev`](https://github.com/Rabios/ice_libs/tree/dev) branch and everyone are welcome to join development, Thanks for patience...
+
+> NOTE 2: Due to time constraints and studies the development of the project may get stalled for some time but it will not be stopped and lot of stuff have to be made, Thanks for patience...
 
 <div align="center">
   <img src="img/icon1.png" width="256", height="256"><br><br>
